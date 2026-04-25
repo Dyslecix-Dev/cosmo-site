@@ -6,22 +6,22 @@ Repo: `Dyslecix-Dev/cosmo-site`. Domain: `cosmo.dyslecix.dev`. Host: Cloudflare 
 
 - [x] Scaffold with `pnpm create astro@latest -- --template Dyslecix-Dev/cosmo/template cosmo-site` (dogfood).
 - [x] Strip the seed `blog` collection — `cosmo-site` doesn't need it. Touches: [src/content.config.ts](src/content.config.ts), [src/content/blog/](src/content/blog/), [src/pages/blog/](src/pages/blog/), [src/components/blog/](src/components/blog/), [src/layouts/BlogPost.astro](src/layouts/BlogPost.astro), [src/lib/related-entries.ts](src/lib/related-entries.ts) (blog-only), and any Navbar links. Also **delete [src/pages/rss.xml.js](src/pages/rss.xml.js)** — a docs site doesn't need a feed for now.
-- [ ] The six guides are already scaffolded into [src/content/docs/](src/content/docs/) from the template, so this is a **link-fixup pass**, not a move:
+- [x] The six guides are already scaffolded into [src/content/docs/](src/content/docs/) from the template, so this is a **link-fixup pass**, not a move:
   - `getting-started.md`
   - `rebranding-via-tokens.mdx`
   - `adding-a-content-collection.mdx`
   - `wiring-rss.md`
   - `seo-checklist.mdx`
   - `deploying.mdx`
-- [ ] Update each guide's internal links — they reference `template/...` paths that exist in the upstream `cosmo` repo but **not** in this repo, so they will 404 as written. Rewrite them as **absolute GitHub URLs** against the upstream template: `https://github.com/Dyslecix-Dev/cosmo/blob/main/template/...`.
-- [ ] Assign a sensible reading order via the `order` frontmatter field on each doc:
+- [x] Update each guide's internal links — they reference `template/...` paths that exist in the upstream `cosmo` repo but **not** in this repo, so they will 404 as written. Rewrite them as **absolute GitHub URLs** against the upstream template: `https://github.com/Dyslecix-Dev/cosmo/blob/main/template/...`.
+- [x] Assign a sensible reading order via the `order` frontmatter field on each doc:
   1. `getting-started`
   2. `rebranding-via-tokens`
   3. `adding-a-content-collection`
   4. `wiring-rss`
   5. `seo-checklist`
   6. `deploying`
-- [ ] **Add a new "minimum viable collection" recipe** to the docs collection — a domain-agnostic walkthrough of schema + index + detail using placeholder names (`<your-collection>`), with no specific example domain. This stays the foundation that future per-use-case docs (blog, landing page, e-commerce, docs, etc.) will build on. Reference `cosmo`'s `blog` as a fuller showcase.
+- [x] **Add a new "minimum viable collection" recipe** to the docs collection — a domain-agnostic walkthrough of schema + index + detail using placeholder names (`<your-collection>`), with no specific example domain. This stays the foundation that future per-use-case docs (blog, landing page, e-commerce, docs, etc.) will build on. Reference `cosmo`'s `blog` as a fuller showcase.
 - [ ] Build the site shell:
   - Landing page — hero with the `pnpm create astro` one-liner (copy button), 3-4 feature bullets, CTAs to docs + GitHub.
   - Docs section — index + detail pages for the migrated guides.
