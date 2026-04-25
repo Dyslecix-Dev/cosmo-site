@@ -1,0 +1,62 @@
+---
+title: SEO checklist
+description: Before-you-ship list for cosmo's centralized SEO setup.
+order: 5
+---
+
+import Callout from "@/components/callouts/Callout.astro";
+
+Cosmo centralizes SEO defaults in `src/components/SEO.astro`. Edit that file — not individual pages — to change defaults across the site.
+
+<Callout type="warning" title="SEO.astro will throw without site">
+  `SEO.astro` requires `site` in `astro.config.mjs`. Canonical URLs and absolute OG image URLs depend on it. The build will fail loudly if it's missing.
+</Callout>
+
+## Before going live
+
+- Set `site` in `astro.config.mjs` to your production URL
+- Update `siteName` and `titleDefault` defaults in `SEO.astro`
+- Optionally set `twitterCreator` in `SEO.astro` to add a global Twitter creator meta tag (or pass it per-page)
+- Replace `public/placeholder-og-fallback.png` with a real OG image (1200×630 recommended)
+- Replace `src/assets/placeholder-home-hero.png` and `placeholder-blog-hero.png`
+- Update sitemap URL in `public/robots.txt`
+- Confirm `@astrojs/sitemap` runs in your build (it's wired in `astro.config.mjs`)
+- Verify each page passes a meaningful `title` and `description` to `BaseLayout`
+- **Optional**: extend the auto-generated `WebSite` JSON-LD schema with page-specific schemas (e.g. `BlogPosting`) via the `<slot name="head">` in `BaseLayout`
+
+## Per-page overrides
+
+Pages override defaults via props on `BaseLayout`:
+
+```astro
+<BaseLayout
+  title="My post"
+  description="A short summary."
+  image="/images/custom-og.png"
+>
+```
+
+<Callout type="tip">
+  Set `noindex` on draft pages or anything you don't want crawled. The canonical URL is automatically omitted when `noindex` is true.
+</Callout>
+
+## Draft content
+
+Both the `blog` and `docs` content collections support a `draft` field. Mark entries with `draft: true` in the frontmatter to write without publishing:
+
+```mdx
+---
+title: "Work in progress"
+draft: true
+---
+```
+
+Drafts are automatically filtered from:
+
+- Blog and docs list pages
+- Pagination
+- RSS feeds
+- Sitemap (via built page filtering)
+- Tag taxonomy
+
+The rest of your SEO checklist applies to non-draft content only — drafts won't be indexed or served to users.

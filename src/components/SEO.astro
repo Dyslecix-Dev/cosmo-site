@@ -1,0 +1,69 @@
+---
+import { SEO as AstroSEO } from "astro-seo";
+
+/**
+ * Thin wrapper around astro-seo that centralizes our defaults.
+ * Pages pass minimal props; we translate them into astro-seo's prop shape.
+ * Extend this component (not individual pages) when you want new SEO defaults.
+ */
+if (!Astro.site) {
+  throw new Error("`site` must be set in astro.config.mjs — SEO canonical URLs and absolute OG image URLs depend on it.");
+}
+
+interface Props {
+  title?: string;
+  titleTemplate?: string;
+  titleDefault?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
+  siteName?: string;
+  twitterCreator?: string;
+  noindex?: boolean;
+  nofollow?: boolean;
+}
+
+const {
+  title,
+  titleTemplate = "%s | Your Site",
+  titleDefault = "Your Site",
+  description = "A new site built with Cosmo.",
+  image = "/placeholder-og-fallback.png",
+  canonicalURL = new URL(Astro.url.pathname, Astro.site).toString(),
+  siteName = "Your Site",
+  twitterCreator,
+  noindex = false,
+  nofollow = false,
+} = Astro.props;
+
+const resolvedImage = new URL(image, Astro.site).toString();
+const resolvedTitle = title ?? titleDefault;
+---
+
+<AstroSEO
+  title={title}
+  titleTemplate={titleTemplate}
+  titleDefault={titleDefault}
+  description={description}
+  canonical={noindex ? undefined : canonicalURL}
+  noindex={noindex}
+  nofollow={nofollow}
+  openGraph={{
+    basic: {
+      title: resolvedTitle,
+      type: "website",
+      image: resolvedImage,
+    },
+    optional: {
+      description,
+      siteName,
+    },
+  }}
+  twitter={{
+    card: "summary_large_image",
+    title: resolvedTitle,
+    description,
+    image: resolvedImage,
+    ...(twitterCreator ? { creator: twitterCreator } : {}),
+  }}
+/>

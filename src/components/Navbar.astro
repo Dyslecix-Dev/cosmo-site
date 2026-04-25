@@ -1,0 +1,240 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import logoWithIconDark from "@/assets/logo-with-icon-dark.png";
+import logoWithIconLight from "@/assets/logo-with-icon-light.png";
+
+const { pathname } = Astro.url;
+
+const docs = (await getCollection("docs")).filter((entry) => !entry.data.draft);
+const sortedDocs = [...docs].sort((a, b) => {
+  const aHas = a.data.order !== undefined;
+  const bHas = b.data.order !== undefined;
+  if (aHas && bHas) return (a.data.order as number) - (b.data.order as number);
+  if (aHas) return -1;
+  if (bHas) return 1;
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const isHomeActive = pathname === "/";
+const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
+const isDocsActive = pathname.startsWith("/docs/");
+
+const linkClass = (active: boolean) => [
+  "rounded-md px-3 py-2 text-sm font-medium transition",
+  active
+    ? "bg-brand-primary dark:bg-brand-quaternary text-brand-quaternary dark:text-brand-primary"
+    : "text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/25 dark:hover:bg-brand-secondary/25",
+];
+---
+
+<header class="sticky top-0 z-50 w-full bg-brand-quaternary/80 dark:bg-brand-primary/80 backdrop-blur">
+  <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-3" aria-label="Primary">
+    <a href="/" class="flex items-center" aria-label="Cosmo home">
+      <Image src={logoWithIconLight} alt="Cosmo" class="h-16 w-auto block dark:hidden" id="navbar-logo-light" />
+      <Image src={logoWithIconDark} alt="Cosmo" class="h-16 w-auto hidden dark:block" id="navbar-logo-dark" />
+    </a>
+
+    <ul class="hidden sm:flex items-center gap-1 sm:gap-2">
+      <li>
+        <a href="/" aria-current={isHomeActive ? "page" : undefined} class:list={linkClass(isHomeActive)}>Home</a>
+      </li>
+
+      <li class="relative" data-dropdown>
+        <button type="button" aria-expanded="false" aria-haspopup="true" aria-controls="nav-docs-menu" data-dropdown-toggle class:list={[...linkClass(isDocsActive), "inline-flex items-center gap-1"]}>
+          Docs
+          <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 transition-transform duration-150 data-[open=true]:rotate-180" data-dropdown-chevron>
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.06l3.71-3.83a.75.75 0 1 1 1.08 1.04l-4.25 4.39a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+
+        <div
+          id="nav-docs-menu"
+          role="menu"
+          data-dropdown-menu
+          class="absolute right-0 mt-2 w-64 origin-top-right rounded-md border border-brand-tertiary/40 dark:border-brand-secondary/40 bg-brand-quaternary dark:bg-brand-primary py-1 shadow-lg opacity-0 -translate-y-1 pointer-events-none transition duration-150 ease-out data-[open=true]:opacity-100 data-[open=true]:translate-y-0 data-[open=true]:pointer-events-auto"
+        >
+          {
+            sortedDocs.map((doc) => {
+              const href = `/docs/${doc.id}`;
+              const isCurrent = pathname === href || pathname === `${href}/`;
+              return (
+                <a
+                  href={href}
+                  role="menuitem"
+                  aria-current={isCurrent ? "page" : undefined}
+                  class:list={[
+                    "block px-3 py-2 text-sm transition",
+                    isCurrent
+                      ? "bg-brand-tertiary/25 dark:bg-brand-secondary/25 font-medium text-brand-primary dark:text-brand-quaternary"
+                      : "text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/15 dark:hover:bg-brand-secondary/15",
+                  ]}
+                >
+                  {doc.data.title}
+                </a>
+              );
+            })
+          }
+        </div>
+      </li>
+
+      <li>
+        <a href="/blog" aria-current={isBlogActive ? "page" : undefined} class:list={linkClass(isBlogActive)}>Blog</a>
+      </li>
+
+      <li>
+        <button
+          type="button"
+          aria-label="Toggle dark mode"
+          data-theme-toggle
+          class="rounded-md px-3 py-2 text-sm font-medium transition text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/25 dark:hover:bg-brand-secondary/25"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 block dark:hidden">
+            <path
+              d="M12 11.807A9.002 9.002 0 0 1 10.049 2a9.942 9.942 0 0 0-5.12 2.735c-3.905 3.905-3.905 10.237 0 14.142 3.906 3.906 10.237 3.905 14.143 0a9.946 9.946 0 0 0 2.735-5.119A9.003 9.003 0 0 1 12 11.807z"
+            ></path>
+          </svg>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 hidden dark:block">
+            <path
+              d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
+            ></path>
+          </svg>
+        </button>
+      </li>
+    </ul>
+
+    <div class="relative sm:hidden" data-dropdown>
+      <button type="button" aria-expanded="false" aria-haspopup="true" aria-controls="nav-mobile-menu" aria-label="Open menu" data-dropdown-toggle class="rounded-md p-2 text-brand-tertiary">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="h-8 w-8">
+          <path d="M4 17H8M12 17H20M4 12H20M4 7H12M16 7H20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </button>
+
+      <div
+        id="nav-mobile-menu"
+        role="menu"
+        data-dropdown-menu
+        class="absolute right-0 mt-2 w-56 origin-top-right rounded-md border border-brand-tertiary/40 dark:border-brand-secondary/40 bg-brand-quaternary dark:bg-brand-primary py-1 shadow-lg opacity-0 -translate-y-1 pointer-events-none transition duration-150 ease-out data-[open=true]:opacity-100 data-[open=true]:translate-y-0 data-[open=true]:pointer-events-auto"
+      >
+        <a
+          href="/"
+          role="menuitem"
+          aria-current={isHomeActive ? "page" : undefined}
+          class:list={[
+            "block px-3 py-2 text-sm transition",
+            isHomeActive
+              ? "bg-brand-tertiary/25 dark:bg-brand-secondary/25 font-medium text-brand-primary dark:text-brand-quaternary"
+              : "text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/15 dark:hover:bg-brand-secondary/15",
+          ]}
+        >
+          Home
+        </a>
+        <a
+          href="/blog"
+          role="menuitem"
+          aria-current={isBlogActive ? "page" : undefined}
+          class:list={[
+            "block px-3 py-2 text-sm transition",
+            isBlogActive
+              ? "bg-brand-tertiary/25 dark:bg-brand-secondary/25 font-medium text-brand-primary dark:text-brand-quaternary"
+              : "text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/15 dark:hover:bg-brand-secondary/15",
+          ]}
+        >
+          Blog
+        </a>
+        <div class="my-1 border-t border-brand-tertiary/40 dark:border-brand-secondary/40"></div>
+        <div class="px-3 py-1 text-xs uppercase tracking-wide text-brand-primary/60 dark:text-brand-quaternary/60">Docs</div>
+        {
+          sortedDocs.map((doc) => {
+            const href = `/docs/${doc.id}`;
+            const isCurrent = pathname === href || pathname === `${href}/`;
+            return (
+              <a
+                href={href}
+                role="menuitem"
+                aria-current={isCurrent ? "page" : undefined}
+                class:list={[
+                  "block px-3 py-2 text-sm transition",
+                  isCurrent
+                    ? "bg-brand-tertiary/25 dark:bg-brand-secondary/25 font-medium text-brand-primary dark:text-brand-quaternary"
+                    : "text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/15 dark:hover:bg-brand-secondary/15",
+                ]}
+              >
+                {doc.data.title}
+              </a>
+            );
+          })
+        }
+        <div class="my-1 border-t border-brand-tertiary/40 dark:border-brand-secondary/40"></div>
+        <button
+          type="button"
+          role="menuitem"
+          aria-label="Toggle dark mode"
+          data-theme-toggle
+          class="flex w-full items-center gap-2 px-3 py-2 text-sm transition text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/15 dark:hover:bg-brand-secondary/15"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 block dark:hidden">
+            <path
+              d="M12 11.807A9.002 9.002 0 0 1 10.049 2a9.942 9.942 0 0 0-5.12 2.735c-3.905 3.905-3.905 10.237 0 14.142 3.906 3.906 10.237 3.905 14.143 0a9.946 9.946 0 0 0 2.735-5.119A9.003 9.003 0 0 1 12 11.807z"
+            ></path>
+          </svg>
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 hidden dark:block">
+            <path
+              d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
+            ></path>
+          </svg>
+          <span>Toggle theme</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  function setOpen(dropdown: Element, open: boolean) {
+    const toggle = dropdown.querySelector<HTMLButtonElement>("[data-dropdown-toggle]");
+    const menu = dropdown.querySelector<HTMLElement>("[data-dropdown-menu]");
+    const chevron = dropdown.querySelector<HTMLElement>("[data-dropdown-chevron]");
+    if (!toggle || !menu) return;
+    toggle.setAttribute("aria-expanded", String(open));
+    menu.dataset.open = String(open);
+    if (chevron) chevron.dataset.open = String(open);
+  }
+
+  function closeAll() {
+    for (const dd of document.querySelectorAll("[data-dropdown]")) setOpen(dd, false);
+  }
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element | null;
+    if (!target) return;
+
+    const toggle = target.closest("[data-dropdown-toggle]");
+    if (toggle) {
+      const dd = toggle.closest("[data-dropdown]");
+      if (!dd) return;
+      const isOpen = toggle.getAttribute("aria-expanded") === "true";
+      closeAll();
+      if (!isOpen) setOpen(dd, true);
+      return;
+    }
+
+    if (!target.closest("[data-dropdown]")) closeAll();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeAll();
+  });
+
+  // NOTE: reset open state across client-side page transitions.
+  document.addEventListener("astro:page-load", closeAll);
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element | null;
+    if (!target?.closest("[data-theme-toggle]")) return;
+    const isDark = document.documentElement.classList.contains("dark");
+    document.documentElement.classList.toggle("dark", !isDark);
+    localStorage.theme = isDark ? "light" : "dark";
+  });
+</script>

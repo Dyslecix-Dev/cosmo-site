@@ -1,0 +1,70 @@
+---
+import { Font } from "astro:assets";
+import { ClientRouter } from "astro:transitions";
+
+import Navbar from "@/components/Navbar.astro";
+import SEO from "@/components/SEO.astro";
+import "@/styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
+  noindex?: boolean;
+}
+
+const { title, description, image, canonicalURL, noindex } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <SEO title={title} description={description} image={image} canonicalURL={canonicalURL} noindex={noindex} />
+    {/* WARNING: preload fonts sparingly: drop one if a single font covers your above-the-fold content. */}
+    <Font cssVariable="--font-space-mono" preload />
+    <Font cssVariable="--font-roboto-mono" preload />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="alternate" type="application/rss+xml" title="Your Site" href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#f0f0f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#142e38" media="(prefers-color-scheme: dark)" />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Your Site",
+      "url": Astro.site?.toString(),
+    })} />
+    <slot name="head" />
+    <!--
+      NOTE: View transitions. Remove this line to disable site-wide client-side
+      routing; pages will then use full browser navigation.
+    -->
+    <ClientRouter />
+    <script is:inline>
+      function applyTheme() {
+        document.documentElement.classList.toggle(
+          "dark",
+          localStorage.theme === "dark" ||
+            (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
+        );
+      }
+      applyTheme();
+      document.addEventListener("astro:page-load", applyTheme);
+    </script>
+  </head>
+  <body class="min-h-screen bg-brand-quaternary dark:bg-brand-primary text-brand-primary dark:text-brand-quaternary antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-brand-primary focus:px-4 focus:py-2 focus:text-brand-quaternary dark:focus:bg-brand-quaternary dark:focus:text-brand-primary"
+    >
+      Skip to main content
+    </a>
+    <Navbar />
+    <slot />
+  </body>
+</html>
