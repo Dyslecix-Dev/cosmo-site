@@ -1,13 +1,9 @@
 ---
 import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
 import logoNoIconDark from "@/assets/logo-no-icon-dark.png";
 import logoNoIconLight from "@/assets/logo-no-icon-light.png";
 import heroImage from "@/assets/placeholder-home-hero.png";
-import EntryCard from "@/components/blog/EntryCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-
-const featured = (await getCollection("blog", ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
 ---
 
 <BaseLayout description="A minimal, use-case-agnostic Astro static site boilerplate.">
@@ -24,11 +20,6 @@ const featured = (await getCollection("blog", ({ data }) => !data.draft)).sort((
         <div class="mt-10 flex flex-wrap justify-center gap-4">
           <a href="/docs/getting-started" class="rounded-md bg-brand-tertiary px-5 py-2.5 text-sm font-semibold text-brand-primary transition hover:bg-brand-quaternary border-2 border-brand-tertiary"
             >Get started</a
-          >
-          <a
-            href="/blog"
-            class="rounded-md border border-brand-quaternary/50 dark:border-brand-primary/50 px-5 py-2.5 text-sm font-semibold text-brand-quaternary dark:text-brand-primary transition hover:bg-brand-quaternary/10 dark:hover:bg-brand-primary/10"
-            >Read the blog</a
           >
         </div>
       </div>
@@ -84,14 +75,5 @@ const featured = (await getCollection("blog", ({ data }) => !data.draft)).sort((
       </div>
     </section>
 
-    <section class="mx-auto max-w-6xl px-6 pb-24">
-      <div class="flex items-end justify-between">
-        <h2 class="text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Latest from the blog</h2>
-        <a href="/blog" class="text-sm font-semibold text-brand-secondary dark:text-brand-tertiary underline hover:no-underline">View all →</a>
-      </div>
-      <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {featured.map((entry) => <EntryCard entry={entry} />)}
-      </div>
-    </section>
   </main>
 </BaseLayout>

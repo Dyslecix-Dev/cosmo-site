@@ -17,7 +17,6 @@ const sortedDocs = [...docs].sort((a, b) => {
 });
 
 const isHomeActive = pathname === "/";
-const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
 const isDocsActive = pathname.startsWith("/docs/");
 
 const linkClass = (active: boolean) => [
@@ -80,10 +79,6 @@ const linkClass = (active: boolean) => [
       </li>
 
       <li>
-        <a href="/blog" aria-current={isBlogActive ? "page" : undefined} class:list={linkClass(isBlogActive)}>Blog</a>
-      </li>
-
-      <li>
         <button
           type="button"
           aria-label="Toggle dark mode"
@@ -129,19 +124,6 @@ const linkClass = (active: boolean) => [
           ]}
         >
           Home
-        </a>
-        <a
-          href="/blog"
-          role="menuitem"
-          aria-current={isBlogActive ? "page" : undefined}
-          class:list={[
-            "block px-3 py-2 text-sm transition",
-            isBlogActive
-              ? "bg-brand-tertiary/25 dark:bg-brand-secondary/25 font-medium text-brand-primary dark:text-brand-quaternary"
-              : "text-brand-primary dark:text-brand-quaternary hover:bg-brand-tertiary/15 dark:hover:bg-brand-secondary/15",
-          ]}
-        >
-          Blog
         </a>
         <div class="my-1 border-t border-brand-tertiary/40 dark:border-brand-secondary/40"></div>
         <div class="px-3 py-1 text-xs uppercase tracking-wide text-brand-primary/60 dark:text-brand-quaternary/60">Docs</div>
