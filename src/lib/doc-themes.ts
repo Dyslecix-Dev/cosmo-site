@@ -1,11 +1,4 @@
-export type DocThemeKey =
-  | "solar-system"
-  | "protoplanetary"
-  | "asteroid-belt"
-  | "nebula"
-  | "pulsar"
-  | "binary-star"
-  | "wormhole";
+export type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "pulsar" | "binary-star" | "wormhole";
 
 export interface DocTheme {
   key: DocThemeKey;

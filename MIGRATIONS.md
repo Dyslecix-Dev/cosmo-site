@@ -30,22 +30,20 @@ Repo: `Dyslecix-Dev/cosmo-site`. Domain: `cosmo.dyslecix.dev`. Host: Cloudflare 
   - GitHub stars badge (shields.io in the hero is plenty; a banner is overkill).
 - [x] Add **"Edit this page on GitHub"** link to docs detail pages, pointing at `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/src/content/docs/{slug}.{ext}`.
 - [x] Drop in OG image (already prepared).
+- [ ] Deploy to Cloudflare Pages, attach `cosmo.dyslecix.dev` (after Phase 3 frees the domain).
 - [ ] Wire **Cloudflare Web Analytics** (cookieless, no banner needed).
 - [ ] Wire **Cloudflare Observatory** (cookieless RUM, no banner needed).
-- [ ] Wire **Sentry** via `@sentry/astro`:
-  - Errors-only — **do not enable session replay** (would force a cookie consent banner and expand the privacy policy).
-  - Add `SENTRY_AUTH_TOKEN` to Cloudflare Pages build env and configure source-map upload at build time, otherwise stack traces stay minified.
-  - **Release tagging** — pass a release identifier to *both* the Vite plugin (for source-map artifact tagging) *and* the runtime SDK init. Without matching releases on both sides, uploaded source maps won't associate with errors and stack traces will still come through minified. Use `CF_PAGES_COMMIT_SHA` (provided by Cloudflare Pages at build time) as `SENTRY_RELEASE`.
-  - **Gate init to production only** — `if (import.meta.env.PROD) Sentry.init(...)`. Otherwise every Cloudflare Pages preview deploy dumps errors into prod Sentry.
-- [ ] Deploy to Cloudflare Pages, attach `cosmo.dyslecix.dev` (after Phase 3 frees the domain).
 
 ### Phase 1.5 — Privacy policy contents
 
 With this analytics stack the policy is short. Cover:
 
-1. **What's collected** — aggregate pageview/perf data (CF Web Analytics + Observatory, cookieless), and JS errors (Sentry).
-2. **What Sentry processes** — IP address, URL, browser/OS, stack trace at time of error. US-based processor (Functional Software Inc.).
-3. **No cookies, no tracking, no profiling.**
-4. **Contact** — email for data requests.
+1. **What's collected** — aggregate pageview/perf data only (CF Web Analytics + Observatory RUM, both cookieless). No error tracking, no session replay.
+2. **localStorage** — single `theme` key for light/dark preference; not an identifier.
+3. **Subprocessors** — Cloudflare only.
+4. **Third-party content** — shields.io GitHub stars badge embedded in the hero (visitor IP/UA exposed to shields.io on image fetch).
+5. **No cookies, no tracking, no profiling.**
+6. **Rights enumerated** — GDPR/UK GDPR + CCPA/CPRA (incl. "do not sell or share").
+7. **Contact** — email for data requests.
 
 ---
