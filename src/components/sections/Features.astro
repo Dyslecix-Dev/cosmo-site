@@ -7,10 +7,10 @@ import satellite from "@/assets/satellite.png";
 const features = [
   { title: "Tailwind v4 tokens", desc: "Re-skin the whole craft by editing one @theme block." },
   { title: "MDX + custom callouts", desc: "Type-safe content collections with callouts wired in." },
-  { title: "Hover-prefetch", desc: "Pages preload on hover for navigation at warp speed." },
+  { title: "Biome + Lefthook", desc: "One-tool lint/format with pre-commit and pre-push hooks pre-wired." },
   { title: "Self-hosted fonts", desc: "Astro Font API + Fontsource. No third-party requests, fast LCP." },
-  { title: "Strict TypeScript", desc: "Strict mode, @/* path aliases, and astro check on pre-push." },
-  { title: "View transitions + dark mode", desc: "Smooth client-side routing, a theme toggle, and SEO + sitemap baked in." },
+  { title: "Strict TypeScript", desc: "Strict mode, @/* aliases, and Zod-typed content collections checked on pre-push." },
+  { title: "View transitions + dark mode", desc: "Smooth client-side routing with a theme toggle that survives navigation." },
 ];
 
 const sparkleSeed = (i: number, salt: number) => {
@@ -58,7 +58,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
         </h2>
       </div>
       <p class="relative max-w-md text-brand-secondary dark:text-brand-tertiary lg:justify-self-end lg:text-right">
-        Every site shipped with Cosmo is meant to be jettisoned, except for the cargo below.
+        Cosmo is strapped with some default cargo to get you off the ground
       </p>
     </div>
 
@@ -71,10 +71,6 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
             style={`--reveal-delay: ${i * 50}ms`}
           >
             <div class="relative">
-              <div class="flex items-baseline justify-between font-mono text-xs text-brand-secondary dark:text-brand-tertiary">
-                <span>0{i + 1}</span>
-                <span aria-hidden="true" class="feature-arrow inline-block">&rarr;</span>
-              </div>
               <h3 class="mt-6 font-heading text-xl font-bold tracking-tight">{f.title}</h3>
               <p class="mt-3 text-sm leading-relaxed text-brand-secondary dark:text-brand-tertiary">{f.desc}</p>
             </div>
