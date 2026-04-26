@@ -1,0 +1,52 @@
+---
+const useCases = ["Blog", "Docs", "Landing Page", "Storefront", "Portfolio", "Newsletter", "Marketing"];
+---
+
+<section aria-hidden="true" class="relative border-y border-brand-primary/15 dark:border-brand-quaternary/15 overflow-hidden bg-brand-primary text-brand-quaternary dark:bg-brand-quaternary dark:text-brand-primary">
+  <div class="marquee py-6 sm:py-8">
+    <div class="marquee-track flex gap-12 whitespace-nowrap font-heading text-3xl sm:text-5xl font-bold tracking-tight">
+      {Array.from({ length: 4 }).map(() => (
+        <div class="flex items-center gap-12 shrink-0">
+          {useCases.map((u) => (
+            <div class="flex items-center gap-12 shrink-0">
+              <span>{u}</span>
+              <span aria-hidden="true" class="marquee-glyph text-brand-tertiary">&#9670;</span>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee {
+    display: flex;
+  }
+
+  .marquee-track {
+    animation: marquee 40s linear infinite;
+  }
+
+  .marquee-glyph {
+    animation: glyph-hue 8s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes glyph-hue {
+    0%, 100% { opacity: 0.5; transform: rotate(0deg) scale(1); }
+    50% { opacity: 1; transform: rotate(45deg) scale(1.15); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track,
+    .marquee-glyph {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+title: Minimum viable collection
+description: The smallest end-to-end content collection in Astro — schema, index, and detail page — using placeholder names you can drop your own domain into.
+order: 3
+---
+
+import Callout from "@/components/callouts/Callout.astro";
+
+This is the foundation every other collection guide builds on. It walks through the smallest end-to-end shape — schema, entries, index, detail — using `<your-collection>` as a placeholder. Once you've got this skeleton working, the per-use-case guides (blog, landing page, e-commerce, etc.) layer on top.
+
+For a fuller, opinionated example with images, related entries, and tag pages, see the [`blog` collection](https://cosmo-example.dyslecix.dev/blog/).
+
+## 1. Define the schema
+
+In `src/content.config.ts`:
+
+```ts
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+
+const yourCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/<your-collection>" }),
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { /* ...existing, */ yourCollection };
+```
+
+Keep the schema small at first — `title` and `description` cover almost every page. Add fields (dates, tags, images, authors) only when an entry actually needs them.
+
+<Callout type="note">
+  Field names in the exported `collections` map become the strings you pass to <code>getCollection()</code>. Pick a name you won't want to rename later.
+</Callout>
+
+## 2. Add entries
+
+Create `src/content/<your-collection>/` and drop in `.md` or `.mdx` files. The filename (minus extension) becomes the entry `id` and the URL slug.
+
+```md
+---
+title: My first entry
+description: A one-line summary.
+---
+
+Body content here.
+```
+
+## 3. Index page
+
+`src/pages/<your-collection>/index.astro` lists every non-draft entry:
+
+```astro
+---
+import { getCollection } from "astro:content";
+
+const entries = await getCollection("yourCollection", ({ data }) => !data.draft);
+---
+<ul>
+  {entries.map((entry) => (
+    <li>
+      <a href={`/<your-collection>/${entry.id}`}>{entry.data.title}</a>
+    </li>
+  ))}
+</ul>
+```
+
+## 4. Detail page
+
+`src/pages/<your-collection>/[slug].astro` renders one entry per route:
+
+```astro
+---
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("yourCollection");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<article>
+  <h1>{entry.data.title}</h1>
+  <Content />
+</article>
+```
+
+That's the whole skeleton. From here, swap a real layout in for `<article>`, add SEO via `src/components/SEO.astro`, and grow the schema as your entries actually demand it.

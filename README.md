@@ -10,7 +10,7 @@ Live demo: [cosmo.dyslecix.dev](https://cosmo.dyslecix.dev)
 - **Tailwind CSS v4** via the Vite plugin, with design tokens under `@theme` in [src/styles/global.css](src/styles/global.css)
 - **`@tailwindcss/typography`** for prose styling on long-form content
 - **TypeScript** (strict) with `@/*` path alias for `src/*`
-- **MDX, RSS, and sitemap** integrations pre-wired
+- **MDX and sitemap** integrations pre-wired
 - **`astro-seo` wrapper** with sensible defaults (OG, Twitter card, canonical URL)
 - **Content collections** with example `blog` and `docs` collections, dynamic routes, and tag taxonomy
 - **Blog presentation patterns** — paginated index, card grid, detail page with TOC, reading time, prev/next, related entries
@@ -79,8 +79,7 @@ All commands run from the project root:
 │   │   ├── 404.astro
 │   │   ├── index.astro
 │   │   ├── blog/             # [...page], [...slug], tags/
-│   │   ├── docs/[slug].astro
-│   │   └── rss.xml.js        # Wired to the blog collection
+│   │   └── docs/[slug].astro
 │   └── styles/global.css     # Tailwind + design tokens
 ├── astro.config.mjs
 ├── biome.json

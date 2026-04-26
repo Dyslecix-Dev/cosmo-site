@@ -2,6 +2,7 @@
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 
+import Footer from "@/components/Footer.astro";
 import Navbar from "@/components/Navbar.astro";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
@@ -28,7 +29,6 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
     <Font cssVariable="--font-roboto-mono" preload />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title="Your Site" href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#f0f0f0" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#142e38" media="(prefers-color-scheme: dark)" />
@@ -66,5 +66,6 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
     </a>
     <Navbar />
     <slot />
+    <Footer />
   </body>
 </html>

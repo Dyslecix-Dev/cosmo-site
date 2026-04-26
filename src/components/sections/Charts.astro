@@ -1,0 +1,99 @@
+---
+import { Image } from "astro:assets";
+
+import astronaut from "@/assets/astronaut.png";
+---
+
+<section class="charts-section relative border-t border-brand-primary/10 dark:border-brand-quaternary/10 overflow-hidden">
+  <div aria-hidden="true" class="charts-gradient pointer-events-none absolute inset-0 z-0"></div>
+  <div aria-hidden="true" class="charts-dots pointer-events-none absolute inset-0 z-0"></div>
+  <div class="mx-auto max-w-6xl px-6 sm:px-10 py-32 relative">
+    <p class="reveal-on-scroll font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">[ 02 / Star charts ]</p>
+    <a
+      href="/docs"
+      class="reveal-on-scroll group mt-6 block"
+    >
+      <h2 class="font-heading text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[0.95]">
+        <span class="inline-flex items-center gap-6 transition-transform duration-500 group-hover:translate-x-2">
+          Chart a course
+          <span aria-hidden="true" class="nudge-arrow inline-block transition-transform duration-500 group-hover:rotate-45 sm:pr-10">&rarr;</span>
+        </span>
+      </h2>
+    </a>
+
+    <div class="mt-8 grid gap-8 sm:grid-cols-[1fr_auto] sm:items-center">
+      <p class="reveal-on-scroll max-w-xl text-brand-secondary dark:text-brand-tertiary">
+        A friendly flight path from first launch to safe landing — learn theming, collections, SEO, and everything in between
+      </p>
+      <div aria-hidden="true" class="hero-astronaut w-32 sm:w-40 lg:w-48 mx-auto sm:mx-0 sm:ml-auto">
+        <Image src={astronaut} alt="" class="h-auto w-full" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .nudge-arrow {
+    animation: arrow-nudge 2.4s ease-in-out infinite;
+  }
+
+  @keyframes arrow-nudge {
+    0%, 60%, 100% { transform: translateX(0); }
+    30% { transform: translateX(4px); }
+  }
+
+  .hero-astronaut {
+    animation: astronaut-drift 8s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes astronaut-drift {
+    0%, 100% { transform: translate(0, 0) rotate(-4deg); }
+    50% { transform: translate(-10px, -16px) rotate(4deg); }
+  }
+
+  .charts-gradient {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--color-brand-tertiary) 14%, transparent) 0%,
+      color-mix(in oklch, var(--color-brand-secondary) 8%, transparent) 50%,
+      color-mix(in oklch, var(--color-brand-primary) 4%, transparent) 100%
+    );
+  }
+
+  :where(.dark) .charts-gradient {
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklch, var(--color-brand-secondary) 18%, transparent) 0%,
+      color-mix(in oklch, var(--color-brand-tertiary) 10%, transparent) 60%,
+      color-mix(in oklch, var(--color-brand-quaternary) 4%, transparent) 100%
+    );
+  }
+
+  .charts-dots {
+    background-image: radial-gradient(
+      color-mix(in oklch, var(--color-brand-primary) 35%, transparent) 1.5px,
+      transparent 1.6px
+    );
+    background-size: 22px 22px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+    opacity: 0.8;
+  }
+
+  html.dark .charts-dots {
+    background-image: radial-gradient(
+      var(--color-brand-quaternary) 1px,
+      transparent 1.5px
+    ) !important;
+    background-size: 22px 22px !important;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%) !important;
+    opacity: 0.35 !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nudge-arrow,
+    .hero-astronaut {
+      animation: none;
+    }
+  }
+</style>
