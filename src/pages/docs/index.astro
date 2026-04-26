@@ -3,83 +3,7 @@ import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import constellation from "@/assets/constellation.png";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-
-type ThemeKey =
-  | "solar-system"
-  | "protoplanetary"
-  | "asteroid-belt"
-  | "nebula"
-  | "pulsar"
-  | "binary-star"
-  | "wormhole";
-
-interface Theme {
-  key: ThemeKey;
-  label: string;
-  c1: string;
-  c2: string;
-  c3: string;
-}
-
-const THEMES: Record<string, Theme> = {
-  "getting-started": {
-    key: "solar-system",
-    label: "Solar System",
-    c1: "#ffd27a",
-    c2: "#ff7a18",
-    c3: "#5a1a00",
-  },
-  "minimum-viable-collection": {
-    key: "protoplanetary",
-    label: "Protoplanetary Disk",
-    c1: "#f4c47a",
-    c2: "#a86a2e",
-    c3: "#2a1608",
-  },
-  "adding-a-content-collection": {
-    key: "asteroid-belt",
-    label: "Asteroid Belt",
-    c1: "#94a3b8",
-    c2: "#22d3ee",
-    c3: "#0b1220",
-  },
-  "rebranding-via-tokens": {
-    key: "nebula",
-    label: "Carina Nebula",
-    c1: "#f472b6",
-    c2: "#14b8a6",
-    c3: "#1e1b4b",
-  },
-  "wiring-rss": {
-    key: "pulsar",
-    label: "Pulsar Beacon",
-    c1: "#a78bfa",
-    c2: "#6366f1",
-    c3: "#0a0a23",
-  },
-  "seo-checklist": {
-    key: "binary-star",
-    label: "Binary Star",
-    c1: "#fbbf24",
-    c2: "#e0e7ff",
-    c3: "#1c1917",
-  },
-  deploying: {
-    key: "wormhole",
-    label: "Hyperspace",
-    c1: "#c4b5fd",
-    c2: "#7c3aed",
-    c3: "#1a0533",
-  },
-};
-
-const FALLBACK: Theme = {
-  key: "nebula",
-  label: "Deep Space",
-  c1: "#a78bfa",
-  c2: "#22d3ee",
-  c3: "#0a0a23",
-};
+import { themeForDoc } from "@/lib/doc-themes";
 
 const docs = (await getCollection("docs")).filter((entry) => !entry.data.draft);
 const sorted = [...docs].sort((a, b) => {
@@ -93,7 +17,7 @@ const sorted = [...docs].sort((a, b) => {
 
 const cards = sorted.map((entry, i) => ({
   entry,
-  theme: THEMES[entry.id] ?? FALLBACK,
+  theme: themeForDoc(entry.id),
   index: i,
 }));
 

@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from "astro:content";
+import DocBackground from "@/components/docs/DocBackground.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { themeForDoc } from "@/lib/doc-themes";
 
 export async function getStaticPaths() {
   const docs = (await getCollection("docs")).filter((entry) => !entry.data.draft);
@@ -30,38 +32,37 @@ const { entry, prev, next, position, total } = Astro.props;
 const { Content, headings } = await render(entry);
 
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const theme = themeForDoc(entry.id);
 ---
 
 <BaseLayout title={entry.data.title} description={entry.data.description}>
+  <DocBackground theme={theme} />
   <main id="main" class="relative isolate overflow-x-clip pt-32 sm:pt-36 pb-24">
-    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
-      <div class="doc-aurora doc-aurora-1"></div>
-      <div class="doc-aurora doc-aurora-2"></div>
-      <div class="doc-grid"></div>
-    </div>
 
     <div class="mx-auto w-full max-w-6xl px-6 sm:px-10">
-      <a href="/docs" class="doc-reveal inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition">
-        <span aria-hidden="true">&larr;</span>
-        <span>All guides</span>
-      </a>
+      <header class="doc-reveal rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
+        <a href="/docs" class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition">
+          <span aria-hidden="true">&larr;</span>
+          <span>All guides</span>
+        </a>
 
-      <div class="doc-reveal mt-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
-        <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_10px_currentColor]"></span>
-        <span>Briefing {String(position).padStart(2, "0")} of {String(total).padStart(2, "0")}</span>
-      </div>
+        <div class="mt-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+          <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_10px_currentColor]"></span>
+          <span>Briefing {String(position).padStart(2, "0")} of {String(total).padStart(2, "0")}</span>
+        </div>
 
-      <h1 class="doc-reveal mt-4 font-heading font-bold tracking-tight leading-[0.95] text-[clamp(2.25rem,6vw,4.5rem)]">
-        {entry.data.title}
-      </h1>
-      {entry.data.description && (
-        <p class="doc-reveal mt-5 max-w-2xl text-lg sm:text-xl text-brand-secondary dark:text-brand-tertiary">
-          {entry.data.description}
-        </p>
-      )}
+        <h1 class="mt-4 font-heading font-bold tracking-tight leading-[0.95] text-[clamp(2.25rem,6vw,4.5rem)] text-brand-primary dark:text-brand-quaternary">
+          {entry.data.title}
+        </h1>
+        {entry.data.description && (
+          <p class="mt-5 max-w-2xl text-lg sm:text-xl text-brand-secondary dark:text-brand-tertiary">
+            {entry.data.description}
+          </p>
+        )}
+      </header>
 
       <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_240px]">
-        <article class="doc-reveal min-w-0">
+        <article class="doc-reveal min-w-0 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
           <div class="doc-prose">
             <Content />
           </div>
@@ -72,7 +73,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
                 {prev && (
                   <a
                     href={`/docs/${prev.id}`}
-                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/40 dark:bg-brand-primary/40 backdrop-blur-md px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
+                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
                   >
                     <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
                       &larr; Previous
@@ -87,7 +88,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
                 {next && (
                   <a
                     href={`/docs/${next.id}`}
-                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/40 dark:bg-brand-primary/40 backdrop-blur-md px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
+                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
                   >
                     <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
                       Next &rarr;
@@ -104,7 +105,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
         {toc.length > 0 && (
           <aside class="doc-reveal hidden lg:block">
-            <div class="sticky top-32">
+            <div class="sticky top-32 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-5">
               <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
                 On this page
               </div>
@@ -162,46 +163,6 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 <style>
   .doc-reveal {
     opacity: 0;
-  }
-
-  .doc-aurora {
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(100px) saturate(140%);
-    opacity: 0.3;
-    mix-blend-mode: multiply;
-  }
-  :where(.dark) .doc-aurora {
-    opacity: 0.25;
-    mix-blend-mode: screen;
-  }
-  .doc-aurora-1 {
-    top: -15%;
-    left: -10%;
-    width: 45vw;
-    height: 45vw;
-    background: var(--color-brand-tertiary);
-  }
-  .doc-aurora-2 {
-    bottom: -25%;
-    right: -10%;
-    width: 40vw;
-    height: 40vw;
-    background: var(--color-brand-secondary);
-  }
-  .doc-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(to right, color-mix(in oklch, var(--color-brand-primary) 5%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-primary) 5%, transparent) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse at center top, black 30%, transparent 75%);
-  }
-  :where(.dark) .doc-grid {
-    background-image:
-      linear-gradient(to right, color-mix(in oklch, var(--color-brand-quaternary) 5%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-quaternary) 5%, transparent) 1px, transparent 1px);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -441,6 +402,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
     initTocSmoothScroll();
   }
 
+  let setActiveExternal: ((slug: string | null) => void) | null = null;
+
   function initScrollSpy() {
     const links = Array.from(document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
     if (!links.length) return;
@@ -459,10 +422,17 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         link.dataset.active = String(slug !== null && link.dataset.tocTarget === slug);
       }
     };
+    setActiveExternal = setActive;
 
     const update = () => {
       if (scrollLock) {
         setActive(scrollLock.slug);
+        return;
+      }
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (atBottom) {
+        setActive(headings[headings.length - 1].id);
         return;
       }
       const offset = 140;
@@ -486,11 +456,21 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         update();
       });
     };
+    const onUserScroll = () => {
+      scrollLock = null;
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
+    window.addEventListener("wheel", onUserScroll, { passive: true });
+    window.addEventListener("touchstart", onUserScroll, { passive: true });
+    window.addEventListener("keydown", onUserScroll);
     cleanups.push(() => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
+      window.removeEventListener("wheel", onUserScroll);
+      window.removeEventListener("touchstart", onUserScroll);
+      window.removeEventListener("keydown", onUserScroll);
+      setActiveExternal = null;
       if (raf) window.cancelAnimationFrame(raf);
     });
   }
@@ -519,6 +499,9 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
       onDone?.();
     };
 
+    const easeInOutCubic = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
     const step = (now: number) => {
       if (cancelled) {
         finish();
@@ -526,7 +509,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
       }
       const elapsed = now - start;
       const t = Math.min(elapsed / duration, 1);
-      window.scrollTo(0, startY + distance * t);
+      window.scrollTo(0, startY + distance * easeInOutCubic(t));
       if (t < 1) window.requestAnimationFrame(step);
       else finish();
     };
@@ -546,14 +529,11 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         const offset = 110;
         const targetY = target.getBoundingClientRect().top + window.scrollY - offset;
         scrollLock = { slug };
-        const release = () => {
-          if (scrollLock?.slug === slug) scrollLock = null;
-        };
+        setActiveExternal?.(slug);
         if (reduce) {
           window.scrollTo(0, targetY);
-          release();
         } else {
-          smoothScrollTo(targetY, 500, release);
+          smoothScrollTo(targetY, 500);
         }
         history.replaceState(null, "", `#${slug}`);
       };
