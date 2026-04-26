@@ -53,15 +53,15 @@ const headlineLine2 = "Any orbit";
 
     <h1 class="mt-10 font-heading font-bold tracking-tight leading-[0.88] text-[clamp(3rem,11vw,11rem)]">
       <span class="block overflow-hidden">
-        <span class="split-line block" data-text={headlineLine1}>{headlineLine1}</span>
+        <span class="split-line hero-outline block" data-text={headlineLine1}>{headlineLine1}</span>
       </span>
       <span class="block overflow-hidden">
-        <span class="split-line block italic font-normal text-brand-secondary dark:text-brand-tertiary pl-2 pb-6" data-text={headlineLine2}>{headlineLine2}</span>
+        <span class="split-line hero-outline block italic font-normal text-brand-secondary dark:text-brand-tertiary pl-2 pb-6" data-text={headlineLine2}>{headlineLine2}</span>
       </span>
     </h1>
 
     <div class="mt-10 grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-end">
-      <p class="hero-reveal max-w-xl text-lg sm:text-xl dark:text-brand-quaternary text-brand-primary">
+      <p class="hero-reveal hero-outline-soft max-w-xl text-lg sm:text-xl dark:text-brand-quaternary text-brand-primary">
         Cosmo is the Astro launchpad you've been searching for. Tokens, MDX, content collections, sensible defaults.
       </p>
     </div>
@@ -138,6 +138,20 @@ const headlineLine2 = "Any orbit";
     display: block;
     transform: translateY(110%);
     will-change: transform;
+  }
+
+  .hero-outline {
+    paint-order: stroke fill;
+    -webkit-text-stroke: 1.5px color-mix(in oklch, var(--color-brand-tertiary) 80%, transparent);
+  }
+
+  :where(.dark) .hero-outline {
+    -webkit-text-stroke-color: color-mix(in oklch, var(--color-brand-tertiary) 90%, transparent);
+  }
+
+  .hero-outline-soft {
+    paint-order: stroke fill;
+    -webkit-text-stroke: 0.5px color-mix(in oklch, var(--color-brand-tertiary) 55%, transparent);
   }
 
   .aurora {
@@ -399,8 +413,67 @@ const headlineLine2 = "Any orbit";
       return;
     }
 
+    cruiser.style.transform = "none";
+
     let cancelled = false;
     let currentAnim: { stop: () => void } | null = null;
+
+    // FLIGHT TUNING — adjust these to make the rocket faster or slower:
+    //   BASE_DURATION: minimum seconds for one crossing (lower = faster)
+    //   DURATION_VARIANCE: max extra seconds added randomly
+    //   PAUSE_MIN/MAX: gap between crossings, in ms
+    const BASE_DURATION = 12;
+    const DURATION_VARIANCE = 10;
+    const PAUSE_MIN = 800;
+    const PAUSE_MAX = 2600;
+
+    const buildPath = (startX: number, startY: number, endX: number, endY: number) => {
+      const N = 24;
+      const xs: number[] = [];
+      const ys: number[] = [];
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const len = Math.hypot(dx, dy) || 1;
+      const px = -dy / len;
+      const py = dx / len;
+      const amp = (8 + Math.random() * 12) * (Math.random() < 0.5 ? -1 : 1);
+      for (let i = 0; i < N; i++) {
+        const t = i / (N - 1);
+        const baseX = startX + dx * t;
+        const baseY = startY + dy * t;
+        const offset = Math.sin(t * Math.PI) * amp;
+        xs.push(baseX + px * offset);
+        ys.push(baseY + py * offset);
+      }
+      return { xs, ys };
+    };
+
+    const unwrapAngles = (angles: number[]) => {
+      for (let i = 1; i < angles.length; i++) {
+        let diff = angles[i] - angles[i - 1];
+        while (diff > 180) {
+          angles[i] -= 360;
+          diff -= 360;
+        }
+        while (diff < -180) {
+          angles[i] += 360;
+          diff += 360;
+        }
+      }
+      return angles;
+    };
+
+    const smoothAngles = (angles: number[]) => {
+      const out = angles.slice();
+      for (let pass = 0; pass < 2; pass++) {
+        const next = out.slice();
+        for (let i = 1; i < out.length - 1; i++) {
+          next[i] = (out[i - 1] + out[i] * 2 + out[i + 1]) / 4;
+        }
+        out.splice(0, out.length, ...next);
+      }
+      return out;
+    };
 
     const run = async () => {
       while (!cancelled) {
@@ -409,18 +482,29 @@ const headlineLine2 = "Any orbit";
         const endY = 10 + Math.random() * 70;
         const startX = startSide === "left" ? -25 : 115;
         const endX = startSide === "left" ? 115 : -25;
-        const dxVw = endX - startX;
-        const dyVh = endY - startY;
-        const angleRad = Math.atan2(dyVh * window.innerHeight / 100, dxVw * window.innerWidth / 100);
-        const angleDeg = angleRad * 180 / Math.PI + 90;
-        const duration = 12 + Math.random() * 10;
+        const duration = BASE_DURATION + Math.random() * DURATION_VARIANCE;
 
-        rocketEl.style.transform = `translate(${startX}vw, ${startY}vh)`;
-        cruiser.style.transform = `rotate(${angleDeg}deg)`;
+        const { xs, ys } = buildPath(startX, startY, endX, endY);
+
+        const rawAngles: number[] = [];
+        for (let i = 0; i < xs.length; i++) {
+          const a = i === 0 ? 0 : i - 1;
+          const b = i === xs.length - 1 ? i : i + 1;
+          const ax = (xs[b] - xs[a]) * window.innerWidth / 100;
+          const ay = (ys[b] - ys[a]) * window.innerHeight / 100;
+          rawAngles.push(Math.atan2(ay, ax) * 180 / Math.PI + 90);
+        }
+        const angles = smoothAngles(unwrapAngles(rawAngles));
+
+        const frames = xs.map(
+          (x, i) => `translate(${x}vw, ${ys[i]}vh) rotate(${angles[i]}deg)`,
+        );
+
+        rocketEl.style.transform = frames[0];
 
         const anim = animate(
           rocketEl,
-          { transform: [`translate(${startX}vw, ${startY}vh)`, `translate(${endX}vw, ${endY}vh)`] },
+          { transform: frames },
           { duration, ease: "linear" },
         );
         currentAnim = { stop: () => anim.stop() };
@@ -430,7 +514,7 @@ const headlineLine2 = "Any orbit";
           return;
         }
         if (cancelled) return;
-        await new Promise((r) => setTimeout(r, 800 + Math.random() * 1800));
+        await new Promise((r) => setTimeout(r, PAUSE_MIN + Math.random() * (PAUSE_MAX - PAUSE_MIN)));
       }
     };
 

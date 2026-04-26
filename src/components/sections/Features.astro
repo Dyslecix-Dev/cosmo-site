@@ -67,7 +67,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
       <ul data-spotlight-grid class="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-brand-primary/10 dark:border-brand-quaternary/10">
         {features.map((f, i) => (
           <li
-            class="reveal-on-scroll relative border-b border-r border-brand-primary/10 dark:border-brand-quaternary/10 p-6 sm:p-8"
+            class="reveal-on-scroll relative border-b border-r border-brand-primary/10 dark:border-brand-quaternary/10 p-6 sm:p-8 backdrop-blur-sm"
             style={`--reveal-delay: ${i * 50}ms`}
           >
             <div class="relative">
