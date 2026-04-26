@@ -24,7 +24,6 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <SEO title={title} description={description} image={image} canonicalURL={canonicalURL} noindex={noindex} />
-    {/* WARNING: preload fonts sparingly: drop one if a single font covers your above-the-fold content. */}
     <Font cssVariable="--font-space-mono" preload />
     <Font cssVariable="--font-roboto-mono" preload />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -40,10 +39,6 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
       "url": Astro.site?.toString(),
     })} />
     <slot name="head" />
-    <!--
-      NOTE: View transitions. Remove this line to disable site-wide client-side
-      routing; pages will then use full browser navigation.
-    -->
     <ClientRouter />
     <script is:inline>
       function applyTheme() {
@@ -67,5 +62,6 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
     <Navbar />
     <slot />
     <Footer />
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "32f88d10389f493c9674b22c98a35a0b"}'></script>
   </body>
 </html>

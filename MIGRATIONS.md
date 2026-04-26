@@ -30,7 +30,7 @@ Repo: `Dyslecix-Dev/cosmo-site`. Domain: `cosmo.dyslecix.dev`. Host: Cloudflare 
   - GitHub stars badge (shields.io in the hero is plenty; a banner is overkill).
 - [x] Add **"Edit this page on GitHub"** link to docs detail pages, pointing at `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/src/content/docs/{slug}.{ext}`.
 - [x] Drop in OG image (already prepared).
-- [ ] Deploy to Cloudflare Pages, attach `cosmo.dyslecix.dev` (after Phase 3 frees the domain).
+- [x] Deploy to Cloudflare Pages, attach `cosmo.dyslecix.dev` (after Phase 3 frees the domain).
 - [ ] Wire **Cloudflare Web Analytics** (cookieless, no banner needed).
 - [ ] Wire **Cloudflare Observatory** (cookieless RUM, no banner needed).
 
