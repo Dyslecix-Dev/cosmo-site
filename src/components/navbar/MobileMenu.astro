@@ -48,10 +48,15 @@ const { docs, pathname, isHomeActive } = Astro.props;
         </li>
         <li>
           <div class="border-b border-brand-primary/10 dark:border-brand-quaternary/10 py-5">
-            <div class="flex items-baseline justify-between">
+            <a
+              href="/docs"
+              data-mobile-link
+              aria-current={pathname === "/docs" || pathname === "/docs/" ? "page" : undefined}
+              class="flex items-baseline justify-between"
+            >
               <span class="font-heading text-3xl font-bold tracking-tight">Docs</span>
               <span aria-hidden="true" class="font-mono text-xs text-brand-secondary dark:text-brand-tertiary">02</span>
-            </div>
+            </a>
             <ul class="mt-3 space-y-1.5">
               {
                 docs.map((doc) => {
