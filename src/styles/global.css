@@ -3,11 +3,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/*
- * Design tokens — edit these to rebrand.
- * Tailwind v4 exposes every token here as a utility automatically.
- * e.g. --color-brand-500 → bg-brand-500, text-brand-500, etc.
- */
 @theme {
   --font-sans: var(--font-roboto-mono), ui-monospace, monospace;
   --font-heading: var(--font-space-mono), ui-monospace, monospace;
@@ -18,7 +13,6 @@
   --color-brand-quaternary: oklch(94% 0 0);
 }
 
-/* Base element resets beyond Tailwind's preflight. */
 *,
 *::before,
 *::after {

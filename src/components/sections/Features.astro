@@ -156,7 +156,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
 
   function reset() {
     while (cleanups.length) {
-      try { cleanups.pop()?.(); } catch { /* ignore */ }
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
     }
   }
 

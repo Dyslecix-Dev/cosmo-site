@@ -206,7 +206,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
   function reset() {
     while (cleanups.length) {
-      try { cleanups.pop()?.(); } catch { /* ignore */ }
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
     }
   }
 

@@ -1,11 +1,6 @@
 ---
 import { SEO as AstroSEO } from "astro-seo";
 
-/**
- * Thin wrapper around astro-seo that centralizes our defaults.
- * Pages pass minimal props; we translate them into astro-seo's prop shape.
- * Extend this component (not individual pages) when you want new SEO defaults.
- */
 if (!Astro.site) {
   throw new Error("`site` must be set in astro.config.mjs — SEO canonical URLs and absolute OG image URLs depend on it.");
 }

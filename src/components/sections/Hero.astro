@@ -306,7 +306,7 @@ const headlineLine2 = "Any orbit";
 
   function reset() {
     while (cleanups.length) {
-      try { cleanups.pop()?.(); } catch { /* ignore */ }
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
     }
   }
 
@@ -394,7 +394,7 @@ const headlineLine2 = "Any orbit";
           checkIcon?.classList.add("hidden");
         }, 1500);
       } catch {
-        // clipboard unavailable; fail silently
+        // fail silently
       }
     };
     btn.addEventListener("click", onClick);
@@ -418,10 +418,6 @@ const headlineLine2 = "Any orbit";
     let cancelled = false;
     let currentAnim: { stop: () => void } | null = null;
 
-    // FLIGHT TUNING — adjust these to make the rocket faster or slower:
-    //   BASE_DURATION: minimum seconds for one crossing (lower = faster)
-    //   DURATION_VARIANCE: max extra seconds added randomly
-    //   PAUSE_MIN/MAX: gap between crossings, in ms
     const BASE_DURATION = 12;
     const DURATION_VARIANCE = 10;
     const PAUSE_MIN = 800;

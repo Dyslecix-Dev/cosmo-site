@@ -186,7 +186,6 @@ const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.fi
 </style>
 
 <style is:global>
-  /* Hand-styled prose */
   .doc-prose {
     color: color-mix(in oklch, var(--color-brand-primary) 92%, transparent);
     font-size: 1rem;
@@ -371,7 +370,6 @@ const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.fi
     color: var(--color-brand-quaternary);
   }
 
-  /* TOC active state */
   [data-toc-link][data-active="true"] {
     color: var(--color-brand-primary);
     border-color: var(--color-brand-tertiary);
@@ -390,7 +388,7 @@ const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.fi
 
   function reset() {
     while (cleanups.length) {
-      try { cleanups.pop()?.(); } catch { /* ignore */ }
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
     }
   }
 
