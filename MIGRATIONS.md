@@ -22,14 +22,14 @@ Repo: `Dyslecix-Dev/cosmo-site`. Domain: `cosmo.dyslecix.dev`. Host: Cloudflare 
   5. `seo-checklist`
   6. `deploying`
 - [x] **Add a new "minimum viable collection" recipe** to the docs collection — a domain-agnostic walkthrough of schema + index + detail using placeholder names (`<your-collection>`), with no specific example domain. This stays the foundation that future per-use-case docs (blog, landing page, e-commerce, docs, etc.) will build on. Reference `cosmo`'s `blog` as a fuller showcase.
-- [ ] Build the site shell:
+- [x] Build the site shell:
   - Landing page — hero with the `pnpm create astro` one-liner (copy button), 3-4 feature bullets, CTAs to docs + GitHub.
   - Docs section — index + detail pages for the migrated guides.
   - Privacy policy page — see Phase 1.5 for content.
   - Footer with social links.
   - GitHub stars badge (shields.io in the hero is plenty; a banner is overkill).
-- [ ] Add **"Edit this page on GitHub"** link to docs detail pages, pointing at `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/src/content/docs/{slug}.{ext}`.
-- [ ] Drop in OG image (already prepared).
+- [x] Add **"Edit this page on GitHub"** link to docs detail pages, pointing at `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/src/content/docs/{slug}.{ext}`.
+- [x] Drop in OG image (already prepared).
 - [ ] Wire **Cloudflare Web Analytics** (cookieless, no banner needed).
 - [ ] Wire **Cloudflare Observatory** (cookieless RUM, no banner needed).
 - [ ] Wire **Sentry** via `@sentry/astro`:
