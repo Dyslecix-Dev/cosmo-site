@@ -33,7 +33,7 @@ const s = styles[type];
 const heading = title ?? s.defaultTitle;
 ---
 
-<aside class:list={["not-prose my-6 border-l-4 rounded-r-md px-4 py-3", s.container]} role="note">
+<aside class:list={["not-prose my-6 border-l-4 rounded-r-md px-4 py-3", s.container]} role="note" aria-label={heading}>
   <p class:list={["font-semibold text-sm uppercase tracking-wide mb-1", s.label]}>{heading}</p>
   <div class="text-sm leading-relaxed [&>p]:my-1">
     <slot />

@@ -190,6 +190,8 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 40%, transparent) 90deg, transparent 180deg, color-mix(in oklch, var(--c2) 40%, transparent) 270deg, transparent 360deg);
     mix-blend-mode: screen;
     opacity: 0.55;
+    mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 70%);
     animation: doc-bg-warp 22s linear infinite;
   }
 

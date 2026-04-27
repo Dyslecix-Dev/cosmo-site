@@ -383,6 +383,7 @@ const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.fi
 
 <script>
   import { animate, stagger } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
 
   const cleanups: Array<() => void> = [];
 
@@ -394,7 +395,7 @@ const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.fi
 
   function initDocDetail() {
     reset();
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
 
     const intro = document.querySelectorAll<HTMLElement>(".doc-reveal");
     if (intro.length) {
@@ -528,7 +529,7 @@ const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.fi
   }
 
   function initTocSmoothScroll() {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
     const links = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
     for (const link of links) {
       const onClick = (event: MouseEvent) => {
@@ -555,4 +556,5 @@ const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.fi
 
   initDocDetail();
   document.addEventListener("astro:page-load", initDocDetail);
+  document.addEventListener(MOTION_EVENT, initDocDetail);
 </script>

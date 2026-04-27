@@ -201,6 +201,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
 <script>
   import { animate, stagger } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
 
   const cleanups: Array<() => void> = [];
 
@@ -211,7 +212,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   }
 
   function initReveals() {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
     const els = document.querySelectorAll<HTMLElement>(".reveal");
     if (!els.length) return;
     if (reduce) {
@@ -226,7 +227,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
   }
 
   function initMagnetic() {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
     if (reduce) return;
     const els = document.querySelectorAll<HTMLElement>("[data-magnetic]");
     for (const el of els) {
@@ -256,4 +257,5 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
   initAll();
   document.addEventListener("astro:page-load", initAll);
+  document.addEventListener(MOTION_EVENT, initAll);
 </script>

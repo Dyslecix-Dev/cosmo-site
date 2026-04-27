@@ -444,10 +444,11 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
 
 <script>
   import { animate, inView, stagger } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
 
   function initDocsIndex() {
     if (!document.querySelector("main #main, main")) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
 
     const intro = document.querySelectorAll<HTMLElement>(".docs-reveal");
     if (intro.length) {
@@ -485,4 +486,5 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
 
   initDocsIndex();
   document.addEventListener("astro:page-load", initDocsIndex);
+  document.addEventListener(MOTION_EVENT, initDocsIndex);
 </script>

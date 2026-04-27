@@ -48,8 +48,17 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
             (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
         );
       }
+      function applyMotion() {
+        if (localStorage.motion === "paused") {
+          document.documentElement.dataset.motion = "paused";
+        } else {
+          delete document.documentElement.dataset.motion;
+        }
+      }
       applyTheme();
+      applyMotion();
       document.addEventListener("astro:page-load", applyTheme);
+      document.addEventListener("astro:page-load", applyMotion);
     </script>
   </head>
   <body class="min-h-screen bg-brand-quaternary dark:bg-brand-primary text-brand-primary dark:text-brand-quaternary antialiased">

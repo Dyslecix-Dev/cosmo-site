@@ -44,3 +44,16 @@ h6 {
 button {
   cursor: pointer;
 }
+
+html[data-motion="paused"] *,
+html[data-motion="paused"] *::before,
+html[data-motion="paused"] *::after {
+  /* biome-ignore lint/complexity/noImportantStyles: needed to override Astro-scoped per-element animation rules */
+  animation-play-state: paused !important;
+}
+
+:where(a, button, [role="button"], summary, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-brand-tertiary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

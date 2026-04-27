@@ -152,6 +152,8 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
 </style>
 
 <script>
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
   const cleanups: Array<() => void> = [];
 
   function reset() {
@@ -182,7 +184,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
   }
 
   function initBouncer() {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
     const bouncer = document.querySelector<HTMLElement>("[data-bouncer]");
     const section = document.querySelector<HTMLElement>("[data-features-section]");
     if (!bouncer || !section) return;
@@ -261,4 +263,5 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
 
   initAll();
   document.addEventListener("astro:page-load", initAll);
+  document.addEventListener(MOTION_EVENT, initAll);
 </script>
