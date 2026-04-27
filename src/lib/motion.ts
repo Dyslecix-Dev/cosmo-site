@@ -2,10 +2,7 @@ export const MOTION_EVENT = "cosmo:motion-change";
 
 export function isMotionDisabled(): boolean {
   if (typeof window === "undefined") return false;
-  return (
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-    document.documentElement.dataset.motion === "paused"
-  );
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.dataset.motion === "paused";
 }
 
 export function onMotionChange(cb: () => void): () => void {
