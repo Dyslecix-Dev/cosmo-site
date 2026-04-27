@@ -68,7 +68,7 @@ const breadcrumbSchema = {
 };
 ---
 
-<BaseLayout title={entry.data.title} description={entry.data.description} ogType="article">
+<BaseLayout title={entry.data.title} description={entry.data.description} ogType="article" image={`/${entry.id}-og-image.png`}>
   <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   <DocBackground theme={theme} />
