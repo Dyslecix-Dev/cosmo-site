@@ -18,11 +18,13 @@ export default defineConfig({
       provider: fontProviders.fontsource(),
       name: "Space Mono",
       cssVariable: "--font-space-mono",
+      subsets: ["latin"],
     },
     {
       provider: fontProviders.fontsource(),
       name: "Roboto Mono",
       cssVariable: "--font-roboto-mono",
+      subsets: ["latin"],
     },
   ],
 
