@@ -101,7 +101,6 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
 
   .features-constellation {
     animation: constellation-drift 36s ease-in-out infinite;
-    will-change: transform;
   }
 
   @keyframes constellation-drift {
@@ -109,14 +108,9 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     50% { transform: translate(-12px, 10px) rotate(2deg); }
   }
 
-  .features-satellite {
-    will-change: transform;
-  }
-
   .features-satellite-spin {
     animation: satellite-spin 40s linear infinite;
     transform-origin: center;
-    will-change: transform;
   }
 
   @keyframes satellite-spin {
@@ -129,7 +123,6 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     display: inline-block;
     aspect-ratio: 1 / 1;
     opacity: 0.6;
-    will-change: transform, opacity;
   }
 
   .sparkle.pulse {
@@ -152,11 +145,13 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
 </style>
 
 <script>
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
   const cleanups: Array<() => void> = [];
 
   function reset() {
     while (cleanups.length) {
-      try { cleanups.pop()?.(); } catch { /* ignore */ }
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
     }
   }
 
@@ -164,17 +159,20 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     const grid = document.querySelector<HTMLElement>("[data-spotlight-grid]");
     const overlay = document.querySelector<HTMLElement>("[data-spotlight-overlay]");
     if (!grid || !overlay) return;
+    let gridRect = grid.getBoundingClientRect();
+    const onResize = () => { gridRect = grid.getBoundingClientRect(); };
     const onMove = (event: PointerEvent) => {
-      const rect = grid.getBoundingClientRect();
-      overlay.style.setProperty("--spotlight-x", `${event.clientX - rect.left}px`);
-      overlay.style.setProperty("--spotlight-y", `${event.clientY - rect.top}px`);
+      overlay.style.setProperty("--spotlight-x", `${event.clientX - gridRect.left}px`);
+      overlay.style.setProperty("--spotlight-y", `${event.clientY - gridRect.top}px`);
     };
     const onEnter = () => { overlay.style.opacity = "1"; };
     const onLeave = () => { overlay.style.opacity = "0"; };
+    window.addEventListener("resize", onResize);
     grid.addEventListener("pointermove", onMove);
     grid.addEventListener("pointerenter", onEnter);
     grid.addEventListener("pointerleave", onLeave);
     cleanups.push(() => {
+      window.removeEventListener("resize", onResize);
       grid.removeEventListener("pointermove", onMove);
       grid.removeEventListener("pointerenter", onEnter);
       grid.removeEventListener("pointerleave", onLeave);
@@ -182,7 +180,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
   }
 
   function initBouncer() {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
     const bouncer = document.querySelector<HTMLElement>("[data-bouncer]");
     const section = document.querySelector<HTMLElement>("[data-features-section]");
     if (!bouncer || !section) return;
@@ -191,6 +189,19 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
       bouncer.style.transform = "translate(16px, 16px)";
       return;
     }
+
+    let w = bouncer.offsetWidth;
+    let h = bouncer.offsetHeight;
+    let maxX = Math.max(0, section.offsetWidth - w);
+    let maxY = Math.max(0, section.offsetHeight - h);
+
+    const onResize = () => {
+      w = bouncer.offsetWidth;
+      h = bouncer.offsetHeight;
+      maxX = Math.max(0, section.offsetWidth - w);
+      maxY = Math.max(0, section.offsetHeight - h);
+    };
+    window.addEventListener("resize", onResize);
 
     let x = 40 + Math.random() * 120;
     let y = 40 + Math.random() * 120;
@@ -203,12 +214,6 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     const step = (now: number) => {
       const dt = Math.min(0.05, (now - lastTime) / 1000);
       lastTime = now;
-
-      const sectionRect = section.getBoundingClientRect();
-      const w = bouncer.offsetWidth;
-      const h = bouncer.offsetHeight;
-      const maxX = Math.max(0, sectionRect.width - w);
-      const maxY = Math.max(0, sectionRect.height - h);
 
       x += vx * dt;
       y += vy * dt;
@@ -248,6 +253,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     if (visible) start();
 
     cleanups.push(() => {
+      window.removeEventListener("resize", onResize);
       observer.disconnect();
       stop();
     });
@@ -261,4 +267,5 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
 
   initAll();
   document.addEventListener("astro:page-load", initAll);
+  document.addEventListener(MOTION_EVENT, initAll);
 </script>

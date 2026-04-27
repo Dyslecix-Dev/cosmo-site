@@ -185,13 +185,7 @@ const socials = [
       try {
         await navigator.clipboard.writeText(text);
       } catch {
-        const range = document.createRange();
-        range.selectNodeContents(codeEl);
-        const sel = window.getSelection();
-        sel?.removeAllRanges();
-        sel?.addRange(range);
-        document.execCommand("copy");
-        sel?.removeAllRanges();
+        return;
       }
       iconDefault?.classList.add("hidden");
       iconDone?.classList.remove("hidden");

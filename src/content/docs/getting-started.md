@@ -2,6 +2,7 @@
 title: Getting started
 description: Clone cosmo, install dependencies, and run the dev server.
 order: 1
+updatedDate: 2026-04-26
 ---
 
 Cosmo is a minimal Astro starter. This guide walks through cloning the repo and running it locally.
