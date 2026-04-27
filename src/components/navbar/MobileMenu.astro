@@ -131,34 +131,52 @@ const isDocsIndexActive = pathname === "/docs" || pathname === "/docs/";
     closeIcon?.classList.toggle("hidden", !open);
   }
 
+  let controller: AbortController | null = null;
+
   function initMobileMenu() {
+    controller?.abort();
     const root = document.querySelector<HTMLElement>("[data-mobile-menu]");
     if (!root) return;
     const toggle = root.querySelector<HTMLButtonElement>("[data-mobile-toggle]");
     if (!toggle) return;
 
-    toggle.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const isOpen = toggle.getAttribute("aria-expanded") === "true";
-      setOpen(root, !isOpen);
-    });
+    controller = new AbortController();
+    const { signal } = controller;
+
+    toggle.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+        const isOpen = toggle.getAttribute("aria-expanded") === "true";
+        setOpen(root, !isOpen);
+      },
+      { signal },
+    );
 
     for (const link of root.querySelectorAll<HTMLAnchorElement>("[data-mobile-link]")) {
-      link.addEventListener("click", () => setOpen(root, false));
+      link.addEventListener("click", () => setOpen(root, false), { signal });
     }
 
-    document.addEventListener("click", (event) => {
-      const target = event.target as Element | null;
-      if (!target) return;
-      if (!target.closest("[data-mobile-menu]")) setOpen(root, false);
-    });
+    document.addEventListener(
+      "click",
+      (event) => {
+        const target = event.target as Element | null;
+        if (!target) return;
+        if (!target.closest("[data-mobile-menu]")) setOpen(root, false);
+      },
+      { signal },
+    );
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
-        setOpen(root, false);
-        toggle.focus();
-      }
-    });
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+          setOpen(root, false);
+          toggle.focus();
+        }
+      },
+      { signal },
+    );
   }
 
   initMobileMenu();
