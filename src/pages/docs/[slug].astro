@@ -53,7 +53,15 @@ const articleSchema = {
   url: canonicalURL,
   inLanguage: "en",
   dateModified: updatedISO,
-  author: { "@type": "Organization", name: "Cosmo" },
+  author: {
+    "@type": "Person",
+    name: "Christian Demesa",
+    sameAs: [
+      "https://github.com/DyslecixDev",
+      "https://x.com/DyslecixDev",
+      "https://www.instagram.com/dyslecixdev/",
+    ],
+  },
   publisher: { "@type": "Organization", name: "Cosmo" },
   mainEntityOfPage: canonicalURL,
 };
@@ -110,7 +118,7 @@ const breadcrumbSchema = {
             <a
               href={editUrl}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener"
               class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition"
             >
               <span>Edit this page on GitHub</span>
