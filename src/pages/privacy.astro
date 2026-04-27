@@ -39,11 +39,12 @@ const lastUpdated = "April 26, 2026";
       <section>
         <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Cookies and local storage</h2>
         <p class="mt-3 leading-relaxed">
-          We do not set any cookies. We use a single <code>localStorage</code>
-          entry named <code>theme</code> to remember your light or dark mode
-          preference between visits. Its value is only ever <code>"light"</code>
-          or <code>"dark"</code>, it is never sent to a server, and it is not
-          used to identify you.
+          We do not set any cookies. We use two <code>localStorage</code>
+          entries — <code>theme</code> to remember your light or dark mode
+          preference, and <code>motion</code> to remember whether you have
+          paused animations. Both values are only ever read and written
+          locally in your browser, never sent to a server, and not used to
+          identify you.
         </p>
       </section>
 
