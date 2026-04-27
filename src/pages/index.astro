@@ -7,6 +7,19 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
 <BaseLayout description="Cosmo is the Astro launchpad you've been searching for. Tokens, MDX, content collections, sensible defaults.">
+  <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Cosmo",
+    "url": Astro.site?.toString(),
+    "logo": new URL("/favicon.svg", Astro.site).toString(),
+    "sameAs": [
+      "https://github.com/Dyslecix-Dev/cosmo",
+      "https://github.com/DyslecixDev",
+      "https://x.com/DyslecixDev",
+      "https://www.instagram.com/dyslecixdev/",
+    ],
+  })} />
   <main id="main" class="overflow-x-clip">
     <Hero />
     <Marquee />
@@ -29,9 +42,10 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
 <script>
   import { animate, inView } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
 
   function initScrollReveals() {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = isMotionDisabled();
     const scrollEls = document.querySelectorAll<HTMLElement>(".reveal-on-scroll");
     for (const el of scrollEls) {
       if (reduce) {
@@ -55,4 +69,5 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
   initScrollReveals();
   document.addEventListener("astro:page-load", initScrollReveals);
+  document.addEventListener(MOTION_EVENT, initScrollReveals);
 </script>

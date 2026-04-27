@@ -11,6 +11,7 @@ const { variant = "icon" } = Astro.props;
     <button
       type="button"
       aria-label="Toggle dark mode"
+      aria-pressed="false"
       data-theme-toggle
       class="hidden sm:inline-flex shrink-0 items-center justify-center rounded-full h-10 w-10 text-brand-primary/80 dark:text-brand-quaternary/80 hover:bg-brand-primary/8 dark:hover:bg-brand-quaternary/8 transition"
     >
@@ -24,6 +25,8 @@ const { variant = "icon" } = Astro.props;
   ) : (
     <button
       type="button"
+      aria-label="Toggle dark mode"
+      aria-pressed="false"
       data-theme-toggle
       class="self-start inline-flex items-center gap-3 rounded-full border border-brand-primary/20 dark:border-brand-quaternary/20 px-5 py-3 text-sm font-medium text-brand-primary dark:text-brand-quaternary"
     >
@@ -39,15 +42,25 @@ const { variant = "icon" } = Astro.props;
 }
 
 <script>
+  function syncThemeToggleState() {
+    const isDark = document.documentElement.classList.contains("dark");
+    for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]")) {
+      btn.setAttribute("aria-pressed", String(isDark));
+    }
+  }
+
   function initThemeToggle() {
+    syncThemeToggleState();
     document.addEventListener("click", (event) => {
       const target = event.target as Element | null;
       if (!target?.closest("[data-theme-toggle]")) return;
       const isDark = document.documentElement.classList.contains("dark");
       document.documentElement.classList.toggle("dark", !isDark);
       localStorage.theme = isDark ? "light" : "dark";
+      syncThemeToggleState();
     });
   }
 
   initThemeToggle();
+  document.addEventListener("astro:page-load", syncThemeToggleState);
 </script>

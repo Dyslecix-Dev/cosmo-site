@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 import iconDark from "@/assets/icon-dark.png";
 import iconLight from "@/assets/icon-light.png";
 import MobileMenu from "@/components/navbar/MobileMenu.astro";
+import MotionToggle from "@/components/navbar/MotionToggle.astro";
 import NavDropdown from "@/components/navbar/NavDropdown.astro";
 import ThemeToggle from "@/components/navbar/ThemeToggle.astro";
 
@@ -75,7 +76,10 @@ const isDocsActive = pathname.startsWith("/docs");
       </li>
     </ul>
 
-    <ThemeToggle variant="icon" />
+    <div>
+      <ThemeToggle variant="icon" />
+      <MotionToggle variant="icon" />
+    </div>
 
     <MobileMenu docs={sortedDocs} pathname={pathname} isHomeActive={isHomeActive} />
   </nav>

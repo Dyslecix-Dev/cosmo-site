@@ -31,7 +31,7 @@ Repo: `Dyslecix-Dev/cosmo-site`. Domain: `cosmo.dyslecix.dev`. Host: Cloudflare 
 - [x] Add **"Edit this page on GitHub"** link to docs detail pages, pointing at `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/src/content/docs/{slug}.{ext}`.
 - [x] Drop in OG image (already prepared).
 - [ ] Deploy to Cloudflare Pages, attach `cosmo.dyslecix.dev` (after Phase 3 frees the domain).
-- [ ] Wire **Cloudflare Web Analytics** (cookieless, no banner needed).
+- [ ] Wire **Cloudflare Web Analytics** (cookieless, no banner needed). When adding the beacon, update the CSP in [public/_headers](public/_headers) to allow `https://static.cloudflareinsights.com` in `script-src` and `connect-src`.
 - [ ] Wire **Cloudflare Observatory** (cookieless RUM, no banner needed).
 
 ### Phase 1.5 — Privacy policy contents

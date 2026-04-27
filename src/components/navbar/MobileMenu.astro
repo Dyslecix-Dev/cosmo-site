@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import MotionToggle from "@/components/navbar/MotionToggle.astro";
 import ThemeToggle from "@/components/navbar/ThemeToggle.astro";
 
 interface Props {
@@ -32,14 +33,12 @@ const isDocsIndexActive = pathname === "/docs" || pathname === "/docs/";
   <div
     id="mobile-menu-panel"
     data-mobile-panel
-    role="menu"
-    class="fixed left-4 right-4 top-20 z-40 origin-top rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/99 dark:bg-brand-primary/99 backdrop-blur-lg shadow-[0_20px_60px_rgba(0,0,0,0.25)] opacity-0 -translate-y-2 scale-95 pointer-events-none transition duration-200 ease-out data-[open=true]:opacity-100 data-[open=true]:translate-y-0 data-[open=true]:scale-100 data-[open=true]:pointer-events-auto"
+    class="fixed left-4 right-4 top-20 z-40 max-h-[calc(100dvh-7rem)] overflow-y-auto overscroll-contain origin-top rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/99 dark:bg-brand-primary/99 backdrop-blur-lg shadow-[0_20px_60px_rgba(0,0,0,0.25)] opacity-0 -translate-y-2 scale-95 pointer-events-none transition duration-200 ease-out data-[open=true]:opacity-100 data-[open=true]:translate-y-0 data-[open=true]:scale-100 data-[open=true]:pointer-events-auto"
   >
     <div class="p-3">
       <a
         href="/"
         data-mobile-link
-        role="menuitem"
         aria-current={isHomeActive ? "page" : undefined}
         class:list={[
           "flex items-center justify-between rounded-xl px-3 py-3 text-sm transition",
@@ -57,7 +56,6 @@ const isDocsIndexActive = pathname === "/docs" || pathname === "/docs/";
       <a
         href="/docs"
         data-mobile-link
-        role="menuitem"
         aria-current={isDocsIndexActive ? "page" : undefined}
         class:list={[
           "flex items-center justify-between rounded-xl px-3 py-3 text-sm transition",
@@ -80,7 +78,6 @@ const isDocsIndexActive = pathname === "/docs" || pathname === "/docs/";
                 <a
                   href={href}
                   data-mobile-link
-                  role="menuitem"
                   aria-current={isCurrent ? "page" : undefined}
                   class:list={[
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition",
@@ -105,7 +102,6 @@ const isDocsIndexActive = pathname === "/docs" || pathname === "/docs/";
         target="_blank"
         rel="noopener"
         data-mobile-link
-        role="menuitem"
         class="flex items-center justify-between rounded-xl px-3 py-3 text-sm text-brand-primary dark:text-brand-quaternary hover:bg-brand-primary/5 dark:hover:bg-brand-quaternary/5 transition"
       >
         <span class="font-medium">GitHub</span>
@@ -114,8 +110,9 @@ const isDocsIndexActive = pathname === "/docs" || pathname === "/docs/";
 
       <div class="mx-3 my-2 h-px bg-brand-primary/10 dark:bg-brand-quaternary/10"></div>
 
-      <div class="px-1 pb-1">
+      <div class="flex flex-col gap-2 px-1 pb-1">
         <ThemeToggle variant="pill" />
+        <MotionToggle variant="pill" />
       </div>
     </div>
   </div>
@@ -157,7 +154,10 @@ const isDocsIndexActive = pathname === "/docs" || pathname === "/docs/";
     });
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") setOpen(root, false);
+      if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        setOpen(root, false);
+        toggle.focus();
+      }
     });
   }
 

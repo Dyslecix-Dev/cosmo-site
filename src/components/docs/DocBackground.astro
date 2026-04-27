@@ -88,8 +88,6 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     50% { opacity: var(--o); transform: scale(1.15); }
   }
 
-  /* Variants — base + accent placeholders. Refined per-doc in checkpoint 4. */
-
   .doc-bg[data-variant="solar-system"] .doc-bg-base {
     background:
       radial-gradient(circle at 22% 65%, var(--c1) 0%, var(--c2) 8%, transparent 28%),
@@ -192,6 +190,8 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 40%, transparent) 90deg, transparent 180deg, color-mix(in oklch, var(--c2) 40%, transparent) 270deg, transparent 360deg);
     mix-blend-mode: screen;
     opacity: 0.55;
+    mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 70%);
     animation: doc-bg-warp 22s linear infinite;
   }
 
@@ -234,13 +234,11 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     100% { transform: rotate(360deg) scale(1); }
   }
 
-  /* Pause when offscreen (data-paused via IntersectionObserver) */
   .doc-bg[data-paused="true"] .doc-bg-accent,
   .doc-bg[data-paused="true"] .doc-bg-star {
     animation-play-state: paused;
   }
 
-  /* Small viewports: drop the heavier accent layer to keep it cheap on mobile */
   @media (max-width: 640px) {
     .doc-bg-accent {
       animation: none;
