@@ -9,7 +9,7 @@ export default defineConfig({
   output: "static",
 
   prefetch: {
-    prefetchAll: true,
+    prefetchAll: false,
     defaultStrategy: "hover",
   },
 
@@ -30,7 +30,22 @@ export default defineConfig({
 
   site: "https://cosmo.dyslecix.dev",
 
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes("/404"),
+      changefreq: /** @type {any} */ ("weekly"),
+      serialize(item) {
+        if (item.url.endsWith("/privacy/") || item.url.endsWith("/privacy")) {
+          return { ...item, changefreq: /** @type {any} */ ("yearly"), priority: 0.3 };
+        }
+        if (item.url.includes("/docs/")) {
+          return { ...item, changefreq: /** @type {any} */ ("monthly"), priority: 0.8 };
+        }
+        return { ...item, priority: 1.0 };
+      },
+    }),
+  ],
 
   vite: {
     plugins: [tailwindcss()],
