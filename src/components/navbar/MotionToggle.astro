@@ -1,0 +1,83 @@
+---
+interface Props {
+  variant?: "icon" | "pill";
+}
+
+const { variant = "icon" } = Astro.props;
+---
+
+{
+  variant === "icon" ? (
+    <button
+      type="button"
+      aria-label="Pause animations"
+      aria-pressed="false"
+      data-motion-toggle
+      class="hidden sm:inline-flex shrink-0 items-center justify-center rounded-full h-10 w-10 text-brand-primary/80 dark:text-brand-quaternary/80 hover:bg-brand-primary/8 dark:hover:bg-brand-quaternary/8 transition"
+    >
+      <svg aria-hidden="true" data-motion-icon="pause" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+        <rect x="6" y="5" width="4" height="14" rx="1" />
+        <rect x="14" y="5" width="4" height="14" rx="1" />
+      </svg>
+      <svg aria-hidden="true" data-motion-icon="play" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4 hidden">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </button>
+  ) : (
+    <button
+      type="button"
+      aria-label="Pause animations"
+      aria-pressed="false"
+      data-motion-toggle
+      class="self-start inline-flex items-center gap-3 rounded-full border border-brand-primary/20 dark:border-brand-quaternary/20 px-5 py-3 text-sm font-medium text-brand-primary dark:text-brand-quaternary"
+    >
+      <svg aria-hidden="true" data-motion-icon="pause" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
+        <rect x="6" y="5" width="4" height="14" rx="1" />
+        <rect x="14" y="5" width="4" height="14" rx="1" />
+      </svg>
+      <svg aria-hidden="true" data-motion-icon="play" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4 hidden">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+      <span data-motion-label>Pause animations</span>
+    </button>
+  )
+}
+
+<script>
+  import { MOTION_EVENT } from "@/lib/motion";
+
+  function syncMotionToggleState() {
+    const paused = document.documentElement.dataset.motion === "paused";
+    for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-motion-toggle]")) {
+      btn.setAttribute("aria-pressed", String(paused));
+      btn.setAttribute("aria-label", paused ? "Resume animations" : "Pause animations");
+      const pauseIcon = btn.querySelector<SVGElement>('[data-motion-icon="pause"]');
+      const playIcon = btn.querySelector<SVGElement>('[data-motion-icon="play"]');
+      pauseIcon?.classList.toggle("hidden", paused);
+      playIcon?.classList.toggle("hidden", !paused);
+      const label = btn.querySelector<HTMLElement>("[data-motion-label]");
+      if (label) label.textContent = paused ? "Resume animations" : "Pause animations";
+    }
+  }
+
+  function initMotionToggle() {
+    syncMotionToggleState();
+    document.addEventListener("click", (event) => {
+      const target = event.target as Element | null;
+      if (!target?.closest("[data-motion-toggle]")) return;
+      const paused = document.documentElement.dataset.motion === "paused";
+      if (paused) {
+        delete document.documentElement.dataset.motion;
+        localStorage.removeItem("motion");
+      } else {
+        document.documentElement.dataset.motion = "paused";
+        localStorage.motion = "paused";
+      }
+      syncMotionToggleState();
+      document.dispatchEvent(new CustomEvent(MOTION_EVENT));
+    });
+  }
+
+  initMotionToggle();
+  document.addEventListener("astro:page-load", syncMotionToggleState);
+</script>

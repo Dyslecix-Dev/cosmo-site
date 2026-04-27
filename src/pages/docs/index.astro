@@ -1,0 +1,490 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import constellation from "@/assets/constellation.png";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { themeForDoc } from "@/lib/doc-themes";
+
+const docs = (await getCollection("docs")).filter((entry) => !entry.data.draft);
+const sorted = [...docs].sort((a, b) => {
+  const aHas = a.data.order !== undefined;
+  const bHas = b.data.order !== undefined;
+  if (aHas && bHas) return (a.data.order as number) - (b.data.order as number);
+  if (aHas) return -1;
+  if (bHas) return 1;
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const cards = sorted.map((entry, i) => ({
+  entry,
+  theme: themeForDoc(entry.id),
+  index: i,
+}));
+
+const STAR_COUNT = 160;
+const SPARKLE_COUNT = 48;
+
+function seeded(i: number, salt: number) {
+  const x = Math.sin(i * 928.371 + salt * 13.27) * 10000;
+  return x - Math.floor(x);
+}
+
+const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
+  const top = seeded(i, 1) * 100;
+  const left = seeded(i, 2) * 100;
+  const size = 0.5 + seeded(i, 3) * 1.8;
+  const opacity = 0.35 + seeded(i, 4) * 0.55;
+  const twinkleDur = 2.5 + seeded(i, 5) * 5;
+  const twinkleDelay = seeded(i, 6) * -8;
+  return { top, left, size, opacity, twinkleDur, twinkleDelay };
+});
+
+const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
+  const top = seeded(i, 11) * 100;
+  const left = seeded(i, 12) * 100;
+  const size = 0.7 + seeded(i, 13) * 1.4;
+  const opacity = 0.3 + seeded(i, 14) * 0.45;
+  const bobDur = 6 + seeded(i, 15) * 8;
+  const bobDelay = seeded(i, 16) * -10;
+  const spinDur = 14 + seeded(i, 17) * 16;
+  const reverse = seeded(i, 18) > 0.5 ? "reverse" : "normal";
+  return { top, left, size, opacity, bobDur, bobDelay, spinDur, reverse };
+});
+---
+
+<BaseLayout title="Docs" description="Guides for building with the Cosmo Astro template — tokens, collections, SEO, deploying.">
+  <main id="main" class="relative isolate overflow-x-clip pt-32 sm:pt-36 pb-24">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="docs-aurora docs-aurora-1"></div>
+      <div class="docs-aurora docs-aurora-2"></div>
+      <div class="docs-grid"></div>
+      <div class="docs-starfield">
+        {stars.map((s) => (
+          <span
+            class="doc-star"
+            style={`top:${s.top}%;left:${s.left}%;width:${s.size}px;height:${s.size}px;--o:${s.opacity};animation-duration:${s.twinkleDur}s;animation-delay:${s.twinkleDelay}s;`}
+          ></span>
+        ))}
+      </div>
+      <Image src={constellation} alt="" class="docs-constellation" loading="lazy" decoding="async" />
+      <div class="docs-sparkles">
+        {sparkles.map((s) => (
+          <span
+            class="doc-sparkle"
+            style={`top:${s.top}%;left:${s.left}%;font-size:${s.size}rem;--o:${s.opacity};--bob-d:${s.bobDur}s;--bob-delay:${s.bobDelay}s;--spin-d:${s.spinDur}s;--spin-dir:${s.reverse};`}
+          >&#10022;</span>
+        ))}
+      </div>
+    </div>
+
+    <section class="mx-auto w-full max-w-6xl px-6 sm:px-10">
+      <div class="docs-reveal flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+        <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_10px_currentColor]"></span>
+        <span>Star charts</span>
+        <span aria-hidden="true">&middot;</span>
+        <span>{cards.length} guides</span>
+      </div>
+
+      <h1 class="docs-reveal mt-6 font-heading font-bold tracking-tight leading-[0.9] text-[clamp(2.5rem,8vw,6rem)]">
+        Mission briefings
+      </h1>
+      <p class="docs-reveal mt-6 max-w-2xl text-lg sm:text-xl text-brand-primary dark:text-brand-quaternary">
+        Drift between systems at your own pace.
+      </p>
+
+      <ul class="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map(({ entry, theme, index }) => (
+          <li
+            class="docs-card-reveal"
+            style={`--reveal-delay:${index * 60}ms`}
+          >
+            <a
+              href={`/docs/${entry.id}`}
+              data-doc-card
+              class:list={[
+                "group relative block h-full overflow-hidden rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15",
+                "bg-brand-quaternary/40 dark:bg-brand-primary/40 backdrop-blur-md",
+                "transition duration-300 hover:-translate-y-1 hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35",
+                "hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)]",
+              ]}
+            >
+              <div
+                aria-hidden="true"
+                class={`doc-preview doc-preview-${theme.key}`}
+                style={`--c1:${theme.c1};--c2:${theme.c2};--c3:${theme.c3};`}
+              >
+                <span class="doc-preview-layer doc-preview-base"></span>
+                <span class="doc-preview-layer doc-preview-accent"></span>
+                <span class="doc-preview-layer doc-preview-stars"></span>
+                <span class="doc-preview-vignette"></span>
+              </div>
+
+              <div class="relative z-10 flex h-full flex-col gap-4 p-6">
+                <div class="flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.18em] text-brand-secondary dark:text-brand-tertiary">
+                  <span>{String((entry.data.order ?? index + 1)).padStart(2, "0")} &middot; {theme.label}</span>
+                  <span aria-hidden="true" class="transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
+                </div>
+
+                <h2 class="font-heading text-xl sm:text-2xl font-semibold leading-tight text-brand-primary dark:text-brand-quaternary">
+                  {entry.data.title}
+                </h2>
+
+                {entry.data.description && (
+                  <p class="text-sm text-brand-secondary dark:text-brand-tertiary leading-relaxed">
+                    {entry.data.description}
+                  </p>
+                )}
+
+                <span class="mt-auto inline-flex items-center gap-1.5 text-xs font-medium text-brand-primary dark:text-brand-quaternary">
+                  <span class="opacity-70 group-hover:opacity-100 transition">Open guide</span>
+                </span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .docs-reveal,
+  .docs-card-reveal {
+    opacity: 0;
+  }
+
+  .docs-aurora {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(100px) saturate(140%);
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+  }
+
+  :where(.dark) .docs-aurora {
+    opacity: 0.3;
+    mix-blend-mode: screen;
+  }
+
+  .docs-aurora-1 {
+    top: -15%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    background: var(--color-brand-tertiary);
+  }
+
+  .docs-aurora-2 {
+    bottom: -20%;
+    right: -10%;
+    width: 45vw;
+    height: 45vw;
+    background: var(--color-brand-secondary);
+  }
+
+  .docs-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-brand-primary) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-primary) 5%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center top, black 30%, transparent 75%);
+  }
+
+  :where(.dark) .docs-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-brand-quaternary) 5%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-quaternary) 5%, transparent) 1px, transparent 1px);
+  }
+
+  .doc-preview {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    overflow: hidden;
+    background: var(--c3);
+  }
+
+  .doc-preview-layer {
+    position: absolute;
+    inset: 0;
+    display: block;
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 700ms ease;
+  }
+
+  .doc-preview-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, color-mix(in oklch, var(--c3) 80%, black) 100%);
+  }
+
+  .doc-preview-stars {
+    background-image:
+      radial-gradient(1px 1px at 12% 22%, rgba(255, 255, 255, 0.85), transparent 60%),
+      radial-gradient(1px 1px at 28% 64%, rgba(255, 255, 255, 0.6), transparent 60%),
+      radial-gradient(1.5px 1.5px at 47% 18%, rgba(255, 255, 255, 0.9), transparent 60%),
+      radial-gradient(1px 1px at 63% 42%, rgba(255, 255, 255, 0.5), transparent 60%),
+      radial-gradient(1px 1px at 78% 78%, rgba(255, 255, 255, 0.7), transparent 60%),
+      radial-gradient(1.5px 1.5px at 88% 30%, rgba(255, 255, 255, 0.8), transparent 60%),
+      radial-gradient(1px 1px at 38% 86%, rgba(255, 255, 255, 0.5), transparent 60%),
+      radial-gradient(1px 1px at 8% 70%, rgba(255, 255, 255, 0.6), transparent 60%),
+      radial-gradient(1px 1px at 56% 8%, rgba(255, 255, 255, 0.7), transparent 60%);
+    opacity: 0.7;
+  }
+
+  .group:hover .doc-preview-stars {
+    transform: scale(1.06);
+    opacity: 0.95;
+  }
+
+  .doc-preview-solar-system .doc-preview-base {
+    background:
+      radial-gradient(circle at 28% 58%, var(--c1) 0%, color-mix(in oklch, var(--c1) 60%, var(--c2)) 8%, var(--c2) 18%, transparent 38%),
+      radial-gradient(circle at 28% 58%, color-mix(in oklch, var(--c2) 70%, transparent) 0%, transparent 55%),
+      linear-gradient(135deg, color-mix(in oklch, var(--c3) 80%, var(--c2) 20%), var(--c3));
+  }
+  .doc-preview-solar-system .doc-preview-accent {
+    background:
+      radial-gradient(circle at 28% 58%, transparent 14%, color-mix(in oklch, var(--c1) 35%, transparent) 16%, transparent 22%),
+      radial-gradient(circle at 28% 58%, transparent 26%, color-mix(in oklch, var(--c2) 25%, transparent) 28%, transparent 34%);
+    mix-blend-mode: screen;
+  }
+  .group:hover .doc-preview-solar-system .doc-preview-accent {
+    transform: scale(1.08);
+  }
+
+  .doc-preview-protoplanetary .doc-preview-base {
+    background:
+      radial-gradient(circle at 50% 60%, var(--c1) 0%, transparent 6%),
+      radial-gradient(ellipse 60% 18% at 50% 60%, color-mix(in oklch, var(--c1) 50%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse 80% 22% at 50% 60%, color-mix(in oklch, var(--c2) 40%, transparent) 0%, transparent 70%),
+      linear-gradient(160deg, color-mix(in oklch, var(--c3) 70%, var(--c2) 30%), var(--c3));
+  }
+  .doc-preview-protoplanetary .doc-preview-accent {
+    background:
+      radial-gradient(ellipse 95% 26% at 50% 60%, transparent 60%, color-mix(in oklch, var(--c1) 25%, transparent) 70%, transparent 85%);
+    mix-blend-mode: screen;
+  }
+  .group:hover .doc-preview-protoplanetary .doc-preview-accent {
+    transform: rotate(-3deg) scale(1.04);
+  }
+
+  .doc-preview-asteroid-belt .doc-preview-base {
+    background:
+      radial-gradient(ellipse 120% 30% at 50% 55%, color-mix(in oklch, var(--c1) 40%, transparent) 0%, transparent 70%),
+      linear-gradient(150deg, var(--c3) 0%, color-mix(in oklch, var(--c3) 70%, var(--c2) 30%) 100%);
+  }
+  .doc-preview-asteroid-belt .doc-preview-accent {
+    background-image:
+      radial-gradient(2px 2px at 10% 55%, var(--c1), transparent 70%),
+      radial-gradient(2.5px 2.5px at 22% 48%, var(--c1), transparent 70%),
+      radial-gradient(1.5px 1.5px at 33% 60%, var(--c2), transparent 70%),
+      radial-gradient(2px 2px at 46% 52%, var(--c1), transparent 70%),
+      radial-gradient(3px 3px at 58% 58%, var(--c1), transparent 70%),
+      radial-gradient(1.5px 1.5px at 70% 50%, var(--c2), transparent 70%),
+      radial-gradient(2px 2px at 82% 56%, var(--c1), transparent 70%),
+      radial-gradient(2.5px 2.5px at 92% 50%, var(--c1), transparent 70%);
+    opacity: 0.85;
+  }
+  .group:hover .doc-preview-asteroid-belt .doc-preview-accent {
+    transform: translateX(-4%);
+  }
+
+  .doc-preview-nebula .doc-preview-base {
+    background:
+      radial-gradient(ellipse 60% 70% at 30% 40%, color-mix(in oklch, var(--c1) 70%, transparent) 0%, transparent 65%),
+      radial-gradient(ellipse 70% 60% at 75% 65%, color-mix(in oklch, var(--c2) 65%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 55% 30%, color-mix(in oklch, var(--c1) 40%, transparent) 0%, transparent 75%),
+      linear-gradient(160deg, var(--c3), color-mix(in oklch, var(--c3) 60%, var(--c2) 40%));
+    filter: saturate(115%);
+  }
+  .doc-preview-nebula .doc-preview-accent {
+    background:
+      radial-gradient(ellipse 35% 45% at 45% 55%, color-mix(in oklch, var(--c1) 55%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 35% at 70% 35%, color-mix(in oklch, var(--c2) 50%, transparent) 0%, transparent 70%);
+    mix-blend-mode: screen;
+  }
+  .group:hover .doc-preview-nebula .doc-preview-accent {
+    transform: scale(1.1) translateX(2%);
+  }
+
+  .doc-preview-pulsar .doc-preview-base {
+    background:
+      radial-gradient(circle at 50% 50%, var(--c1) 0%, color-mix(in oklch, var(--c1) 60%, var(--c2)) 4%, transparent 14%),
+      conic-gradient(from 60deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 35%, transparent) 20deg, transparent 40deg, transparent 200deg, color-mix(in oklch, var(--c1) 35%, transparent) 220deg, transparent 240deg, transparent 360deg),
+      linear-gradient(180deg, var(--c3), color-mix(in oklch, var(--c3) 70%, var(--c2) 30%));
+  }
+  .doc-preview-pulsar .doc-preview-accent {
+    background: radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 80%, transparent) 0%, transparent 8%);
+    mix-blend-mode: screen;
+  }
+  .group:hover .doc-preview-pulsar .doc-preview-accent {
+    transform: scale(1.6);
+    opacity: 0.6;
+  }
+
+  .doc-preview-binary-star .doc-preview-base {
+    background:
+      radial-gradient(circle at 35% 55%, var(--c1) 0%, color-mix(in oklch, var(--c1) 60%, transparent) 6%, transparent 18%),
+      radial-gradient(circle at 62% 45%, var(--c2) 0%, color-mix(in oklch, var(--c2) 60%, transparent) 5%, transparent 16%),
+      radial-gradient(ellipse 70% 18% at 48% 50%, color-mix(in oklch, var(--c1) 30%, transparent) 0%, transparent 70%),
+      linear-gradient(135deg, var(--c3), color-mix(in oklch, var(--c3) 60%, var(--c1) 20%));
+  }
+  .doc-preview-binary-star .doc-preview-accent {
+    background:
+      radial-gradient(circle at 35% 55%, color-mix(in oklch, var(--c1) 50%, transparent) 0%, transparent 14%),
+      radial-gradient(circle at 62% 45%, color-mix(in oklch, var(--c2) 50%, transparent) 0%, transparent 12%);
+    mix-blend-mode: screen;
+  }
+  .group:hover .doc-preview-binary-star .doc-preview-accent {
+    transform: scale(1.15);
+  }
+
+  .doc-preview-wormhole .doc-preview-base {
+    background:
+      radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 90%, white) 0%, var(--c1) 4%, var(--c2) 18%, color-mix(in oklch, var(--c2) 50%, var(--c3)) 38%, var(--c3) 70%),
+      conic-gradient(from 0deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 35%, transparent) 30deg, transparent 60deg, transparent 180deg, color-mix(in oklch, var(--c2) 40%, transparent) 210deg, transparent 240deg);
+  }
+  .doc-preview-wormhole .doc-preview-accent {
+    background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 50%, transparent) 90deg, transparent 180deg, color-mix(in oklch, var(--c2) 50%, transparent) 270deg, transparent 360deg);
+    mix-blend-mode: screen;
+    opacity: 0.6;
+  }
+  .group:hover .doc-preview-wormhole .doc-preview-accent {
+    transform: rotate(25deg) scale(1.1);
+  }
+
+  .docs-constellation {
+    position: absolute;
+    right: -40px;
+    bottom: -20px;
+    width: clamp(280px, 36vw, 520px);
+    height: auto;
+    opacity: 0.45;
+    pointer-events: none;
+    animation: cst-float 14s ease-in-out infinite;
+  }
+
+  :where(.dark) .docs-constellation {
+    opacity: 0.6;
+  }
+
+  @keyframes cst-float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-8px, -10px); }
+  }
+
+  .docs-starfield,
+  .docs-sparkles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .doc-star {
+    position: absolute;
+    border-radius: 9999px;
+    background: color-mix(in oklch, var(--color-brand-primary) 75%, transparent);
+    opacity: var(--o, 0.6);
+    box-shadow: 0 0 4px currentColor;
+    animation: star-twinkle 3s ease-in-out infinite;
+    will-change: opacity, transform;
+  }
+
+  :where(.dark) .doc-star {
+    background: color-mix(in oklch, var(--color-brand-quaternary) 90%, transparent);
+  }
+
+  @keyframes star-twinkle {
+    0%, 100% { opacity: calc(var(--o) * 0.35); transform: scale(0.85); }
+    50% { opacity: var(--o); transform: scale(1.15); }
+  }
+
+  .doc-sparkle {
+    position: absolute;
+    color: color-mix(in oklch, var(--color-brand-tertiary) 80%, transparent);
+    opacity: var(--o, 0.5);
+    line-height: 1;
+    will-change: transform;
+    animation:
+      sparkle-bob var(--bob-d, 8s) ease-in-out infinite var(--bob-delay, 0s),
+      sparkle-spin var(--spin-d, 20s) linear infinite var(--spin-dir, normal);
+  }
+
+  :where(.dark) .doc-sparkle {
+    color: color-mix(in oklch, var(--color-brand-tertiary) 95%, transparent);
+  }
+
+  @keyframes sparkle-bob {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(8px, -16px); }
+  }
+
+  @keyframes sparkle-spin {
+    from { rotate: 0deg; }
+    to { rotate: 360deg; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .docs-reveal,
+    .docs-card-reveal {
+      opacity: 1;
+    }
+    .doc-preview-layer,
+    .doc-star,
+    .doc-sparkle,
+    .docs-constellation {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { animate, inView, stagger } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
+  function initDocsIndex() {
+    if (!document.querySelector("main #main, main")) return;
+    const reduce = isMotionDisabled();
+
+    const intro = document.querySelectorAll<HTMLElement>(".docs-reveal");
+    if (intro.length) {
+      if (reduce) {
+        for (const el of intro) el.style.opacity = "1";
+      } else {
+        animate(
+          intro,
+          { opacity: [0, 1], transform: ["translateY(18px)", "translateY(0)"] },
+          { duration: 0.7, delay: stagger(0.08, { startDelay: 0.1 }), ease: [0.22, 1, 0.36, 1] },
+        );
+      }
+    }
+
+    const cards = document.querySelectorAll<HTMLElement>(".docs-card-reveal");
+    for (const el of cards) {
+      if (reduce) {
+        el.style.opacity = "1";
+        continue;
+      }
+      const delay = Number.parseInt((el.style.getPropertyValue("--reveal-delay") || "0").replace("ms", ""), 10) / 1000;
+      inView(
+        el,
+        () => {
+          animate(
+            el,
+            { opacity: [0, 1], transform: ["translateY(28px)", "translateY(0)"] },
+            { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
+          );
+        },
+        { amount: 0.15 },
+      );
+    }
+  }
+
+  initDocsIndex();
+  document.addEventListener("astro:page-load", initDocsIndex);
+  document.addEventListener(MOTION_EVENT, initDocsIndex);
+</script>

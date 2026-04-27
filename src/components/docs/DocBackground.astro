@@ -1,0 +1,277 @@
+---
+import type { DocTheme } from "@/lib/doc-themes";
+
+interface Props {
+  theme: DocTheme;
+}
+
+const { theme } = Astro.props;
+
+const STAR_COUNT = 140;
+
+function seeded(i: number, salt: number) {
+  const x = Math.sin(i * 928.371 + salt * 13.27) * 10000;
+  return x - Math.floor(x);
+}
+
+const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
+  const top = seeded(i, 1) * 100;
+  const left = seeded(i, 2) * 100;
+  const size = 0.5 + seeded(i, 3) * 1.6;
+  const opacity = 0.3 + seeded(i, 4) * 0.55;
+  const twinkleDur = 2.5 + seeded(i, 5) * 5;
+  const twinkleDelay = seeded(i, 6) * -8;
+  return { top, left, size, opacity, twinkleDur, twinkleDelay };
+});
+---
+
+<div
+  class="doc-bg"
+  data-doc-bg
+  data-variant={theme.key}
+  aria-hidden="true"
+  style={`--c1:${theme.c1};--c2:${theme.c2};--c3:${theme.c3};`}
+>
+  <span class="doc-bg-base"></span>
+  <span class="doc-bg-accent"></span>
+  <div class="doc-bg-stars">
+    {stars.map((s) => (
+      <span
+        class="doc-bg-star"
+        style={`top:${s.top}%;left:${s.left}%;width:${s.size}px;height:${s.size}px;--o:${s.opacity};animation-duration:${s.twinkleDur}s;animation-delay:${s.twinkleDelay}s;`}
+      ></span>
+    ))}
+  </div>
+  <span class="doc-bg-vignette"></span>
+</div>
+
+<style>
+  .doc-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    background: var(--c3);
+  }
+
+  .doc-bg-base,
+  .doc-bg-accent,
+  .doc-bg-vignette {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .doc-bg-vignette {
+    background: radial-gradient(ellipse at center, transparent 50%, color-mix(in oklch, var(--c3) 85%, black) 100%);
+    pointer-events: none;
+  }
+
+  .doc-bg-stars {
+    position: absolute;
+    inset: 0;
+  }
+
+  .doc-bg-star {
+    position: absolute;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.95);
+    opacity: var(--o, 0.6);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+    animation: doc-bg-twinkle 3s ease-in-out infinite;
+    will-change: opacity, transform;
+  }
+
+  @keyframes doc-bg-twinkle {
+    0%, 100% { opacity: calc(var(--o) * 0.4); transform: scale(0.85); }
+    50% { opacity: var(--o); transform: scale(1.15); }
+  }
+
+  .doc-bg[data-variant="solar-system"] .doc-bg-base {
+    background:
+      radial-gradient(circle at 22% 65%, var(--c1) 0%, var(--c2) 8%, transparent 28%),
+      radial-gradient(circle at 22% 65%, color-mix(in oklch, var(--c2) 60%, transparent) 0%, transparent 50%),
+      linear-gradient(160deg, color-mix(in oklch, var(--c3) 80%, var(--c2) 20%), var(--c3));
+  }
+  .doc-bg[data-variant="solar-system"] .doc-bg-accent {
+    background:
+      radial-gradient(circle at 22% 65%, transparent 22%, color-mix(in oklch, var(--c1) 18%, transparent) 24%, transparent 28%),
+      radial-gradient(circle at 22% 65%, transparent 36%, color-mix(in oklch, var(--c2) 14%, transparent) 38%, transparent 42%);
+    mix-blend-mode: screen;
+    transform-origin: 22% 65%;
+    animation: doc-bg-sun-breathe 7s ease-in-out infinite;
+  }
+
+  .doc-bg[data-variant="protoplanetary"] .doc-bg-base {
+    background:
+      radial-gradient(ellipse 80% 22% at 50% 60%, color-mix(in oklch, var(--c1) 35%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse 95% 28% at 50% 60%, color-mix(in oklch, var(--c2) 28%, transparent) 0%, transparent 75%),
+      linear-gradient(165deg, color-mix(in oklch, var(--c3) 70%, var(--c2) 30%), var(--c3));
+  }
+  .doc-bg[data-variant="protoplanetary"] .doc-bg-accent {
+    background:
+      radial-gradient(circle at 50% 60%, var(--c1) 0%, transparent 5%),
+      radial-gradient(ellipse 95% 26% at 50% 60%, transparent 60%, color-mix(in oklch, var(--c1) 22%, transparent) 70%, transparent 85%);
+    mix-blend-mode: screen;
+    transform-origin: 50% 60%;
+    animation: doc-bg-disk-tilt 14s ease-in-out infinite;
+  }
+
+  .doc-bg[data-variant="asteroid-belt"] .doc-bg-base {
+    background:
+      radial-gradient(ellipse 120% 30% at 50% 55%, color-mix(in oklch, var(--c1) 30%, transparent) 0%, transparent 70%),
+      linear-gradient(150deg, var(--c3), color-mix(in oklch, var(--c3) 70%, var(--c2) 30%));
+  }
+  .doc-bg[data-variant="asteroid-belt"] .doc-bg-accent {
+    background-image:
+      radial-gradient(2px 2px at 14% 55%, var(--c1), transparent 70%),
+      radial-gradient(2.5px 2.5px at 28% 50%, var(--c1), transparent 70%),
+      radial-gradient(1.5px 1.5px at 42% 58%, var(--c2), transparent 70%),
+      radial-gradient(2px 2px at 58% 52%, var(--c1), transparent 70%),
+      radial-gradient(3px 3px at 70% 56%, var(--c1), transparent 70%),
+      radial-gradient(2px 2px at 84% 50%, var(--c2), transparent 70%),
+      radial-gradient(2.5px 2.5px at 18% 60%, var(--c2), transparent 70%),
+      radial-gradient(2px 2px at 50% 48%, var(--c1), transparent 70%),
+      radial-gradient(3px 3px at 92% 58%, var(--c1), transparent 70%);
+    opacity: 0.85;
+    animation: doc-bg-belt-drift 28s linear infinite;
+  }
+
+  .doc-bg[data-variant="nebula"] .doc-bg-base {
+    background:
+      radial-gradient(ellipse 60% 70% at 25% 35%, color-mix(in oklch, var(--c1) 55%, transparent) 0%, transparent 65%),
+      radial-gradient(ellipse 70% 60% at 78% 70%, color-mix(in oklch, var(--c2) 55%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 55% 25%, color-mix(in oklch, var(--c1) 30%, transparent) 0%, transparent 75%),
+      linear-gradient(160deg, var(--c3), color-mix(in oklch, var(--c3) 60%, var(--c2) 40%));
+    filter: saturate(115%);
+  }
+  .doc-bg[data-variant="nebula"] .doc-bg-accent {
+    background:
+      radial-gradient(ellipse 35% 45% at 45% 55%, color-mix(in oklch, var(--c1) 35%, transparent) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 35% at 70% 35%, color-mix(in oklch, var(--c2) 35%, transparent) 0%, transparent 70%);
+    mix-blend-mode: screen;
+    animation: doc-bg-nebula-drift 11s ease-in-out infinite;
+  }
+
+  .doc-bg[data-variant="pulsar"] .doc-bg-base {
+    background:
+      radial-gradient(circle at 50% 50%, var(--c1) 0%, transparent 6%),
+      conic-gradient(from 60deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 25%, transparent) 20deg, transparent 40deg, transparent 200deg, color-mix(in oklch, var(--c1) 25%, transparent) 220deg, transparent 240deg, transparent 360deg),
+      linear-gradient(180deg, var(--c3), color-mix(in oklch, var(--c3) 70%, var(--c2) 30%));
+  }
+  .doc-bg[data-variant="pulsar"] .doc-bg-accent {
+    background: radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 70%, transparent) 0%, transparent 8%);
+    mix-blend-mode: screen;
+    animation: doc-bg-pulse 3.5s ease-in-out infinite;
+  }
+
+  .doc-bg[data-variant="binary-star"] .doc-bg-base {
+    background:
+      radial-gradient(circle at 35% 55%, var(--c1) 0%, transparent 18%),
+      radial-gradient(circle at 62% 45%, var(--c2) 0%, transparent 16%),
+      radial-gradient(ellipse 70% 18% at 48% 50%, color-mix(in oklch, var(--c1) 22%, transparent) 0%, transparent 70%),
+      linear-gradient(135deg, var(--c3), color-mix(in oklch, var(--c3) 65%, var(--c1) 25%));
+  }
+  .doc-bg[data-variant="binary-star"] .doc-bg-accent {
+    background:
+      radial-gradient(circle at 35% 55%, color-mix(in oklch, var(--c1) 35%, transparent) 0%, transparent 14%),
+      radial-gradient(circle at 62% 45%, color-mix(in oklch, var(--c2) 35%, transparent) 0%, transparent 12%);
+    mix-blend-mode: screen;
+    transform-origin: 48% 50%;
+    animation: doc-bg-binary-orbit 8s ease-in-out infinite;
+  }
+
+  .doc-bg[data-variant="wormhole"] .doc-bg-base {
+    background:
+      radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 90%, white) 0%, var(--c1) 4%, var(--c2) 18%, color-mix(in oklch, var(--c2) 50%, var(--c3)) 38%, var(--c3) 70%);
+  }
+  .doc-bg[data-variant="wormhole"] .doc-bg-accent {
+    background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 40%, transparent) 90deg, transparent 180deg, color-mix(in oklch, var(--c2) 40%, transparent) 270deg, transparent 360deg);
+    mix-blend-mode: screen;
+    opacity: 0.55;
+    mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 70%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 70%);
+    animation: doc-bg-warp 22s linear infinite;
+  }
+
+  @keyframes doc-bg-pan {
+    from { transform: translate3d(-2%, 0, 0); }
+    to { transform: translate3d(2%, 0, 0); }
+  }
+  @keyframes doc-bg-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+  @keyframes doc-bg-pulse {
+    0%, 100% { transform: scale(0.9); opacity: 0.5; }
+    50% { transform: scale(1.6); opacity: 1; }
+  }
+  @keyframes doc-bg-sun-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.1); opacity: 1; }
+  }
+  @keyframes doc-bg-disk-tilt {
+    0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.85; }
+    50% { transform: rotate(-3deg) scale(1.04); opacity: 1; }
+  }
+  @keyframes doc-bg-nebula-drift {
+    0%, 100% { transform: scale(1) translate3d(-3%, 1%, 0); opacity: 0.7; }
+    50% { transform: scale(1.25) translate3d(4%, -2%, 0); opacity: 1; }
+  }
+  @keyframes doc-bg-belt-drift {
+    0% { transform: translate3d(-12%, 1%, 0); }
+    50% { transform: translate3d(12%, -1%, 0); }
+    100% { transform: translate3d(-12%, 1%, 0); }
+  }
+  @keyframes doc-bg-binary-orbit {
+    0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.8; }
+    50% { transform: rotate(8deg) scale(1.2); opacity: 1; }
+  }
+  @keyframes doc-bg-warp {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  .doc-bg[data-paused="true"] .doc-bg-accent,
+  .doc-bg[data-paused="true"] .doc-bg-star {
+    animation-play-state: paused;
+  }
+
+  @media (max-width: 640px) {
+    .doc-bg-accent {
+      animation: none;
+    }
+    .doc-bg-stars .doc-bg-star:nth-child(2n) {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .doc-bg-accent,
+    .doc-bg-star {
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  function initDocBg() {
+    const el = document.querySelector<HTMLElement>("[data-doc-bg]");
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          el.dataset.paused = String(!entry.isIntersecting);
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(el);
+  }
+
+  initDocBg();
+  document.addEventListener("astro:page-load", initDocBg);
+</script>

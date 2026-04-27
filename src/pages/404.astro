@@ -1,24 +1,261 @@
 ---
-import { Image } from "astro:assets";
-import iconDark from "@/assets/icon-dark.png";
-import iconLight from "@/assets/icon-light.png";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
 <BaseLayout title="404 — Page not found" description="The page you're looking for doesn't exist." noindex>
-  <main id="main" class="mx-auto flex min-h-[80vh] max-w-2xl flex-col items-center justify-center px-6 py-24 max-sm:pt-6 text-center">
-    <Image src={iconLight} alt="" class="h-40 w-auto sm:h-52 dark:hidden" />
-    <Image src={iconDark} alt="" class="h-40 w-auto sm:h-52 hidden dark:block" />
-    <p class="mt-8 text-5xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary sm:text-6xl">404</p>
-    <h1 class="mt-4 text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary sm:text-3xl">Lost in space</h1>
-    <p class="mt-4 text-lg text-brand-secondary dark:text-brand-tertiary">The page you're looking for has drifted out of orbit.</p>
-    <div class="mt-10 flex flex-wrap justify-center gap-4">
-      <a href="/" class="rounded-md bg-brand-tertiary px-5 py-2.5 text-sm font-semibold text-brand-primary transition hover:bg-brand-quaternary border-2 border-brand-tertiary">Back to home</a>
-      <a
-        href="/docs/getting-started"
-        class="rounded-md border border-brand-secondary/50 dark:border-brand-tertiary/50 px-5 py-2.5 text-sm font-semibold text-brand-primary dark:text-brand-quaternary transition hover:bg-brand-primary/10 dark:hover:bg-brand-quaternary/10"
-        >Read the docs</a
-      >
+  <main id="main" class="relative isolate flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 py-24 pt-32 text-center">
+    <div aria-hidden="true" class="aurora pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <span class="aurora-blob aurora-blob-1"></span>
+      <span class="aurora-blob aurora-blob-2"></span>
+      <span class="aurora-blob aurora-blob-3"></span>
+    </div>
+    <div aria-hidden="true" class="grid-overlay pointer-events-none absolute inset-0 -z-10"></div>
+    <div aria-hidden="true" class="floating-stars pointer-events-none absolute inset-0 -z-10">
+      <span class="float-star float-star-1">&#10022;</span>
+      <span class="float-star float-star-2">&#10022;</span>
+      <span class="float-star float-star-3">&#10022;</span>
+      <span class="float-star float-star-4">&#10022;</span>
+      <span class="float-star float-star-5">&#10022;</span>
+    </div>
+
+    <div class="mx-auto w-full max-w-3xl">
+      <div class="reveal flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+        <span aria-hidden="true" class="relative inline-block h-3 w-3">
+          <span class="absolute inset-0 rounded-full border border-current opacity-30"></span>
+          <span class="absolute inset-0 origin-center orbit-rotator">
+            <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_6px_currentColor]"></span>
+          </span>
+          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-1 w-1 rounded-full bg-current opacity-60"></span>
+        </span>
+        <span>Signal lost</span>
+        <span aria-hidden="true">&middot;</span>
+        <span>404</span>
+      </div>
+
+      <h1 class="reveal mt-10 font-heading font-bold tracking-tight leading-[0.88] text-[clamp(6rem,22vw,18rem)] hero-outline">
+        404
+      </h1>
+
+      <p class="reveal mt-6 font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary sm:text-3xl italic">
+        Lost in space
+      </p>
+
+      <p class="reveal mt-4 max-w-xl mx-auto text-lg text-brand-secondary dark:text-brand-tertiary">
+        The page you're looking for has drifted out of orbit.
+      </p>
+
+      <div class="reveal mt-10 flex flex-wrap justify-center gap-4">
+        <a
+          href="/"
+          data-magnetic
+          class="group relative inline-flex items-center gap-2 overflow-hidden rounded-full bg-brand-primary dark:bg-brand-quaternary px-7 py-3.5 text-sm font-semibold text-brand-quaternary dark:text-brand-primary transition will-change-transform"
+        >
+          <span class="relative z-10">Back to home</span>
+          <span aria-hidden="true" class="relative z-10 transition-transform group-hover:translate-x-1">&rarr;</span>
+          <span aria-hidden="true" class="absolute inset-0 z-0 translate-y-full bg-brand-secondary dark:bg-brand-tertiary transition-transform duration-500 ease-out group-hover:translate-y-0"></span>
+        </a>
+        <a
+          href="/docs"
+          data-magnetic
+          class="inline-flex items-center gap-2 rounded-full border border-brand-primary/30 dark:border-brand-quaternary/30 px-6 py-3.5 text-sm font-semibold text-brand-primary dark:text-brand-quaternary transition hover:border-brand-primary dark:hover:border-brand-quaternary will-change-transform backdrop-blur-xl"
+        >
+          Read the docs
+        </a>
+      </div>
     </div>
   </main>
 </BaseLayout>
+
+<style>
+  .reveal {
+    opacity: 0;
+  }
+
+  .hero-outline {
+    paint-order: stroke fill;
+    -webkit-text-stroke: 2px color-mix(in oklch, var(--color-brand-primary) 70%, transparent);
+    color: transparent;
+  }
+
+  :where(.dark) .hero-outline {
+    -webkit-text-stroke: 1.5px color-mix(in oklch, var(--color-brand-tertiary) 90%, transparent);
+  }
+
+  .aurora {
+    filter: blur(80px) saturate(140%);
+  }
+
+  .aurora-blob {
+    position: absolute;
+    display: block;
+    border-radius: 9999px;
+    opacity: 0.55;
+    mix-blend-mode: multiply;
+  }
+
+  :where(.dark) .aurora-blob {
+    mix-blend-mode: screen;
+    opacity: 0.45;
+  }
+
+  .aurora-blob-1 {
+    top: -10%;
+    left: -10%;
+    width: 55vw;
+    height: 55vw;
+    background: var(--color-brand-tertiary);
+    animation: aurora-1 18s ease-in-out infinite alternate;
+  }
+
+  .aurora-blob-2 {
+    top: 20%;
+    right: -15%;
+    width: 50vw;
+    height: 50vw;
+    background: var(--color-brand-secondary);
+    animation: aurora-2 22s ease-in-out infinite alternate;
+  }
+
+  .aurora-blob-3 {
+    bottom: -20%;
+    left: 25%;
+    width: 45vw;
+    height: 45vw;
+    background: var(--color-brand-primary);
+    opacity: 0.35;
+    animation: aurora-3 26s ease-in-out infinite alternate;
+  }
+
+  @keyframes aurora-1 {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(8vw, 6vh, 0) scale(1.15); }
+  }
+
+  @keyframes aurora-2 {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(-10vw, 4vh, 0) scale(1.1); }
+  }
+
+  @keyframes aurora-3 {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(6vw, -8vh, 0) scale(1.2); }
+  }
+
+  .grid-overlay {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-brand-primary) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-primary) 6%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
+  }
+
+  :where(.dark) .grid-overlay {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-brand-quaternary) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-quaternary) 6%, transparent) 1px, transparent 1px);
+  }
+
+  .floating-stars {
+    color: color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent);
+  }
+
+  .float-star {
+    position: absolute;
+    font-size: 1.25rem;
+    opacity: 0.5;
+    will-change: transform;
+  }
+
+  .float-star-1 { top: 18%; left: 8%; animation: float-bob 7s ease-in-out infinite, float-spin 18s linear infinite; }
+  .float-star-2 { top: 32%; right: 12%; font-size: 0.9rem; animation: float-bob 9s ease-in-out infinite -2s, float-spin 22s linear infinite reverse; }
+  .float-star-3 { bottom: 28%; left: 22%; font-size: 1.5rem; opacity: 0.35; animation: float-bob 11s ease-in-out infinite -4s, float-spin 26s linear infinite; }
+  .float-star-4 { top: 60%; right: 18%; font-size: 0.75rem; animation: float-bob 8s ease-in-out infinite -1s, float-spin 14s linear infinite reverse; }
+  .float-star-5 { bottom: 14%; right: 32%; font-size: 1rem; opacity: 0.4; animation: float-bob 10s ease-in-out infinite -3s, float-spin 20s linear infinite; }
+
+  @keyframes float-bob {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50% { transform: translateY(-14px) translateX(6px); }
+  }
+
+  @keyframes float-spin {
+    from { rotate: 0deg; }
+    to { rotate: 360deg; }
+  }
+
+  .orbit-rotator {
+    animation: orbit 4s linear infinite;
+  }
+
+  @keyframes orbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; }
+    .aurora-blob,
+    .float-star,
+    .orbit-rotator { animation: none; }
+  }
+</style>
+
+<script>
+  import { animate, stagger } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
+  const cleanups: Array<() => void> = [];
+
+  function reset() {
+    while (cleanups.length) {
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
+    }
+  }
+
+  function initReveals() {
+    const reduce = isMotionDisabled();
+    const els = document.querySelectorAll<HTMLElement>(".reveal");
+    if (!els.length) return;
+    if (reduce) {
+      for (const el of els) el.style.opacity = "1";
+      return;
+    }
+    animate(
+      els,
+      { opacity: [0, 1], transform: ["translateY(16px)", "translateY(0)"] },
+      { duration: 0.7, delay: stagger(0.09, { startDelay: 0.15 }), ease: [0.22, 1, 0.36, 1] },
+    );
+  }
+
+  function initMagnetic() {
+    const reduce = isMotionDisabled();
+    if (reduce) return;
+    const els = document.querySelectorAll<HTMLElement>("[data-magnetic]");
+    for (const el of els) {
+      const onMove = (event: PointerEvent) => {
+        const rect = el.getBoundingClientRect();
+        const x = event.clientX - (rect.left + rect.width / 2);
+        const y = event.clientY - (rect.top + rect.height / 2);
+        animate(el, { transform: `translate(${x * 0.18}px, ${y * 0.25}px)` }, { duration: 0.4, ease: "easeOut" });
+      };
+      const onLeave = () => {
+        animate(el, { transform: "translate(0px, 0px)" }, { duration: 0.5, ease: [0.22, 1, 0.36, 1] });
+      };
+      el.addEventListener("pointermove", onMove);
+      el.addEventListener("pointerleave", onLeave);
+      cleanups.push(() => {
+        el.removeEventListener("pointermove", onMove);
+        el.removeEventListener("pointerleave", onLeave);
+      });
+    }
+  }
+
+  function initAll() {
+    reset();
+    initReveals();
+    initMagnetic();
+  }
+
+  initAll();
+  document.addEventListener("astro:page-load", initAll);
+  document.addEventListener(MOTION_EVENT, initAll);
+</script>

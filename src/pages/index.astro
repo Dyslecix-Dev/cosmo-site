@@ -1,97 +1,73 @@
 ---
-import { Image } from "astro:assets";
-import { getCollection } from "astro:content";
-import logoNoIconDark from "@/assets/logo-no-icon-dark.png";
-import logoNoIconLight from "@/assets/logo-no-icon-light.png";
-import heroImage from "@/assets/placeholder-home-hero.png";
-import EntryCard from "@/components/blog/EntryCard.astro";
+import Charts from "@/components/sections/Charts.astro";
+import Features from "@/components/sections/Features.astro";
+import Hero from "@/components/sections/Hero.astro";
+import Marquee from "@/components/sections/Marquee.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-
-const featured = (await getCollection("blog", ({ data }) => !data.draft)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 3);
 ---
 
-<BaseLayout description="A minimal, use-case-agnostic Astro static site boilerplate.">
-  <main id="main">
-    <section class="relative overflow-hidden">
-      <Image src={heroImage} alt="" class="absolute inset-0 h-full w-full object-cover" widths={[960, 1920]} sizes="100vw" />
-      <div class="absolute inset-0 bg-brand-primary dark:bg-brand-quaternary"></div>
-      <div class="relative mx-auto max-w-3xl px-6 py-32 max-sm:pt-18 text-center text-brand-quaternary dark:text-brand-primary">
-        <Image src={logoNoIconDark} alt="Cosmo" class="mx-auto h-20 w-auto sm:h-24 dark:hidden" />
-        <Image src={logoNoIconLight} alt="Cosmo" class="mx-auto h-20 w-auto sm:h-24 hidden dark:block" />
-        <p class="mt-6 text-lg text-brand-quaternary/90 dark:text-brand-primary/90 sm:text-xl">
-          A minimal, use-case-agnostic Astro static site boilerplate — adapt it into a blog, docs site, landing page, storefront, or portfolio.
-        </p>
-        <div class="mt-10 flex flex-wrap justify-center gap-4">
-          <a href="/docs/getting-started" class="rounded-md bg-brand-tertiary px-5 py-2.5 text-sm font-semibold text-brand-primary transition hover:bg-brand-quaternary border-2 border-brand-tertiary"
-            >Get started</a
-          >
-          <a
-            href="/blog"
-            class="rounded-md border border-brand-quaternary/50 dark:border-brand-primary/50 px-5 py-2.5 text-sm font-semibold text-brand-quaternary dark:text-brand-primary transition hover:bg-brand-quaternary/10 dark:hover:bg-brand-primary/10"
-            >Read the blog</a
-          >
-        </div>
-      </div>
-    </section>
-
-    <section class="mx-auto max-w-6xl px-6 py-24">
-      <div class="text-center">
-        <h2 class="text-4xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Next Steps</h2>
-        <p class="mx-auto mt-4 max-w-2xl text-lg text-brand-secondary dark:text-brand-tertiary">
-          Everything you need to adapt cosmo for your project. Every example shipped with cosmo is meant to be renamed or deleted.
-        </p>
-      </div>
-      <div class="mt-12 space-y-6">
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-          <a
-            href="/docs/getting-started"
-            class="group rounded-lg border border-brand-secondary/40 bg-brand-tertiary bg-linear-to-br from-blue-200 to-transparent p-6 transition hover:border-blue-300 hover:bg-blue-200 duration-500"
-          >
-            <h3 class="text-lg font-bold text-brand-primary group-hover:text-blue-600">Get started</h3>
-            <p class="mt-2 text-sm text-brand-secondary">Learn the basics and set up your first page</p>
-          </a>
-          <a
-            href="/docs/rebranding-via-tokens"
-            class="group rounded-lg border border-brand-secondary/40 bg-brand-tertiary bg-linear-to-br from-purple-200 to-transparent p-6 transition hover:border-purple-300 hover:bg-purple-200 duration-500"
-          >
-            <h3 class="text-lg font-bold text-brand-primary group-hover:text-purple-600">Rebrand via tokens</h3>
-            <p class="mt-2 text-sm text-brand-secondary">Customize colors and design with Tailwind tokens</p>
-          </a>
-          <a
-            href="/docs/adding-a-content-collection"
-            class="group rounded-lg border border-brand-secondary/40 bg-brand-tertiary bg-linear-to-br from-emerald-200 to-transparent p-6 transition hover:border-emerald-300 hover:bg-emerald-200 duration-500"
-          >
-            <h3 class="text-lg font-bold text-brand-primary group-hover:text-emerald-600">Add a collection</h3>
-            <p class="mt-2 text-sm text-brand-secondary">Create new content types and organize your data</p>
-          </a>
-        </div>
-        <div class="flex flex-col gap-6 md:flex-row md:justify-center">
-          <a
-            href="/docs/wiring-rss"
-            class="group rounded-lg border border-brand-secondary/40 bg-brand-tertiary bg-linear-to-br from-orange-200 to-transparent p-6 transition hover:border-orange-300 hover:bg-orange-200 md:w-1/3 duration-500"
-          >
-            <h3 class="text-lg font-bold text-brand-primary group-hover:text-orange-600">Writing RSS</h3>
-            <p class="mt-2 text-sm text-brand-secondary">Set up RSS feeds for your blog and content</p>
-          </a>
-          <a
-            href="/docs/seo-checklist"
-            class="group rounded-lg border border-brand-secondary/40 bg-brand-tertiary bg-linear-to-br from-rose-200 to-transparent p-6 transition hover:border-rose-300 hover:bg-rose-200 md:w-1/3 duration-500"
-          >
-            <h3 class="text-lg font-bold text-brand-primary group-hover:text-rose-600">SEO checklist</h3>
-            <p class="mt-2 text-sm text-brand-secondary">Ensure your site is optimized for search engines</p>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="mx-auto max-w-6xl px-6 pb-24">
-      <div class="flex items-end justify-between">
-        <h2 class="text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Latest from the blog</h2>
-        <a href="/blog" class="text-sm font-semibold text-brand-secondary dark:text-brand-tertiary underline hover:no-underline">View all →</a>
-      </div>
-      <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {featured.map((entry) => <EntryCard entry={entry} />)}
-      </div>
-    </section>
+<BaseLayout description="Cosmo is the Astro launchpad you've been searching for. Tokens, MDX, content collections, sensible defaults.">
+  <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Cosmo",
+    "url": Astro.site?.toString(),
+    "logo": new URL("/favicon.svg", Astro.site).toString(),
+    "sameAs": [
+      "https://github.com/Dyslecix-Dev/cosmo",
+      "https://github.com/DyslecixDev",
+      "https://x.com/DyslecixDev",
+      "https://www.instagram.com/dyslecixdev/",
+    ],
+  })} />
+  <main id="main" class="overflow-x-clip">
+    <Hero />
+    <Marquee />
+    <Features />
+    <Charts />
   </main>
 </BaseLayout>
+
+<style is:global>
+  .reveal-on-scroll {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-on-scroll {
+      opacity: 1;
+    }
+  }
+</style>
+
+<script>
+  import { animate, inView } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
+  function initScrollReveals() {
+    const reduce = isMotionDisabled();
+    const scrollEls = document.querySelectorAll<HTMLElement>(".reveal-on-scroll");
+    for (const el of scrollEls) {
+      if (reduce) {
+        el.style.opacity = "1";
+        continue;
+      }
+      const delay = Number.parseInt(el.style.getPropertyValue("--reveal-delay") || "0", 10) / 1000;
+      inView(
+        el,
+        () => {
+          animate(
+            el,
+            { opacity: [0, 1], transform: ["translateY(28px)", "translateY(0)"] },
+            { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] },
+          );
+        },
+        { amount: 0.2 },
+      );
+    }
+  }
+
+  initScrollReveals();
+  document.addEventListener("astro:page-load", initScrollReveals);
+  document.addEventListener(MOTION_EVENT, initScrollReveals);
+</script>

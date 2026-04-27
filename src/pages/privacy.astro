@@ -1,0 +1,156 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const lastUpdated = "April 26, 2026";
+---
+
+<BaseLayout
+  title="Privacy Policy"
+  description="How the Cosmo site handles your data: cookieless analytics, no tracking, no third-party advertising."
+  noindex={true}
+>
+  <main id="main" class="mx-auto max-w-3xl px-6 py-24 pt-32 sm:py-32">
+    <header class="mb-12">
+      <div class="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+        <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_10px_currentColor]"></span>
+        <span>Legal</span>
+      </div>
+      <h1 class="mt-5 font-heading text-4xl sm:text-5xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">
+        Privacy Policy
+      </h1>
+      <p class="mt-4 text-sm text-brand-secondary dark:text-brand-tertiary">
+        Last updated {lastUpdated}
+      </p>
+    </header>
+
+    <div class="prose-cosmo space-y-10 text-brand-primary/90 dark:text-brand-quaternary/90">
+      <section>
+        <p class="text-lg leading-relaxed">
+          This site (<code>cosmo.dyslecix.dev</code>) is the marketing and
+          documentation home for the
+          <a href="https://github.com/Dyslecix-Dev/cosmo" class="underline decoration-brand-tertiary/60 underline-offset-4 hover:decoration-brand-tertiary" target="_blank" rel="noopener">Cosmo template</a>.
+          It is operated by Christian Demesa as an individual ("we", "us").
+          The site is static &mdash; no accounts, no forms, no comments, no
+          advertising &mdash; and we collect as little as technically
+          possible.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Cookies and local storage</h2>
+        <p class="mt-3 leading-relaxed">
+          We do not set any cookies. We use two <code>localStorage</code>
+          entries — <code>theme</code> to remember your light or dark mode
+          preference, and <code>motion</code> to remember whether you have
+          paused animations. Both values are only ever read and written
+          locally in your browser, never sent to a server, and not used to
+          identify you.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Cloudflare</h2>
+        <p class="mt-3 leading-relaxed">
+          We use
+          <a href="https://www.cloudflare.com/" class="underline decoration-brand-tertiary/60 underline-offset-4 hover:decoration-brand-tertiary" target="_blank" rel="noopener">Cloudflare, Inc.</a>
+          (United States) for hosting and content delivery (Cloudflare
+          Pages), cookieless web analytics (Cloudflare Web Analytics), and
+          cookieless real user monitoring of page performance (Cloudflare
+          Observatory). As a result, Cloudflare processes on our behalf:
+        </p>
+        <ul class="mt-3 list-disc space-y-2 pl-6 leading-relaxed">
+          <li>Standard request metadata &mdash; IP address, user agent, and timestamp &mdash; to deliver content, cache responses, and protect the site against abuse.</li>
+          <li>Aggregated, anonymized analytics such as page URL, referrer, approximate country, and browser/device type. No fingerprinting; no cross-site tracking.</li>
+          <li>Anonymized performance metrics for the page you loaded &mdash; Core Web Vitals (LCP, INP, CLS), navigation timing (TTFB, FCP), connection type, and approximate country.</li>
+        </ul>
+        <p class="mt-3 leading-relaxed">
+          We do not maintain our own server-side request logs, databases, or
+          analytics stores. See Cloudflare's
+          <a href="https://www.cloudflare.com/privacypolicy/" class="underline decoration-brand-tertiary/60 underline-offset-4 hover:decoration-brand-tertiary" target="_blank" rel="noopener">privacy policy</a>
+          for how it handles data as a processor.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Third-party content on this site</h2>
+        <p class="mt-3 leading-relaxed">
+          The landing page embeds a small badge image from
+          <a href="https://shields.io/" class="underline decoration-brand-tertiary/60 underline-offset-4 hover:decoration-brand-tertiary" target="_blank" rel="noopener">shields.io</a>
+          that displays this project's GitHub star count. When the page
+          loads, your browser fetches that image directly from
+          <code>img.shields.io</code>, so shields.io may receive standard
+          HTTP request metadata such as your IP address, user agent, and
+          referring page. We do not receive that data ourselves.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">International data transfers</h2>
+        <p class="mt-3 leading-relaxed">
+          The site is served from Cloudflare's global network, and request
+          data may be processed by Cloudflare in the United States and in
+          other countries where Cloudflare operates. If you are visiting
+          from the EU/EEA, the UK, or Switzerland, this transfer is
+          conducted under the European Commission's Standard Contractual
+          Clauses (SCCs) as part of Cloudflare's Data Processing Addendum.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Legal basis for processing (EU/UK GDPR)</h2>
+        <p class="mt-3 leading-relaxed">
+          Where the EU or UK GDPR applies, we rely on
+          <strong>legitimate interests</strong> (Article 6(1)(f) GDPR) as
+          the legal basis for the limited processing described above
+          &mdash; specifically, our interest in delivering the site
+          reliably, keeping it secure, and understanding aggregate usage and
+          performance. Because we use no cookies or other identifiers that
+          would require consent for these purposes, no consent banner is
+          shown.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Data retention</h2>
+        <p class="mt-3 leading-relaxed">
+          We do not retain any personal data ourselves. Data Cloudflare
+          processes on our behalf is retained according to Cloudflare's own
+          retention policies. If you contact us by email, that
+          correspondence remains in our email inbox until we delete it.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Your rights (EU/UK GDPR)</h2>
+        <p class="mt-3 leading-relaxed">
+          If the EU or UK GDPR applies to you, you have the rights of
+          access, rectification, erasure, restriction of processing, data
+          portability, and the right to object with respect to data
+          processed on our behalf. You also have the right to lodge a
+          complaint with your local supervisory authority (your national
+          data protection authority in the EU, or the Information
+          Commissioner's Office in the UK). To exercise any of these
+          rights, contact us at the address below.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Email contact</h2>
+        <p class="mt-3 leading-relaxed">
+          If you contact us by email, your message and email address are
+          processed by Google LLC as our email provider (Gmail). Google's
+          handling of that data is governed by its own privacy policy.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-heading text-2xl font-bold tracking-tight text-brand-primary dark:text-brand-quaternary">Contact</h2>
+        <p class="mt-3 leading-relaxed">
+          For questions about this policy or to exercise any of the rights
+          above, you can reach Christian Demesa at
+          <a href="mailto:dyslecixdev@gmail.com" class="underline decoration-brand-tertiary/60 underline-offset-4 hover:decoration-brand-tertiary">dyslecixdev@gmail.com</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+</BaseLayout>

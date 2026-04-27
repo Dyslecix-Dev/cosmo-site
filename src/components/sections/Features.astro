@@ -1,0 +1,271 @@
+---
+import { Image } from "astro:assets";
+
+import constellation from "@/assets/constellation.png";
+import satellite from "@/assets/satellite.png";
+
+const features = [
+  { title: "Tailwind v4 tokens", desc: "Re-skin the whole craft by editing one @theme block." },
+  { title: "MDX + custom callouts", desc: "Type-safe content collections with callouts wired in." },
+  { title: "Biome + Lefthook", desc: "One-tool lint/format with pre-commit and pre-push hooks pre-wired." },
+  { title: "Self-hosted fonts", desc: "Astro Font API + Fontsource. No third-party requests, fast LCP." },
+  { title: "Strict TypeScript", desc: "Strict mode, @/* aliases, and Zod-typed content collections checked on pre-push." },
+  { title: "View transitions + dark mode", desc: "Smooth client-side routing with a theme toggle that survives navigation." },
+];
+
+const sparkleSeed = (i: number, salt: number) => {
+  const x = Math.sin(i * 9301 + salt * 49297) * 233280;
+  return x - Math.floor(x);
+};
+const sparkles = Array.from({ length: 54 }).map((_, i) => {
+  const top = Math.round(sparkleSeed(i, 1) * 92 + 2);
+  const left = Math.round(sparkleSeed(i, 2) * 94 + 2);
+  const size = Math.round(sparkleSeed(i, 3) * 18 + 7);
+  const pulse = sparkleSeed(i, 4) < 0.55;
+  const delay = +(sparkleSeed(i, 5) * -4).toFixed(2);
+  const opacity = +(sparkleSeed(i, 6) * 0.5 + 0.35).toFixed(2);
+  return { top, left, size, pulse, delay, opacity };
+});
+---
+
+<section data-features-section class="relative overflow-hidden">
+  <div aria-hidden="true" class="features-sparkles pointer-events-none absolute inset-0 z-0 text-brand-tertiary">
+    {sparkles.map((s) => (
+      <span
+        class={`sparkle${s.pulse ? " pulse" : ""}`}
+        style={`top:${s.top}%;left:${s.left}%;width:${s.size}px;opacity:${s.opacity};animation-delay:${s.delay}s`}
+      >
+        <svg viewBox="0 0 512 512" fill="currentColor" class="h-full w-full"><path d="M208,512,155.62,372.38,16,320l139.62-52.38L208,128l52.38,139.62L400,320,260.38,372.38Z"/></svg>
+      </span>
+    ))}
+  </div>
+
+  <div aria-hidden="true" class="features-constellation pointer-events-none absolute z-0 right-2 sm:right-8 top-12 w-64 sm:w-80 opacity-30 dark:opacity-25">
+    <Image src={constellation} alt="" class="h-auto w-full" />
+  </div>
+
+  <div aria-hidden="true" data-bouncer class="features-satellite pointer-events-none absolute z-0 w-28 sm:w-36 lg:w-44 opacity-90 left-0 top-0">
+    <Image src={satellite} alt="" class="features-satellite-spin h-auto w-full" />
+  </div>
+
+  <div class="mx-auto max-w-6xl px-6 sm:px-10 py-32 relative z-10">
+    <div class="reveal-on-scroll grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-end">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">[ 01 / The cargo bay ]</p>
+        <h2 class="mt-4 font-heading text-4xl sm:text-6xl font-bold tracking-tight leading-[0.95]">
+          Stellar defaults
+          <span class="block italic font-normal text-brand-secondary dark:text-brand-tertiary whitespace-nowrap">Zero space junk</span>
+        </h2>
+      </div>
+      <p class="relative max-w-md text-brand-secondary dark:text-brand-tertiary lg:justify-self-end lg:text-right">
+        Cosmo is strapped with some default cargo to get you off the ground
+      </p>
+    </div>
+
+    <div class="relative mt-20">
+      <div aria-hidden="true" data-spotlight-overlay class="spotlight-overlay pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-300"></div>
+      <ul data-spotlight-grid class="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-brand-primary/10 dark:border-brand-quaternary/10">
+        {features.map((f, i) => (
+          <li
+            class="reveal-on-scroll relative border-b border-r border-brand-primary/10 dark:border-brand-quaternary/10 p-6 sm:p-8 backdrop-blur-sm"
+            style={`--reveal-delay: ${i * 50}ms`}
+          >
+            <div class="relative">
+              <h3 class="mt-6 font-heading text-xl font-bold tracking-tight">{f.title}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-brand-secondary dark:text-brand-tertiary">{f.desc}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .spotlight-overlay {
+    background: radial-gradient(
+      circle 320px at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+      color-mix(in oklch, var(--color-brand-tertiary) 32%, transparent),
+      transparent 72%
+    );
+  }
+
+  .feature-arrow {
+    animation: arrow-nudge 3.6s ease-in-out infinite;
+  }
+
+  @keyframes arrow-nudge {
+    0%, 60%, 100% { transform: translateX(0); }
+    30% { transform: translateX(4px); }
+  }
+
+  .features-constellation {
+    animation: constellation-drift 36s ease-in-out infinite;
+  }
+
+  @keyframes constellation-drift {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-12px, 10px) rotate(2deg); }
+  }
+
+  .features-satellite-spin {
+    animation: satellite-spin 40s linear infinite;
+    transform-origin: center;
+  }
+
+  @keyframes satellite-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .sparkle {
+    position: absolute;
+    display: inline-block;
+    aspect-ratio: 1 / 1;
+    opacity: 0.6;
+  }
+
+  .sparkle.pulse {
+    animation: sparkle-pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes sparkle-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.45; }
+    50% { transform: scale(1.4); opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feature-arrow,
+    .features-constellation,
+    .features-satellite-spin,
+    .sparkle.pulse {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
+  const cleanups: Array<() => void> = [];
+
+  function reset() {
+    while (cleanups.length) {
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
+    }
+  }
+
+  function initSpotlight() {
+    const grid = document.querySelector<HTMLElement>("[data-spotlight-grid]");
+    const overlay = document.querySelector<HTMLElement>("[data-spotlight-overlay]");
+    if (!grid || !overlay) return;
+    let gridRect = grid.getBoundingClientRect();
+    const onResize = () => { gridRect = grid.getBoundingClientRect(); };
+    const onMove = (event: PointerEvent) => {
+      overlay.style.setProperty("--spotlight-x", `${event.clientX - gridRect.left}px`);
+      overlay.style.setProperty("--spotlight-y", `${event.clientY - gridRect.top}px`);
+    };
+    const onEnter = () => { overlay.style.opacity = "1"; };
+    const onLeave = () => { overlay.style.opacity = "0"; };
+    window.addEventListener("resize", onResize);
+    grid.addEventListener("pointermove", onMove);
+    grid.addEventListener("pointerenter", onEnter);
+    grid.addEventListener("pointerleave", onLeave);
+    cleanups.push(() => {
+      window.removeEventListener("resize", onResize);
+      grid.removeEventListener("pointermove", onMove);
+      grid.removeEventListener("pointerenter", onEnter);
+      grid.removeEventListener("pointerleave", onLeave);
+    });
+  }
+
+  function initBouncer() {
+    const reduce = isMotionDisabled();
+    const bouncer = document.querySelector<HTMLElement>("[data-bouncer]");
+    const section = document.querySelector<HTMLElement>("[data-features-section]");
+    if (!bouncer || !section) return;
+
+    if (reduce) {
+      bouncer.style.transform = "translate(16px, 16px)";
+      return;
+    }
+
+    let w = bouncer.offsetWidth;
+    let h = bouncer.offsetHeight;
+    let maxX = Math.max(0, section.offsetWidth - w);
+    let maxY = Math.max(0, section.offsetHeight - h);
+
+    const onResize = () => {
+      w = bouncer.offsetWidth;
+      h = bouncer.offsetHeight;
+      maxX = Math.max(0, section.offsetWidth - w);
+      maxY = Math.max(0, section.offsetHeight - h);
+    };
+    window.addEventListener("resize", onResize);
+
+    let x = 40 + Math.random() * 120;
+    let y = 40 + Math.random() * 120;
+    let vx = (Math.random() < 0.5 ? -1 : 1) * (40 + Math.random() * 30);
+    let vy = (Math.random() < 0.5 ? -1 : 1) * (35 + Math.random() * 25);
+    let lastTime = performance.now();
+    let rafId = 0;
+    let visible = false;
+
+    const step = (now: number) => {
+      const dt = Math.min(0.05, (now - lastTime) / 1000);
+      lastTime = now;
+
+      x += vx * dt;
+      y += vy * dt;
+
+      if (x <= 0) { x = 0; vx = Math.abs(vx); }
+      else if (x >= maxX) { x = maxX; vx = -Math.abs(vx); }
+      if (y <= 0) { y = 0; vy = Math.abs(vy); }
+      else if (y >= maxY) { y = maxY; vy = -Math.abs(vy); }
+
+      bouncer.style.transform = `translate(${x}px, ${y}px)`;
+      rafId = window.requestAnimationFrame(step);
+    };
+
+    const start = () => {
+      if (rafId) return;
+      lastTime = performance.now();
+      rafId = window.requestAnimationFrame(step);
+    };
+
+    const stop = () => {
+      if (rafId) {
+        window.cancelAnimationFrame(rafId);
+        rafId = 0;
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          visible = entry.isIntersecting;
+          if (visible) start(); else stop();
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(section);
+    if (visible) start();
+
+    cleanups.push(() => {
+      window.removeEventListener("resize", onResize);
+      observer.disconnect();
+      stop();
+    });
+  }
+
+  function initAll() {
+    reset();
+    initSpotlight();
+    initBouncer();
+  }
+
+  initAll();
+  document.addEventListener("astro:page-load", initAll);
+  document.addEventListener(MOTION_EVENT, initAll);
+</script>

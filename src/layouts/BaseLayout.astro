@@ -2,6 +2,7 @@
 import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 
+import Footer from "@/components/Footer.astro";
 import Navbar from "@/components/Navbar.astro";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
@@ -11,10 +12,11 @@ interface Props {
   description?: string;
   image?: string;
   canonicalURL?: string;
+  ogType?: "website" | "article";
   noindex?: boolean;
 }
 
-const { title, description, image, canonicalURL, noindex } = Astro.props;
+const { title, description, image, canonicalURL, ogType, noindex } = Astro.props;
 ---
 
 <!doctype html>
@@ -22,40 +24,25 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <SEO title={title} description={description} image={image} canonicalURL={canonicalURL} noindex={noindex} />
-    {/* WARNING: preload fonts sparingly: drop one if a single font covers your above-the-fold content. */}
+    <SEO title={title} description={description} image={image} canonicalURL={canonicalURL} ogType={ogType} noindex={noindex} />
     <Font cssVariable="--font-space-mono" preload />
     <Font cssVariable="--font-roboto-mono" preload />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title="Your Site" href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preconnect" href="https://img.shields.io" />
     <meta name="theme-color" content="#f0f0f0" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#142e38" media="(prefers-color-scheme: dark)" />
-    <meta name="generator" content={Astro.generator} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Your Site",
+      "name": "Cosmo",
       "url": Astro.site?.toString(),
+      "inLanguage": "en",
     })} />
     <slot name="head" />
-    <!--
-      NOTE: View transitions. Remove this line to disable site-wide client-side
-      routing; pages will then use full browser navigation.
-    -->
     <ClientRouter />
-    <script is:inline>
-      function applyTheme() {
-        document.documentElement.classList.toggle(
-          "dark",
-          localStorage.theme === "dark" ||
-            (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches),
-        );
-      }
-      applyTheme();
-      document.addEventListener("astro:page-load", applyTheme);
-    </script>
+    <script is:inline src="/theme.js"></script>
   </head>
   <body class="min-h-screen bg-brand-quaternary dark:bg-brand-primary text-brand-primary dark:text-brand-quaternary antialiased">
     <a
@@ -66,5 +53,7 @@ const { title, description, image, canonicalURL, noindex } = Astro.props;
     </a>
     <Navbar />
     <slot />
+    <Footer />
+    <script is:inline defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2ac3323fca1d4fa3afcd3f6a28f5510e"}'></script>
   </body>
 </html>
