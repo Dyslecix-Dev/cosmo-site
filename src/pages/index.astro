@@ -7,6 +7,19 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
 <BaseLayout description="Cosmo is the Astro launchpad you've been searching for. Tokens, MDX, content collections, sensible defaults.">
+  <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Cosmo",
+    "url": Astro.site?.toString(),
+    "logo": new URL("/favicon.svg", Astro.site).toString(),
+    "sameAs": [
+      "https://github.com/Dyslecix-Dev/cosmo",
+      "https://github.com/DyslecixDev",
+      "https://x.com/DyslecixDev",
+      "https://www.instagram.com/dyslecixdev/",
+    ],
+  })} />
   <main id="main" class="overflow-x-clip">
     <Hero />
     <Marquee />

@@ -13,6 +13,7 @@ interface Props {
   image?: string;
   canonicalURL?: string;
   siteName?: string;
+  ogType?: "website" | "article";
   twitterCreator?: string;
   noindex?: boolean;
   nofollow?: boolean;
@@ -20,12 +21,13 @@ interface Props {
 
 const {
   title,
-  titleTemplate = "%s | Your Site",
-  titleDefault = "Your Site",
-  description = "A new site built with Cosmo.",
+  titleTemplate = "%s | Cosmo",
+  titleDefault = "Cosmo",
+  description = "Cosmo is the free Astro-powered launchpad for fast, scalable, static sites.",
   image = "/og-default-dark.png",
   canonicalURL = new URL(Astro.url.pathname, Astro.site).toString(),
-  siteName = "Your Site",
+  siteName = "Cosmo",
+  ogType = "website",
   twitterCreator,
   noindex = false,
   nofollow = false,
@@ -46,7 +48,7 @@ const resolvedTitle = title ?? titleDefault;
   openGraph={{
     basic: {
       title: resolvedTitle,
-      type: "website",
+      type: ogType,
       image: resolvedImage,
     },
     optional: {

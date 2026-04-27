@@ -2,6 +2,7 @@
 title: Wiring RSS
 description: Hook the RSS feed up to a content collection.
 order: 5
+updatedDate: 2026-04-26
 ---
 
 Cosmo ships with a stub RSS endpoint at `src/pages/rss.xml.js`. Until you wire it to a collection, the feed renders with zero items.
