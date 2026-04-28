@@ -123,7 +123,9 @@ html[data-motion="paused"] *::after {
   text-decoration-color: color-mix(in oklch, var(--color-brand-tertiary) 60%, transparent);
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  transition: color 150ms ease, text-decoration-color 150ms ease;
+  transition:
+    color 150ms ease,
+    text-decoration-color 150ms ease;
 }
 :where(.dark) .doc-prose a {
   color: var(--color-brand-tertiary);
@@ -211,15 +213,39 @@ html[data-motion="paused"] *::after {
   border-left-width: 4px;
   border-left-style: solid;
 }
-.callout-note    { --callout-fg: #1e3a8a; --callout-bg: #eff6ff; --callout-border: #3b82f6; }
-.callout-tip     { --callout-fg: #14532d; --callout-bg: #f0fdf4; --callout-border: #22c55e; }
-.callout-warning { --callout-fg: #78350f; --callout-bg: #fffbeb; --callout-border: #f59e0b; }
-.callout-danger  { --callout-fg: #7f1d1d; --callout-bg: #fef2f2; --callout-border: #ef4444; }
+.callout-note {
+  --callout-fg: #1e3a8a;
+  --callout-bg: #eff6ff;
+  --callout-border: #3b82f6;
+}
+.callout-tip {
+  --callout-fg: #14532d;
+  --callout-bg: #f0fdf4;
+  --callout-border: #22c55e;
+}
+.callout-warning {
+  --callout-fg: #78350f;
+  --callout-bg: #fffbeb;
+  --callout-border: #f59e0b;
+}
+.callout-danger {
+  --callout-fg: #7f1d1d;
+  --callout-bg: #fef2f2;
+  --callout-border: #ef4444;
+}
 
-.callout-label-note    { --callout-label: #1d4ed8; }
-.callout-label-tip     { --callout-label: #15803d; }
-.callout-label-warning { --callout-label: #92400e; }
-.callout-label-danger  { --callout-label: #b91c1c; }
+.callout-label-note {
+  --callout-label: #1d4ed8;
+}
+.callout-label-tip {
+  --callout-label: #15803d;
+}
+.callout-label-warning {
+  --callout-label: #92400e;
+}
+.callout-label-danger {
+  --callout-label: #b91c1c;
+}
 
 .callout,
 :where(.dark) .callout {

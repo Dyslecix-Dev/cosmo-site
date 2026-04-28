@@ -15,14 +15,7 @@ interface Props {
 }
 
 const { frontmatter } = Astro.props;
-const {
-  title,
-  description,
-  eyebrow = "Flight plan",
-  updatedDate,
-  noindex = false,
-  image,
-} = frontmatter;
+const { title, description, eyebrow = "Flight plan", updatedDate, noindex = false, image } = frontmatter;
 
 const updatedISO = updatedDate ? new Date(updatedDate).toISOString() : undefined;
 const updatedLabel = updatedDate
@@ -67,7 +60,7 @@ const ringCount = 4;
 
     <!-- Star field with radial streaks. Anchored to viewport. -->
     <div class="horizon-stars" data-horizon-stars>
-      {stars.map((s, i) => {
+      {stars.map((s, _) => {
         const xPct = 50 + Math.cos(s.angle) * s.radius;
         const yPct = 50 + Math.sin(s.angle) * s.radius;
         return (
