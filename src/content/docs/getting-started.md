@@ -1,8 +1,8 @@
 ---
 title: Getting started
-description: Clone cosmo, install dependencies, and run the dev server.
+description: Clone Cosmo, install dependencies, and run the dev server.
 order: 1
-updatedDate: 2026-04-27
+updatedDate: 2026-04-28
 ---
 
 Cosmo is a minimal Astro starter. This guide walks through scaffolding a new project from the template and running it locally.
@@ -10,14 +10,14 @@ Cosmo is a minimal Astro starter. This guide walks through scaffolding a new pro
 ## Prerequisites
 
 - Node 22 LTS or higher (see `.nvmrc`)
-- A Node package manager: **pnpm** (recommended), **npm**, or **yarn**. Examples below use pnpm; the npm and yarn equivalents work the same.
+- A Node package manager: **pnpm** (recommended), **npm**, or **yarn**. Cosmo ships a separate template variant per package manager — pick the one matching your tool below.
 
 ## Scaffold and install
 
 With pnpm:
 
 ```sh
-pnpm create astro@latest -- --template Dyslecix-Dev/cosmo/template my-site
+pnpm create astro@latest -- --template DyslecixDev/cosmo/template-pnpm my-site
 cd my-site
 pnpm install
 ```
@@ -25,7 +25,7 @@ pnpm install
 Or with npm:
 
 ```sh
-npm create astro@latest -- --template Dyslecix-Dev/cosmo/template my-site
+npm create astro@latest -- --template DyslecixDev/cosmo/template-npm my-site
 cd my-site
 npm install
 ```
@@ -33,7 +33,7 @@ npm install
 Or with yarn:
 
 ```sh
-yarn create astro --template Dyslecix-Dev/cosmo/template my-site
+yarn create astro --template DyslecixDev/cosmo/template-yarn my-site
 cd my-site
 yarn install
 ```

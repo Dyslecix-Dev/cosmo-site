@@ -33,7 +33,7 @@ const { Content, headings } = await render(entry);
 
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const theme = themeForDoc(entry.id);
-const editUrl = `https://github.com/Dyslecix-Dev/cosmo-site/edit/main/${entry.filePath}`;
+const editUrl = `https://github.com/DyslecixDev/cosmo-site/edit/main/${entry.filePath}`;
 
 const canonicalURL = new URL(`/docs/${entry.id}/`, Astro.site).toString();
 

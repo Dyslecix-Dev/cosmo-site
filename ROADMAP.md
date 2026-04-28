@@ -11,7 +11,7 @@ The phases below are coupled: **guides drive recipes**. We don't write a recipe 
 Before Phase 3 guides start scaffolding new repos, the upstream `cosmo` template is being updated to support **npm**, **yarn**, and **pnpm** equally. pnpm stays the first-line default in cosmo-site and template docs; npm and yarn are shown as alternatives so we don't turn users away.
 
 **Implications for guides and recipes:**
-- Scaffolding commands in guides use `pnpm create astro@latest -- --template Dyslecix-Dev/cosmo/template` as the default, with `npm create astro@latest …` / `yarn create astro …` shown alongside.
+- Scaffolding commands in guides use `pnpm create astro@latest -- --template DyslecixDev/cosmo/template` as the default, with `npm create astro@latest …` / `yarn create astro …` shown alongside.
 - Same pattern for `pnpm astro add <name>` install steps.
 - Lockfile policy and CI examples in `template/` need to either stay pnpm-default or document the three options. Decide once in the template repo, not per-guide.
 - This is a **template-level capability**, not a recipe. The "Package-manager comparisons" line under Out of scope below still holds.
@@ -41,7 +41,7 @@ breaks links.
 ### Order
 
 1. [x] **Docs site + landing page** — already shipped as cosmo.dyslecix.dev
-   ([Dyslecix-Dev/cosmo-site](https://github.com/Dyslecix-Dev/cosmo-site)).
+   ([DyslecixDev/cosmo-site](https://github.com/DyslecixDev/cosmo-site)).
    A short **"Built with cosmo"** writeup is queued (the cheapest guide we'll
    write — the artifact already exists; spine is the `git diff` between
    `cosmo/template` and `cosmo-site`). Include a "cosmo vs Starlight" callout
@@ -71,7 +71,7 @@ breaks links.
 - [ ] Decide the realistic example (real content for blog/portfolio; plausible
       product set for storefront).
 - [ ] Scaffold a new repo from cosmo via
-      `pnpm create astro@latest -- --template Dyslecix-Dev/cosmo/template`
+      `pnpm create astro@latest -- --template DyslecixDev/cosmo/template`
       (or `npm create astro@latest …` / `yarn create astro …`).
 - [ ] Build end-to-end. Delete cosmo's seed entries (`template/src/content/blog/*`)
       first — replace with real content.

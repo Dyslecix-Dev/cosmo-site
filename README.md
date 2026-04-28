@@ -1,6 +1,6 @@
 # cosmo-site
 
-The marketing and documentation site for the [Cosmo Astro template](https://github.com/Dyslecix-Dev/cosmo). Live at [cosmo.dyslecix.dev](https://cosmo.dyslecix.dev).
+The marketing and documentation site for the [Cosmo Astro template](https://github.com/DyslecixDev/cosmo). Live at [cosmo.dyslecix.dev](https://cosmo.dyslecix.dev).
 
 This repo is itself scaffolded from the Cosmo template — dogfooding it in production.
 
