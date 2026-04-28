@@ -7,6 +7,7 @@ interface FrontmatterShape {
   eyebrow?: string;
   updatedDate?: string;
   noindex?: boolean;
+  image?: string;
 }
 
 interface Props {
@@ -20,6 +21,7 @@ const {
   eyebrow = "Flight plan",
   updatedDate,
   noindex = false,
+  image,
 } = frontmatter;
 
 const updatedISO = updatedDate ? new Date(updatedDate).toISOString() : undefined;
@@ -59,7 +61,7 @@ const stars = Array.from({ length: 110 }, (_, i) => {
 const ringCount = 4;
 ---
 
-<BaseLayout title={title} description={description} noindex={noindex}>
+<BaseLayout title={title} description={description} noindex={noindex} image={image}>
   <div class="horizon-scene" aria-hidden="true">
     <div class="horizon-void"></div>
 

@@ -7,10 +7,10 @@
   --font-sans: var(--font-roboto-mono), ui-monospace, monospace;
   --font-heading: var(--font-space-mono), ui-monospace, monospace;
 
-  --color-brand-primary: oklch(22% 0.07 215);
-  --color-brand-secondary: oklch(42% 0.09 212);
-  --color-brand-tertiary: oklch(76% 0.09 188);
-  --color-brand-quaternary: oklch(94% 0 0);
+  --color-brand-primary: oklch(22% 0.07 215); /* rgb(0, 33, 46) */
+  --color-brand-secondary: oklch(42% 0.09 212); /* rgb(0, 89, 105) */
+  --color-brand-tertiary: oklch(76% 0.09 188); /* rgb(103, 196, 188) */
+  --color-brand-quaternary: oklch(94% 0 0); /* rgb(235, 235, 235) */
 }
 
 *,
