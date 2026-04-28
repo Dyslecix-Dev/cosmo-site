@@ -1,0 +1,462 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+interface FrontmatterShape {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  updatedDate?: string;
+  noindex?: boolean;
+}
+
+interface Props {
+  frontmatter: FrontmatterShape;
+}
+
+const { frontmatter } = Astro.props;
+const {
+  title,
+  description,
+  eyebrow = "Flight plan",
+  updatedDate,
+  noindex = false,
+} = frontmatter;
+
+const updatedISO = updatedDate ? new Date(updatedDate).toISOString() : undefined;
+const updatedLabel = updatedDate
+  ? new Date(updatedDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    })
+  : undefined;
+
+function seed(i: number, salt: number) {
+  const x = Math.sin(i * 928.371 + salt * 13.27) * 10000;
+  return x - Math.floor(x);
+}
+
+// Stars laid out radially around the disk centre. Each gets a polar angle and
+// radius; on scroll, the radius stretches and the star "streams" outward.
+const stars = Array.from({ length: 110 }, (_, i) => {
+  const angle = seed(i, 1) * Math.PI * 2;
+  const radius = 18 + seed(i, 2) * 75; // % from centre
+  const size = +(0.5 + seed(i, 3) * 1.6).toFixed(2);
+  const opacity = +(0.4 + seed(i, 4) * 0.5).toFixed(2);
+  const twinkleDur = +(2.5 + seed(i, 5) * 4).toFixed(2);
+  const twinkleDelay = +(seed(i, 6) * -8).toFixed(2);
+  return {
+    angle: +angle.toFixed(4),
+    radius: +radius.toFixed(2),
+    size,
+    opacity,
+    twinkleDur,
+    twinkleDelay,
+  };
+});
+
+const ringCount = 4;
+---
+
+<BaseLayout title={title} description={description} noindex={noindex}>
+  <div class="horizon-scene" aria-hidden="true">
+    <div class="horizon-void"></div>
+
+    <!-- Star field with radial streaks. Anchored to viewport. -->
+    <div class="horizon-stars" data-horizon-stars>
+      {stars.map((s, i) => {
+        const xPct = 50 + Math.cos(s.angle) * s.radius;
+        const yPct = 50 + Math.sin(s.angle) * s.radius;
+        return (
+          <span
+            class="horizon-star"
+            data-star-angle={s.angle.toString()}
+            data-star-radius={s.radius.toString()}
+            style={`top:${yPct.toFixed(2)}%;left:${xPct.toFixed(2)}%;width:${s.size}px;height:${s.size * 1.4}px;--o:${s.opacity};--rot:${(s.angle * 180 / Math.PI + 90).toFixed(2)}deg;animation-duration:${s.twinkleDur}s;animation-delay:${s.twinkleDelay}s;`}
+          ></span>
+        );
+      })}
+    </div>
+
+    <!-- Accretion disk -->
+    <div class="horizon-disk-wrap" data-horizon-disk>
+      {Array.from({ length: ringCount }, (_, i) => i).map((i) => (
+        <div class={`horizon-ring horizon-ring-${i}`}></div>
+      ))}
+      <div class="horizon-disk-glow"></div>
+      <div class="horizon-singularity"></div>
+    </div>
+
+    <div class="horizon-vignette"></div>
+  </div>
+
+  <main id="main" class="relative isolate overflow-x-clip pt-32 sm:pt-40 pb-40">
+    <div class="mx-auto w-full max-w-3xl px-6 sm:px-10">
+      <header class="horizon-reveal">
+        <div class="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.22em] text-orange-300">
+          <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-orange-300 shadow-[0_0_10px_currentColor]"></span>
+          <span>{eyebrow}</span>
+          <span aria-hidden="true" class="opacity-50">&middot;</span>
+        </div>
+
+        <h1 class="mt-6 font-heading font-bold tracking-tight leading-[0.9] text-[clamp(2.5rem,7vw,5.5rem)] text-white">
+          {title}
+        </h1>
+        {description && (
+          <p class="mt-6 max-w-2xl text-lg sm:text-xl text-white/75">
+            {description}
+          </p>
+        )}
+        {updatedISO && updatedLabel && (
+          <p class="mt-8 font-mono text-xs uppercase tracking-[0.22em] text-orange-300/85">
+            Last updated <time datetime={updatedISO}>{updatedLabel}</time>
+          </p>
+        )}
+      </header>
+
+      <article class="horizon-reveal horizon-card relative mt-16 rounded-3xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/40 dark:bg-brand-primary/40 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] p-6 sm:p-12">
+        <div aria-hidden="true" class="horizon-card-rim"></div>
+        <div class="doc-prose relative">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .horizon-scene {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Backdrop stays the same in both modes — like the themed docs backgrounds. */
+  .horizon-void {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(60, 20, 80, 0.45), transparent 60%),
+      radial-gradient(ellipse 60% 80% at 50% 50%, rgba(20, 10, 40, 0.6), transparent 70%),
+      linear-gradient(180deg, #02010a 0%, #060418 50%, #02010a 100%);
+  }
+
+  .horizon-stars {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+
+  .horizon-star {
+    position: absolute;
+    border-radius: 9999px;
+    background: rgba(255, 245, 230, 0.95);
+    box-shadow: 0 0 6px rgba(255, 200, 140, 0.6);
+    transform:
+      translate(calc(-50% + var(--dx, 0px)), calc(-50% + var(--dy, 0px)))
+      rotate(var(--rot, 0deg))
+      scaleY(var(--stretch, 1));
+    transform-origin: center;
+    opacity: var(--o, 0.6);
+    animation: horizon-twinkle 3s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes horizon-twinkle {
+    0%, 100% { opacity: calc(var(--o) * 0.55); }
+    50% { opacity: var(--o); }
+  }
+
+  /* ---- Accretion disk ---- */
+  .horizon-disk-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(110vw, 110vh);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%) rotate(var(--disk-rot, 0deg));
+    will-change: transform;
+  }
+
+  .horizon-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    mix-blend-mode: screen;
+    filter: blur(2px);
+  }
+
+  /* Multi-ring conic gradients with different speeds give the disk parallax depth. */
+  .horizon-ring-0 {
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(255, 130, 60, 0.55) 60deg,
+      rgba(255, 220, 140, 0.65) 90deg,
+      rgba(255, 130, 60, 0.55) 120deg,
+      transparent 180deg,
+      transparent 240deg,
+      rgba(255, 100, 50, 0.4) 300deg,
+      transparent 360deg
+    );
+    mask-image: radial-gradient(circle, transparent 22%, black 30%, black 44%, transparent 50%);
+    -webkit-mask-image: radial-gradient(circle, transparent 22%, black 30%, black 44%, transparent 50%);
+    animation: horizon-ring-spin 110s linear infinite;
+  }
+
+  .horizon-ring-1 {
+    background: conic-gradient(
+      from 30deg,
+      transparent 0deg,
+      rgba(255, 90, 40, 0.4) 80deg,
+      rgba(180, 60, 30, 0.3) 140deg,
+      transparent 220deg,
+      transparent 360deg
+    );
+    mask-image: radial-gradient(circle, transparent 28%, black 34%, black 42%, transparent 48%);
+    -webkit-mask-image: radial-gradient(circle, transparent 28%, black 34%, black 42%, transparent 48%);
+    animation: horizon-ring-spin 80s linear infinite reverse;
+  }
+
+  .horizon-ring-2 {
+    background: conic-gradient(
+      from 90deg,
+      transparent 0deg,
+      rgba(140, 70, 200, 0.35) 90deg,
+      rgba(200, 100, 240, 0.45) 150deg,
+      transparent 240deg,
+      transparent 360deg
+    );
+    mask-image: radial-gradient(circle, transparent 38%, black 44%, black 49%, transparent 54%);
+    -webkit-mask-image: radial-gradient(circle, transparent 38%, black 44%, black 49%, transparent 54%);
+    animation: horizon-ring-spin 140s linear infinite;
+  }
+
+  .horizon-ring-3 {
+    background: conic-gradient(
+      from 200deg,
+      transparent 0deg,
+      rgba(70, 140, 220, 0.22) 120deg,
+      transparent 240deg,
+      transparent 360deg
+    );
+    mask-image: radial-gradient(circle, transparent 44%, black 50%, black 54%, transparent 58%);
+    -webkit-mask-image: radial-gradient(circle, transparent 44%, black 50%, black 54%, transparent 58%);
+    animation: horizon-ring-spin 180s linear infinite reverse;
+  }
+
+  @keyframes horizon-ring-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .horizon-disk-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30%;
+    height: 30%;
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 220, 160, 0.35) 0%,
+      rgba(255, 120, 60, 0.18) 35%,
+      transparent 70%
+    );
+    filter: blur(20px);
+    mix-blend-mode: screen;
+  }
+
+  .horizon-singularity {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8%;
+    height: 8%;
+    transform: translate(-50%, -50%);
+    border-radius: 9999px;
+    background: radial-gradient(circle, #000 0%, #000 60%, rgba(0, 0, 0, 0) 75%);
+    box-shadow:
+      0 0 30px rgba(0, 0, 0, 0.9),
+      0 0 80px rgba(120, 60, 200, 0.25),
+      inset 0 0 20px rgba(255, 200, 140, 0.5);
+  }
+
+  .horizon-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 35%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* ---- Foreground content ---- */
+  .horizon-reveal { opacity: 0; }
+
+  .horizon-card {
+    transform:
+      translateY(calc(var(--scroll-lift, 0px) + var(--bob-y, 0px)))
+      scale(var(--scroll-scale, 1));
+    transform-origin: center 30%;
+    animation: horizon-card-bob 16s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes horizon-card-bob {
+    0%, 100% { --bob-y: 0px; }
+    50% { --bob-y: -5px; }
+  }
+
+  @property --bob-y {
+    syntax: "<length>";
+    initial-value: 0px;
+    inherits: false;
+  }
+
+  .horizon-card-rim {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 0% 0%, rgba(255, 130, 60, 0.18), transparent 55%),
+      radial-gradient(ellipse at 100% 100%, rgba(140, 70, 200, 0.18), transparent 55%);
+    mix-blend-mode: screen;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .horizon-reveal { opacity: 1; }
+    .horizon-card,
+    .horizon-ring,
+    .horizon-star {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { animate, stagger } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
+  let cleanup: (() => void) | null = null;
+
+  function initHorizon() {
+    cleanup?.();
+    cleanup = null;
+
+    const reduce = isMotionDisabled();
+
+    const reveals = document.querySelectorAll<HTMLElement>(".horizon-reveal");
+    if (reveals.length) {
+      if (reduce) {
+        for (const el of reveals) el.style.opacity = "1";
+      } else {
+        animate(
+          reveals,
+          { opacity: [0, 1], transform: ["translateY(28px)", "translateY(0)"] },
+          { duration: 0.9, delay: stagger(0.12, { startDelay: 0.15 }), ease: [0.22, 1, 0.36, 1] },
+        );
+      }
+    }
+
+    if (reduce) return;
+
+    const disk = document.querySelector<HTMLElement>("[data-horizon-disk]");
+    const singularity = document.querySelector<HTMLElement>(".horizon-singularity");
+    const starWrap = document.querySelector<HTMLElement>("[data-horizon-stars]");
+    const stars = starWrap
+      ? Array.from(starWrap.querySelectorAll<HTMLElement>(".horizon-star")).map((el) => ({
+          el,
+          angle: Number.parseFloat(el.dataset.starAngle || "0"),
+        }))
+      : [];
+    const card = document.querySelector<HTMLElement>(".horizon-card");
+
+    // Easing — exponential pull as you near the bottom (gravity intensifies).
+    const ease = (t: number) => t * t;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const linear = Math.min(1, Math.max(0, y / docHeight));
+      const progress = ease(linear);
+
+      // Disk: aggressive rotation + scale as you fall toward the singularity.
+      if (disk) {
+        const extraRot = linear * 720; // two full turns over the doc
+        const scale = 1 + progress * 0.6; // up to 1.6x
+        disk.style.transform = `translate(-50%, -50%) rotate(${extraRot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+      }
+
+      // Singularity grows toward you.
+      if (singularity) {
+        const sScale = 1 + progress * 2.4;
+        const glow = 0.5 + progress * 1.2;
+        singularity.style.transform = `translate(-50%, -50%) scale(${sScale.toFixed(3)})`;
+        singularity.style.filter = `brightness(${glow.toFixed(2)})`;
+      }
+
+      // Stars stream radially outward from the centre AND stretch into streaks.
+      // Outward push uses a window-diagonal as the unit so the effect scales
+      // across viewport sizes.
+      if (stars.length) {
+        const stretch = 1 + progress * 9;
+        const push = progress * Math.max(window.innerWidth, window.innerHeight) * 0.55;
+        for (const star of stars) {
+          const dx = Math.cos(star.angle) * push;
+          const dy = Math.sin(star.angle) * push;
+          star.el.style.setProperty("--stretch", stretch.toFixed(3));
+          star.el.style.setProperty("--dx", `${dx.toFixed(1)}px`);
+          star.el.style.setProperty("--dy", `${dy.toFixed(1)}px`);
+        }
+      }
+
+      // Content card gets pulled slightly toward centre and warped a hair —
+      // feels like the doc itself is succumbing to gravity.
+      if (card) {
+        const lift = -y * 0.06;
+        const cardScale = 1 - progress * 0.04;
+        card.style.setProperty("--scroll-lift", `${lift.toFixed(2)}px`);
+        card.style.setProperty("--scroll-scale", cardScale.toFixed(4));
+      }
+    };
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    cleanup = () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+      if (disk) disk.style.transform = "";
+      if (singularity) {
+        singularity.style.transform = "";
+        singularity.style.filter = "";
+      }
+      for (const star of stars) {
+        star.el.style.removeProperty("--stretch");
+        star.el.style.removeProperty("--dx");
+        star.el.style.removeProperty("--dy");
+      }
+      if (card) {
+        card.style.removeProperty("--scroll-lift");
+        card.style.removeProperty("--scroll-scale");
+      }
+    };
+  }
+
+  initHorizon();
+  document.addEventListener("astro:page-load", initHorizon);
+  document.addEventListener(MOTION_EVENT, initHorizon);
+</script>

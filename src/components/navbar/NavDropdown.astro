@@ -79,21 +79,43 @@ const { docs, pathname, isActive } = Astro.props;
 </li>
 
 <script>
+  function notifyState() {
+    const container = document.querySelector("[data-nav-pill]");
+    container?.dispatchEvent(new CustomEvent("dropdown:state", { bubbles: false }));
+  }
+
   function setOpen(dropdown: Element, open: boolean) {
     const toggle = dropdown.querySelector<HTMLButtonElement>("[data-dropdown-toggle]");
     const menu = dropdown.querySelector<HTMLElement>("[data-dropdown-menu]");
     const chevron = dropdown.querySelector<HTMLElement>("[data-dropdown-chevron]");
     if (!toggle || !menu) return;
+    const wasOpen = toggle.getAttribute("aria-expanded") === "true";
     toggle.setAttribute("aria-expanded", String(open));
     menu.dataset.open = String(open);
     if (chevron) chevron.dataset.open = String(open);
+    if (wasOpen !== open) notifyState();
   }
 
   function closeAllDropdowns() {
     for (const dd of document.querySelectorAll("[data-dropdown]")) setOpen(dd, false);
   }
 
-  function initDropdowns() {
+  function bindDocumentListeners() {
+    const w = window as unknown as { __dropdownDocBound?: boolean; __dropdownPointerAt?: number };
+    if (w.__dropdownDocBound) return;
+    w.__dropdownDocBound = true;
+
+    // Track pointer interactions on a dropdown toggle so the focusin handler
+    // can ignore the focus that the browser fires on mousedown — otherwise
+    // focusin opens the dropdown and the subsequent click immediately closes
+    // it (because click sees aria-expanded="true").
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target as Element | null;
+      if (target?.closest("[data-dropdown-toggle]")) {
+        w.__dropdownPointerAt = Date.now();
+      }
+    });
+
     document.addEventListener("click", (event) => {
       const target = event.target as Element | null;
       if (!target) return;
@@ -103,8 +125,13 @@ const { docs, pathname, isActive } = Astro.props;
         const dd = toggle.closest("[data-dropdown]");
         if (!dd) return;
         const isOpen = toggle.getAttribute("aria-expanded") === "true";
-        closeAllDropdowns();
-        if (!isOpen) setOpen(dd, true);
+        // Close any *other* open dropdowns first, then toggle this one.
+        // Closing this one and then re-opening it inside the same click would
+        // briefly fire the closed-state event and snap the pill to Home.
+        for (const other of document.querySelectorAll("[data-dropdown]")) {
+          if (other !== dd) setOpen(other, false);
+        }
+        setOpen(dd, !isOpen);
         return;
       }
 
@@ -123,15 +150,38 @@ const { docs, pathname, isActive } = Astro.props;
       }
     });
 
-    for (const dd of document.querySelectorAll<HTMLElement>("[data-dropdown]")) {
-      dd.addEventListener("focusin", () => setOpen(dd, true));
-      dd.addEventListener("focusout", (event) => {
-        const next = (event as FocusEvent).relatedTarget as Node | null;
-        if (!next || !dd.contains(next)) setOpen(dd, false);
-      });
-    }
+    // Delegated focusin/focusout so listeners survive Astro view transitions
+    // (NavDropdown markup is replaced on each page swap; document persists).
+    document.addEventListener("focusin", (event) => {
+      const target = event.target as Element | null;
+      const dd = target?.closest("[data-dropdown]");
+      if (!dd) return;
+      if (!target?.closest("[data-dropdown-toggle]")) return;
+      // Skip if a pointer interaction caused this focus — let the click
+      // handler decide; otherwise we'd open here, then the click would close.
+      if (Date.now() - (w.__dropdownPointerAt ?? 0) < 400) return;
+
+      for (const other of document.querySelectorAll("[data-dropdown]")) {
+        if (other !== dd) setOpen(other, false);
+      }
+      setOpen(dd, true);
+    });
+
+    document.addEventListener("focusout", (event) => {
+      const target = event.target as Element | null;
+      const dd = target?.closest("[data-dropdown]");
+      if (!dd) return;
+      const next = (event as FocusEvent).relatedTarget as Node | null;
+      if (!next || !dd.contains(next)) setOpen(dd, false);
+    });
+  }
+
+  function initDropdowns() {
+    bindDocumentListeners();
+    closeAllDropdowns();
+    notifyState();
   }
 
   initDropdowns();
-  document.addEventListener("astro:page-load", closeAllDropdowns);
+  document.addEventListener("astro:page-load", initDropdowns);
 </script>

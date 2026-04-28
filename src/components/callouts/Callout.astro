@@ -8,23 +8,23 @@ const { type = "note", title } = Astro.props;
 
 const styles: Record<NonNullable<Props["type"]>, { container: string; label: string; defaultTitle: string }> = {
   note: {
-    container: "border-blue-500 bg-blue-50 text-blue-900 dark:bg-blue-50 dark:text-blue-900",
-    label: "text-blue-700 dark:text-blue-700",
+    container: "callout-note",
+    label: "callout-label-note",
     defaultTitle: "Note",
   },
   tip: {
-    container: "border-green-500 bg-green-50 text-green-900 dark:bg-green-50 dark:text-green-900",
-    label: "text-green-700 dark:text-green-700",
+    container: "callout-tip",
+    label: "callout-label-tip",
     defaultTitle: "Tip",
   },
   warning: {
-    container: "border-amber-500 bg-amber-50 text-amber-900 dark:bg-amber-50 dark:text-amber-900",
-    label: "text-amber-800 dark:text-amber-800",
+    container: "callout-warning",
+    label: "callout-label-warning",
     defaultTitle: "Warning",
   },
   danger: {
-    container: "border-red-500 bg-red-50 text-red-900 dark:bg-red-50 dark:text-red-900",
-    label: "text-red-700 dark:text-red-700",
+    container: "callout-danger",
+    label: "callout-label-danger",
     defaultTitle: "Danger",
   },
 };
@@ -33,9 +33,10 @@ const s = styles[type];
 const heading = title ?? s.defaultTitle;
 ---
 
-<aside class:list={["not-prose my-6 border-l-4 rounded-r-md px-4 py-3", s.container]} role="note" aria-label={heading}>
+<aside class:list={["callout not-prose my-6 border-l-4 rounded-r-md px-4 py-3", s.container]} role="note" aria-label={heading}>
   <p class:list={["font-semibold text-sm uppercase tracking-wide mb-1", s.label]}>{heading}</p>
   <div class="text-sm leading-relaxed [&>p]:my-1">
     <slot />
   </div>
 </aside>
+

@@ -2,7 +2,7 @@
 title: Deploying
 description: Deploy a cosmo site to Cloudflare Pages, GitHub Pages, Netlify, or Vercel.
 order: 7
-updatedDate: 2026-04-26
+updatedDate: 2026-04-27
 ---
 
 import Callout from "@/components/callouts/Callout.astro";
@@ -13,12 +13,16 @@ Cosmo builds to fully static HTML, CSS, and JS in `./dist/`. Any static host wor
 Before deploying, set `site` in `astro.config.mjs` to the production URL you'll deploy to. The `SEO.astro` component throws at build time if it isn't set, and the sitemap and RSS feed both rely on it for absolute URLs.
 </Callout>
 
+<Callout type="note" title="Package manager">
+Examples below use **pnpm**. The template also supports **npm** and **yarn** — substitute `npm install` / `npm run build` or `yarn install` / `yarn build`, and use the matching lockfile (`package-lock.json` or `yarn.lock`) for cache and install commands.
+</Callout>
+
 ## Common build settings
 
 Every host below uses the same build inputs:
 
-- **Install command:** `pnpm install --frozen-lockfile`
-- **Build command:** `pnpm build`
+- **Install command:** `pnpm install --frozen-lockfile` (or `npm ci` / `yarn install --frozen-lockfile`)
+- **Build command:** `pnpm build` (or `npm run build` / `yarn build`)
 - **Output directory:** `dist`
 - **Node version:** `22 LTS` (matches `.nvmrc`)
 
@@ -101,7 +105,7 @@ GitHub Pages does not serve a `404.html` from arbitrary paths the way other host
    - **Publish directory:** `dist`
 4. Under **Site settings → Build & deploy → Environment**, add:
    - `NODE_VERSION` = `22`
-   - `NPM_FLAGS` = `--version` (this disables Netlify's default `npm install` so it falls through to pnpm)
+   - `NPM_FLAGS` = `--version` *(only if using pnpm — disables Netlify's default `npm install` so it falls through to pnpm; skip this if you're already using npm or yarn)*
 5. Optionally commit a `netlify.toml` to pin everything in the repo:
 
    ```toml
@@ -113,13 +117,13 @@ GitHub Pages does not serve a `404.html` from arbitrary paths the way other host
    NODE_VERSION = "22"
    ```
 
-Netlify auto-detects pnpm via `pnpm-lock.yaml` and installs it for you.
+Netlify auto-detects pnpm via `pnpm-lock.yaml` (or npm/yarn via their respective lockfiles) and installs the matching package manager for you.
 
 ## Vercel
 
 1. Push the repo to your Git provider.
 2. In Vercel, click **Add New → Project**, import the repo, and accept the auto-detected **Astro** preset.
-3. Vercel reads `pnpm-lock.yaml` and uses pnpm automatically. Defaults work:
+3. Vercel reads your lockfile (`pnpm-lock.yaml`, `package-lock.json`, or `yarn.lock`) and uses the matching package manager automatically. Defaults work:
    - **Build command:** `pnpm build`
    - **Output directory:** `dist`
    - **Install command:** `pnpm install`
