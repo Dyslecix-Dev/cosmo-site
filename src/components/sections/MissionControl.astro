@@ -1,0 +1,906 @@
+---
+const cards = [
+  {
+    href: "/built-with-cosmo",
+    code: "TX-001",
+    coords: "47.61° N · 122.33° W",
+    eyebrow: "Blueprint",
+    title: "How this site was built",
+    body: "Exact schematics on what was added and removed from the Cosmo template. Useful if you're plotting a marketing or docs site.",
+    cta: "Open the blueprint",
+    illustration: "blueprint" as const,
+  },
+  {
+    href: "/roadmap",
+    code: "TX-002",
+    coords: "BEARING 037 · MARK 12",
+    eyebrow: "Logbook",
+    title: "Where we're heading",
+    body: "Get a sneak peak on our next destination. Send up a flare via GitHub if you'd use Cosmo for something we haven't named yet.",
+    cta: "Read the logbook",
+    illustration: "trajectory" as const,
+  },
+];
+---
+
+<section data-mission-section class="relative overflow-hidden">
+  <div aria-hidden="true" class="mission-aurora-1 pointer-events-none absolute -z-0"></div>
+  <div aria-hidden="true" class="mission-aurora-2 pointer-events-none absolute -z-0"></div>
+
+  <div class="mx-auto max-w-6xl px-6 sm:px-10 py-32 relative z-10">
+    <div class="reveal-on-scroll grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-end">
+      <div>
+        <p class="font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">[ 03 / Mission control ]</p>
+        <h2 class="mt-4 font-heading text-4xl sm:text-6xl font-bold tracking-tight leading-[0.95]">
+          Where to next, captain?
+          <span class="block italic font-normal text-brand-secondary dark:text-brand-tertiary">Choose your transmission</span>
+        </h2>
+      </div>
+      <p class="relative max-w-md text-brand-secondary dark:text-brand-tertiary lg:justify-self-end lg:text-right">
+        Two short briefings — how Cosmo was used for this site, and upcoming features and plans.
+      </p>
+    </div>
+
+    <div
+      class="reveal-on-scroll mt-16 grid gap-8 md:grid-cols-[1.05fr_0.95fr] md:items-stretch"
+      data-mission-stage
+    >
+      <!-- ===== Tablet (left) — styled like an iPad (outer frame + inset screen) ===== -->
+      <div class="mission-tablet relative">
+        <!-- Outer device chrome: camera + home indicator -->
+        <span aria-hidden="true" class="mission-tablet-camera"></span>
+        <span aria-hidden="true" class="mission-tablet-home"></span>
+
+        <!-- Inset screen -->
+        <div class="mission-tablet-screen relative overflow-hidden">
+          <!-- HUD chrome on the screen -->
+          <span aria-hidden="true" class="mission-bracket mission-bracket-tl"></span>
+          <span aria-hidden="true" class="mission-bracket mission-bracket-tr"></span>
+          <span aria-hidden="true" class="mission-bracket mission-bracket-bl"></span>
+          <span aria-hidden="true" class="mission-bracket mission-bracket-br"></span>
+          <span aria-hidden="true" class="mission-tablet-grid pointer-events-none"></span>
+
+          <!-- Top status bar -->
+          <div class="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-6">
+            <div class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-brand-secondary dark:text-brand-tertiary">
+              <span aria-hidden="true" class="mission-pulse inline-block h-1.5 w-1.5 rounded-full bg-brand-secondary dark:bg-brand-tertiary"></span>
+              <span data-tablet-code>{cards[0].code}</span>
+              <span aria-hidden="true" class="opacity-50">//</span>
+              <span class="opacity-80">Active</span>
+            </div>
+            <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-brand-secondary/70 dark:text-brand-tertiary/70" data-tablet-eyebrow>{cards[0].eyebrow}</span>
+          </div>
+
+          <!-- Cycling slides -->
+          <div class="relative z-10 mt-6 mx-3 sm:mx-5" data-tablet-slides>
+            {cards.map((card, i) => (
+              <a
+                href={card.href}
+                class:list={[
+                  "mission-slide block",
+                  i === 0 ? "is-active" : "",
+                ]}
+                data-tablet-slide
+                data-index={i}
+              >
+                <span aria-hidden="true" class="mission-slide-hover-ring"></span>
+                <div class="relative">
+                  <h3 class="font-heading text-2xl sm:text-3xl font-bold tracking-tight leading-tight text-brand-primary dark:text-brand-quaternary">
+                    {card.title}
+                  </h3>
+                  <p class="mt-4 text-sm sm:text-base leading-relaxed text-brand-primary/75 dark:text-brand-quaternary/75">
+                    {card.body}
+                  </p>
+
+                  <div class="mt-7 flex items-end justify-between gap-4">
+                    <span class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-brand-secondary dark:text-brand-tertiary">
+                      <span>{card.cta}</span>
+                      <span aria-hidden="true" class="mission-arrow inline-block transition-transform duration-300">&rarr;</span>
+                    </span>
+                    <span class="font-mono text-[9px] uppercase tracking-[0.22em] text-brand-primary/40 dark:text-brand-quaternary/35 text-right">{card.coords}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <!-- Pagination + progress -->
+          <div class="relative z-10 mt-8 px-6 sm:px-8 pb-6 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2" role="tablist" aria-label="Transmissions">
+              {cards.map((card, i) => (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-label={`Show ${card.eyebrow}`}
+                  aria-selected={i === 0 ? "true" : "false"}
+                  data-tablet-dot
+                  data-index={i}
+                  class:list={[
+                    "mission-dot inline-flex h-2 w-8 rounded-full transition-all duration-300",
+                    i === 0
+                      ? "bg-brand-secondary dark:bg-brand-tertiary"
+                      : "bg-brand-primary/15 dark:bg-brand-quaternary/15 hover:bg-brand-primary/30 dark:hover:bg-brand-quaternary/30",
+                  ]}
+                ></button>
+              ))}
+            </div>
+            <span class="font-mono text-[9px] uppercase tracking-[0.22em] text-brand-primary/40 dark:text-brand-quaternary/35">
+              <span data-tablet-counter>01</span> / 02
+            </span>
+          </div>
+
+          <!-- Auto-advance progress bar -->
+          <div class="absolute bottom-0 left-0 right-0 h-1 bg-brand-primary/10 dark:bg-brand-quaternary/10 z-10">
+            <div class="mission-progress h-full bg-brand-secondary dark:bg-brand-tertiary" data-tablet-progress></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Holographic projector (right) ===== -->
+      <div class="mission-holo relative">
+        <!-- Soft beam glow rising from the base -->
+        <span aria-hidden="true" class="mission-holo-beam pointer-events-none"></span>
+
+        <!-- Floor scanlines -->
+        <span aria-hidden="true" class="mission-holo-scanlines pointer-events-none"></span>
+
+        <!-- Rotating projection stage -->
+        <div class="mission-holo-stage relative" data-holo-stage>
+          {cards.map((card, i) => (
+            <div
+              class:list={["mission-holo-frame", i === 0 ? "is-active" : ""]}
+              data-holo-frame
+              data-index={i}
+              aria-hidden={i === 0 ? "false" : "true"}
+            >
+              <div class="mission-holo-spinner">
+                {card.illustration === "blueprint" && (
+                  <svg viewBox="0 0 320 320" aria-hidden="true" class="mission-holo-svg">
+                    <g stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <!-- rocket body -->
+                      <path d="M160 40 C 184 80, 196 130, 196 170 L 196 215 L 124 215 L 124 170 C 124 130, 136 80, 160 40 Z" />
+                      <!-- nose porthole -->
+                      <circle cx="160" cy="100" r="11" />
+                      <circle cx="160" cy="100" r="4" stroke-opacity="0.6" />
+                      <!-- mid window -->
+                      <rect x="144" y="138" width="32" height="18" rx="2" />
+                      <line x1="144" y1="147" x2="176" y2="147" stroke-opacity="0.4" />
+                      <!-- fins -->
+                      <path d="M124 170 L 92 230 L 124 215 Z" />
+                      <path d="M196 170 L 228 230 L 196 215 Z" />
+                      <!-- exhaust ring -->
+                      <ellipse cx="160" cy="222" rx="32" ry="6" stroke-opacity="0.55" />
+                      <ellipse cx="160" cy="232" rx="42" ry="8" stroke-opacity="0.3" stroke-dasharray="3 5" />
+                      <!-- orbit ring around rocket -->
+                      <circle cx="160" cy="140" r="120" stroke-opacity="0.2" stroke-dasharray="4 8" stroke-width="1" />
+                    </g>
+                  </svg>
+                )}
+                {card.illustration === "trajectory" && (
+                  <svg viewBox="0 0 320 320" aria-hidden="true" class="mission-holo-svg">
+                    <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <!-- planet -->
+                      <circle cx="160" cy="170" r="60" stroke-width="2" />
+                      <ellipse cx="160" cy="170" rx="60" ry="18" stroke-width="1.5" stroke-opacity="0.55" />
+                      <ellipse cx="160" cy="170" rx="80" ry="22" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="3 6" />
+                      <!-- orbital trajectory loops -->
+                      <ellipse cx="160" cy="170" rx="105" ry="38" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="2 5" />
+                      <ellipse cx="160" cy="170" rx="125" ry="60" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="2 5" transform="rotate(20 160 170)" />
+                      <!-- waypoints -->
+                      <g fill="currentColor">
+                        <circle cx="60" cy="170" r="4" />
+                        <circle cx="265" cy="160" r="5" />
+                        <circle cx="200" cy="100" r="3" />
+                      </g>
+                    </g>
+                  </svg>
+                )}
+              </div>
+            </div>
+          ))}
+
+          <!-- Hologram artifacts overlay (scanline + chromatic flicker) -->
+          <span aria-hidden="true" class="mission-holo-glitch pointer-events-none"></span>
+        </div>
+
+        <!-- Projector base -->
+        <div aria-hidden="true" class="mission-holo-base">
+          <div class="mission-holo-base-disc"></div>
+          <div class="mission-holo-base-rim"></div>
+          <div class="mission-holo-base-glow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mission-aurora-1 {
+    top: 10%;
+    left: -10%;
+    width: 50vw;
+    height: 50vw;
+    border-radius: 9999px;
+    filter: blur(120px) saturate(140%);
+    opacity: 0.18;
+    background: radial-gradient(circle, var(--color-brand-tertiary) 0%, transparent 70%);
+  }
+
+  .mission-aurora-2 {
+    bottom: 5%;
+    right: -8%;
+    width: 45vw;
+    height: 45vw;
+    border-radius: 9999px;
+    filter: blur(120px) saturate(140%);
+    opacity: 0.14;
+    background: radial-gradient(circle, var(--color-brand-secondary) 0%, transparent 70%);
+  }
+
+  /* ============ Tablet (iPad-style device frame) ============
+     Bezel and screen *invert between modes*:
+       light mode  → dark bezel  + light screen
+       dark mode   → light bezel + dark screen
+  */
+  .mission-tablet {
+    /* Light mode default: dark metallic bezel. */
+    background:
+      linear-gradient(150deg,
+        color-mix(in oklch, var(--color-brand-primary) 60%, black) 0%,
+        color-mix(in oklch, var(--color-brand-primary) 80%, var(--color-brand-secondary)) 50%,
+        color-mix(in oklch, var(--color-brand-primary) 55%, black) 100%);
+    border: 1px solid color-mix(in oklch, var(--color-brand-tertiary) 18%, transparent);
+    border-radius: 32px;
+    padding: 14px;
+    box-shadow:
+      0 24px 70px -22px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 color-mix(in oklch, var(--color-brand-tertiary) 22%, transparent),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    min-height: 360px;
+  }
+  :global(.dark) .mission-tablet {
+    /* Dark mode: pale quaternary bezel with subtle gradient depth. */
+    background:
+      linear-gradient(150deg,
+        color-mix(in oklch, var(--color-brand-quaternary) 95%, var(--color-brand-tertiary)) 0%,
+        var(--color-brand-quaternary) 50%,
+        color-mix(in oklch, var(--color-brand-quaternary) 88%, var(--color-brand-secondary)) 100%);
+    border-color: color-mix(in oklch, var(--color-brand-secondary) 35%, transparent);
+    box-shadow:
+      0 24px 70px -22px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -1px 0 color-mix(in oklch, var(--color-brand-secondary) 25%, transparent);
+  }
+
+  /* Camera dot at top center of the bezel. Always reads as a dark lens. */
+  .mission-tablet-camera {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 30% 30%, color-mix(in oklch, var(--color-brand-tertiary) 35%, transparent), #000 70%);
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.9);
+    z-index: 6;
+  }
+
+  /* Home indicator pill at bottom center. Color flips with bezel. */
+  .mission-tablet-home {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    border-radius: 9999px;
+    background: color-mix(in oklch, var(--color-brand-tertiary) 30%, transparent);
+    z-index: 6;
+  }
+  :global(.dark) .mission-tablet-home {
+    /* Light bezel needs a darker indicator for contrast. */
+    background: color-mix(in oklch, var(--color-brand-secondary) 50%, transparent);
+  }
+
+  /* The "screen" — inset surface inside the device frame.
+     Light mode default → light surface (quaternary).
+     Dark mode → dark surface. */
+  .mission-tablet-screen {
+    background:
+      linear-gradient(135deg, color-mix(in oklch, var(--color-brand-quaternary) 96%, var(--color-brand-tertiary)) 0%, var(--color-brand-quaternary) 100%);
+    border: 1px solid color-mix(in oklch, var(--color-brand-secondary) 25%, transparent);
+    border-radius: 20px;
+    box-shadow:
+      inset 0 0 30px rgba(40, 60, 80, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    min-height: 332px;
+  }
+  :global(.dark) .mission-tablet-screen {
+    background:
+      linear-gradient(135deg, color-mix(in oklch, var(--color-brand-primary) 92%, var(--color-brand-secondary)) 0%, var(--color-brand-primary) 100%);
+    border-color: color-mix(in oklch, var(--color-brand-tertiary) 18%, transparent);
+    box-shadow:
+      inset 0 0 30px rgba(0, 0, 0, 0.35),
+      inset 0 1px 0 color-mix(in oklch, var(--color-brand-tertiary) 12%, transparent);
+  }
+
+  .mission-tablet-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-brand-secondary) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-secondary) 12%, transparent) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 90%);
+    pointer-events: none;
+  }
+  :global(.dark) .mission-tablet-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-brand-tertiary) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-tertiary) 6%, transparent) 1px, transparent 1px);
+  }
+
+  /* HUD corner brackets — color flips with screen surface. */
+  .mission-bracket {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: color-mix(in oklch, var(--color-brand-secondary) 60%, transparent);
+    border-style: solid;
+    border-width: 0;
+    z-index: 5;
+    pointer-events: none;
+  }
+  :global(.dark) .mission-bracket {
+    border-color: color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent);
+  }
+  .mission-bracket-tl { top: 10px; left: 10px; border-top-width: 1.5px; border-left-width: 1.5px; }
+  .mission-bracket-tr { top: 10px; right: 10px; border-top-width: 1.5px; border-right-width: 1.5px; }
+  .mission-bracket-bl { bottom: 10px; left: 10px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+  .mission-bracket-br { bottom: 10px; right: 10px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+  /* ========== Slides ========== */
+  [data-tablet-slides] {
+    position: relative;
+    min-height: 200px;
+  }
+
+  .mission-slide {
+    position: absolute;
+    inset: 0;
+    padding: 12px 16px;
+    border-radius: 14px;
+    opacity: 0;
+    pointer-events: none;
+    /* Default exit transition — opacity fade. The active slide overrides
+       this with a stepped glitch-in keyframe (see .is-active below). */
+    transition: opacity 350ms ease, background 250ms ease, box-shadow 250ms ease, transform 250ms ease;
+  }
+  .mission-slide.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    /* Stepped glitch-in animation runs each time the slide becomes active.
+       JS toggles a class to restart the animation. */
+    animation: mission-glitch-in 520ms steps(8, end);
+  }
+
+  /* ===== Hover state — make it obvious the slide is clickable ===== */
+  .mission-slide-hover-ring {
+    position: absolute;
+    /* Tuck the bottom edge up so the ring stops above the CTA row text. */
+    inset: 0 0 48px 0;
+    border-radius: inherit;
+    pointer-events: none;
+    border: 1px solid transparent;
+    box-shadow: 0 0 0 0 transparent;
+    transition: border-color 250ms ease, box-shadow 250ms ease, background 250ms ease;
+    background: transparent;
+  }
+  .mission-slide:hover .mission-slide-hover-ring,
+  .mission-slide:focus-visible .mission-slide-hover-ring {
+    border-color: color-mix(in oklch, var(--color-brand-secondary) 50%, transparent);
+    background: color-mix(in oklch, var(--color-brand-secondary) 8%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--color-brand-secondary) 25%, transparent),
+      0 0 30px -8px color-mix(in oklch, var(--color-brand-secondary) 55%, transparent),
+      inset 0 0 30px -10px color-mix(in oklch, var(--color-brand-secondary) 30%, transparent);
+  }
+  :global(.dark) .mission-slide:hover .mission-slide-hover-ring,
+  :global(.dark) .mission-slide:focus-visible .mission-slide-hover-ring {
+    border-color: color-mix(in oklch, var(--color-brand-tertiary) 50%, transparent);
+    background: color-mix(in oklch, var(--color-brand-tertiary) 6%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--color-brand-tertiary) 25%, transparent),
+      0 0 30px -8px color-mix(in oklch, var(--color-brand-tertiary) 55%, transparent),
+      inset 0 0 30px -10px color-mix(in oklch, var(--color-brand-tertiary) 30%, transparent);
+  }
+  .mission-slide:hover,
+  .mission-slide:focus-visible {
+    transform: translateY(-2px);
+  }
+  /* The hover-ring doubles as the focus indicator — suppress the default
+     browser outline so we don't render two stacked borders on tab focus. */
+  .mission-slide:focus {
+    outline: none;
+  }
+  .mission-slide:focus-visible {
+    outline: none;
+  }
+  .mission-slide:hover .mission-arrow,
+  .mission-slide:focus-visible .mission-arrow {
+    transform: translateX(6px);
+  }
+
+  /* ===== Glitch transition (steps + clip-path slices + RGB shift) ===== */
+  @keyframes mission-glitch-in {
+    0% {
+      opacity: 0.2;
+      clip-path: inset(0 100% 0 0);
+      transform: translate(6px, 0);
+      filter:
+        drop-shadow(3px 0 0 color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent))
+        drop-shadow(-3px 0 0 color-mix(in oklch, var(--color-brand-secondary) 70%, transparent));
+    }
+    14% {
+      opacity: 0.7;
+      clip-path: inset(20% 0 60% 0);
+      transform: translate(-5px, 0);
+    }
+    28% {
+      opacity: 0.4;
+      clip-path: inset(60% 0 10% 0);
+      transform: translate(4px, 0);
+    }
+    42% {
+      opacity: 0.85;
+      clip-path: inset(0 0 0 0);
+      transform: translate(-2px, 1px);
+      filter:
+        drop-shadow(4px 0 0 color-mix(in oklch, var(--color-brand-tertiary) 80%, transparent))
+        drop-shadow(-4px 0 0 color-mix(in oklch, var(--color-brand-secondary) 80%, transparent));
+    }
+    56% {
+      opacity: 0.55;
+      clip-path: inset(40% 0 20% 0);
+      transform: translate(2px, 0);
+    }
+    72% {
+      opacity: 0.95;
+      clip-path: inset(0);
+      transform: translate(-1px, 0);
+    }
+    86% {
+      opacity: 0.85;
+      transform: translate(0, 0);
+      filter: none;
+    }
+    100% {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: translate(0, 0);
+      filter: none;
+    }
+  }
+
+  /* Pagination dots */
+  .mission-dot {
+    cursor: pointer;
+    border: 0;
+    padding: 0;
+  }
+  .mission-dot:focus-visible {
+    outline: 2px solid var(--color-brand-tertiary);
+    outline-offset: 3px;
+  }
+
+  /* Auto-advance progress bar */
+  .mission-progress {
+    width: 0%;
+    transition: width 0ms linear;
+  }
+  .mission-progress.is-running {
+    width: 100%;
+    transition: width var(--cycle-ms, 6000ms) linear;
+  }
+
+  /* Live signal pulse */
+  .mission-pulse {
+    position: relative;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .mission-pulse::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    background: currentColor;
+    opacity: 0.4;
+    animation: mission-pulse-ring 2s ease-out infinite;
+  }
+  @keyframes mission-pulse-ring {
+    0% { transform: scale(0.6); opacity: 0.5; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+
+  /* ============ Holographic projector ============ */
+  .mission-holo {
+    perspective: 1000px;
+    perspective-origin: 50% 60%;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* Soft cone of light rising from the projector base.
+     Sits clearly *above* the base — bottom must clear the base height (56px)
+     plus the blur radius so the bloom doesn't bleed below the rim. */
+  .mission-holo-beam {
+    position: absolute;
+    bottom: 64px;
+    left: 50%;
+    width: 70%;
+    height: 70%;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--color-brand-tertiary) 32%, transparent) 0%,
+      color-mix(in oklch, var(--color-brand-tertiary) 8%, transparent) 60%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(180deg, black 0%, black 55%, transparent 95%);
+    mask-image: linear-gradient(180deg, black 0%, black 55%, transparent 95%);
+    clip-path: polygon(15% 100%, 85% 100%, 70% 0%, 30% 0%);
+    filter: blur(8px);
+    opacity: 0.7;
+    animation: mission-holo-beam-pulse 4.5s ease-in-out infinite;
+  }
+  @keyframes mission-holo-beam-pulse {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 0.78; }
+  }
+
+  /* Horizontal scanlines overlay across the whole holo area. */
+  .mission-holo-scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      color-mix(in oklch, var(--color-brand-tertiary) 14%, transparent) 2px,
+      color-mix(in oklch, var(--color-brand-tertiary) 14%, transparent) 3px
+    );
+    mix-blend-mode: screen;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* Stage holds frames; rotates on Y axis. */
+  .mission-holo-stage {
+    position: relative;
+    width: min(78%, 320px);
+    aspect-ratio: 1;
+    transform-style: preserve-3d;
+    z-index: 2;
+    margin-bottom: 18px;
+  }
+
+  .mission-holo-frame {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 500ms ease;
+  }
+  .mission-holo-frame.is-active {
+    opacity: 1;
+  }
+
+  /* Inner spinner does the actual Y-axis rotation. Backface visible so the
+     hologram appears double-sided (mirrored on the back, like a real holo). */
+  .mission-holo-spinner {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    animation: mission-holo-spin 11s linear infinite;
+    will-change: transform;
+  }
+  @keyframes mission-holo-spin {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+  }
+
+  .mission-holo-svg {
+    width: 100%;
+    height: 100%;
+    color: var(--color-brand-tertiary);
+    /* Holographic look: tertiary tint + outer glow + soft chromatic shift. */
+    filter:
+      drop-shadow(0 0 6px color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent))
+      drop-shadow(0 0 16px color-mix(in oklch, var(--color-brand-tertiary) 35%, transparent))
+      drop-shadow(2px 0 0 color-mix(in oklch, var(--color-brand-tertiary) 40%, transparent))
+      drop-shadow(-2px 0 0 color-mix(in oklch, var(--color-brand-secondary) 50%, transparent));
+    backface-visibility: visible;
+    /* Buggy hologram flicker — irregular pattern for "broken" feel. */
+    animation: mission-holo-flicker 6.3s steps(1, end) infinite;
+  }
+  @keyframes mission-holo-flicker {
+    0%   { opacity: 0.95; }
+    7%   { opacity: 0.45; }
+    8%   { opacity: 0.95; }
+    14%  { opacity: 0.95; }
+    15%  { opacity: 0.65; filter:
+            drop-shadow(0 0 6px color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent))
+            drop-shadow(0 0 16px color-mix(in oklch, var(--color-brand-tertiary) 35%, transparent))
+            drop-shadow(4px 0 0 color-mix(in oklch, var(--color-brand-tertiary) 60%, transparent))
+            drop-shadow(-4px 0 0 color-mix(in oklch, var(--color-brand-secondary) 70%, transparent)); }
+    16%  { opacity: 0.95; }
+    32%  { opacity: 0.95; }
+    33%  { opacity: 0.3; }
+    34%  { opacity: 0.85; }
+    51%  { opacity: 0.85; }
+    52%  { opacity: 0.55; }
+    53%  { opacity: 0.95; }
+    74%  { opacity: 0.95; }
+    75%  { opacity: 0.4; }
+    76%  { opacity: 0.95; }
+    100% { opacity: 0.95; }
+  }
+
+  /* Slow vertical scanline that sweeps top-to-bottom. */
+  .mission-holo-glitch {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in oklch, var(--color-brand-tertiary) 35%, transparent) 50%,
+      transparent 100%
+    );
+    height: 30%;
+    transform: translateY(-100%);
+    mix-blend-mode: screen;
+    animation: mission-holo-sweep 4.2s linear infinite;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+  @keyframes mission-holo-sweep {
+    /* Element height is 30% of stage; translate is in element-height units.
+       -100% → just above stage, 233% → bottom edge meets stage bottom. */
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(233%); }
+  }
+
+  /* Projector base — small disc + glowing rim. */
+  .mission-holo-base {
+    position: relative;
+    width: 60%;
+    max-width: 220px;
+    height: 56px;
+    z-index: 3;
+  }
+  .mission-holo-base-disc {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 30px;
+    border-radius: 50%;
+    background:
+      radial-gradient(ellipse at center, color-mix(in oklch, var(--color-brand-secondary) 90%, black) 0%, color-mix(in oklch, var(--color-brand-primary) 90%, black) 70%);
+    border: 1px solid color-mix(in oklch, var(--color-brand-tertiary) 35%, transparent);
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 color-mix(in oklch, var(--color-brand-tertiary) 25%, transparent);
+  }
+  .mission-holo-base-rim {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 6px;
+    border-radius: 50%;
+    background: color-mix(in oklch, var(--color-brand-tertiary) 80%, transparent);
+    box-shadow: 0 0 16px color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent);
+    animation: mission-holo-rim-pulse 3s ease-in-out infinite;
+  }
+  @keyframes mission-holo-rim-pulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+  }
+  .mission-holo-base-glow {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110%;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, color-mix(in oklch, var(--color-brand-tertiary) 50%, transparent) 0%, transparent 70%);
+    filter: blur(8px);
+  }
+
+  /* When motion is paused (toggle or OS pref), the glitch-in keyframe would
+     otherwise freeze the active slide at 0% — opacity 0.2 + clip-path hiding
+     the text. Skip the animation so the static is-active styles apply. */
+  :global(html[data-motion="paused"]) .mission-slide.is-active {
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mission-slide.is-active {
+      animation: none;
+    }
+    .mission-pulse::after,
+    .mission-holo-spinner,
+    .mission-holo-svg,
+    .mission-holo-glitch,
+    .mission-holo-beam,
+    .mission-holo-base-rim,
+    .mission-progress {
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
+  const CYCLE_MS = 6000;
+
+  const cleanups: Array<() => void> = [];
+
+  function reset() {
+    while (cleanups.length) {
+      try { cleanups.pop()?.(); } catch { /* fail silently */ }
+    }
+  }
+
+  function initMissionStage() {
+    reset();
+    const stage = document.querySelector<HTMLElement>("[data-mission-stage]");
+    if (!stage) return;
+
+    const slides = Array.from(stage.querySelectorAll<HTMLElement>("[data-tablet-slide]"));
+    const frames = Array.from(stage.querySelectorAll<HTMLElement>("[data-holo-frame]"));
+    const dots = Array.from(stage.querySelectorAll<HTMLButtonElement>("[data-tablet-dot]"));
+    const code = stage.querySelector<HTMLElement>("[data-tablet-code]");
+    const eyebrow = stage.querySelector<HTMLElement>("[data-tablet-eyebrow]");
+    const counter = stage.querySelector<HTMLElement>("[data-tablet-counter]");
+    const progress = stage.querySelector<HTMLElement>("[data-tablet-progress]");
+    if (!slides.length || !frames.length) return;
+
+    // Read tablet content from data already in DOM. Code/eyebrow text is
+    // pulled from the slide href markup we wrote — but simpler: look it up
+    // by indexed dataset on the slides parent. We just store metadata as
+    // plain fields here, mirroring the source frontmatter.
+    const meta = slides.map((slide) => {
+      // Use the eyebrow text rendered inside each illustration's adjacent
+      // siblings is awkward; instead derive from the data we control:
+      // each slide has an href and we can pick code/eyebrow from index.
+      const idx = Number.parseInt(slide.dataset.index || "0", 10);
+      // The two transmissions have stable codes/eyebrows; mirror them here
+      // so we don't have to scrape the DOM.
+      const TX = ["TX-001", "TX-002"];
+      const EYE = ["Blueprint", "Logbook"];
+      return { idx, code: TX[idx] ?? "TX-???", eyebrow: EYE[idx] ?? "" };
+    });
+
+    let active = 0;
+    let timer: number | null = null;
+    let paused = false;
+
+    const setActive = (next: number) => {
+      active = ((next % slides.length) + slides.length) % slides.length;
+      for (const slide of slides) {
+        const isActive = Number(slide.dataset.index) === active;
+        // Retrigger the glitch-in animation: removing then re-adding the
+        // class doesn't restart the keyframe by itself; force a reflow first.
+        if (isActive) {
+          slide.classList.remove("is-active");
+          void slide.offsetWidth;
+        }
+        slide.classList.toggle("is-active", isActive);
+      }
+      for (const frame of frames) {
+        const isActive = Number(frame.dataset.index) === active;
+        frame.classList.toggle("is-active", isActive);
+        frame.setAttribute("aria-hidden", isActive ? "false" : "true");
+      }
+      for (const dot of dots) {
+        const isActive = Number(dot.dataset.index) === active;
+        dot.setAttribute("aria-selected", isActive ? "true" : "false");
+        // Active state — secondary in light mode, tertiary in dark mode.
+        dot.classList.toggle("bg-brand-secondary", isActive);
+        dot.classList.toggle("dark:bg-brand-tertiary", isActive);
+        // Inactive state — primary tint in light mode, quaternary tint in dark.
+        dot.classList.toggle("bg-brand-primary/15", !isActive);
+        dot.classList.toggle("dark:bg-brand-quaternary/15", !isActive);
+        dot.classList.toggle("hover:bg-brand-primary/30", !isActive);
+        dot.classList.toggle("dark:hover:bg-brand-quaternary/30", !isActive);
+      }
+      const m = meta[active];
+      if (code && m) code.textContent = m.code;
+      if (eyebrow && m) eyebrow.textContent = m.eyebrow;
+      if (counter) counter.textContent = String(active + 1).padStart(2, "0");
+      restartProgress();
+    };
+
+    const restartProgress = () => {
+      if (!progress) return;
+      progress.classList.remove("is-running");
+      progress.style.setProperty("--cycle-ms", `${CYCLE_MS}ms`);
+      // Force reflow so the transition restarts.
+      void progress.offsetWidth;
+      if (!paused && !isMotionDisabled()) progress.classList.add("is-running");
+    };
+
+    const tick = () => {
+      if (paused) return;
+      setActive(active + 1);
+    };
+
+    const startTimer = () => {
+      if (timer) return;
+      timer = window.setInterval(tick, CYCLE_MS);
+    };
+    const stopTimer = () => {
+      if (timer) {
+        window.clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    const onPointerEnter = () => {
+      paused = true;
+      stopTimer();
+      if (progress) progress.classList.remove("is-running");
+    };
+    const onPointerLeave = () => {
+      paused = false;
+      restartProgress();
+      startTimer();
+    };
+
+    stage.addEventListener("pointerenter", onPointerEnter);
+    stage.addEventListener("pointerleave", onPointerLeave);
+    stage.addEventListener("focusin", onPointerEnter);
+    stage.addEventListener("focusout", onPointerLeave);
+
+    for (const dot of dots) {
+      const handler = () => {
+        const idx = Number.parseInt(dot.dataset.index || "0", 10);
+        setActive(idx);
+        // Restart cycle from the user's pick.
+        stopTimer();
+        if (!paused) startTimer();
+      };
+      dot.addEventListener("click", handler);
+      cleanups.push(() => dot.removeEventListener("click", handler));
+    }
+
+    setActive(0);
+    if (!isMotionDisabled()) startTimer();
+
+    cleanups.push(() => {
+      stopTimer();
+      stage.removeEventListener("pointerenter", onPointerEnter);
+      stage.removeEventListener("pointerleave", onPointerLeave);
+      stage.removeEventListener("focusin", onPointerEnter);
+      stage.removeEventListener("focusout", onPointerLeave);
+    });
+  }
+
+  initMissionStage();
+  document.addEventListener("astro:page-load", initMissionStage);
+  document.addEventListener(MOTION_EVENT, initMissionStage);
+</script>

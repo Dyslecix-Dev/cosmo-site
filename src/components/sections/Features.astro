@@ -5,12 +5,12 @@ import constellation from "@/assets/constellation.png";
 import satellite from "@/assets/satellite.png";
 
 const features = [
-  { title: "Tailwind v4 tokens", desc: "Re-skin the whole craft by editing one @theme block." },
+  { title: "Tailwind v4 tokens", desc: "Re-skin the whole site by editing one @theme block." },
   { title: "MDX + custom callouts", desc: "Type-safe content collections with callouts wired in." },
-  { title: "Biome + Lefthook", desc: "One-tool lint/format with pre-commit and pre-push hooks pre-wired." },
-  { title: "Self-hosted fonts", desc: "Astro Font API + Fontsource. No third-party requests, fast LCP." },
+  { title: "Biome + Lefthook", desc: "One lint/format tool with pre-commit and pre-push hooks." },
+  { title: "Self-hosted fonts", desc: "Astro Font API + Fontsource. No third-party requests and fast LCP." },
   { title: "Strict TypeScript", desc: "Strict mode, @/* aliases, and Zod-typed content collections checked on pre-push." },
-  { title: "View transitions + dark mode", desc: "Smooth client-side routing with a theme toggle that survives navigation." },
+  { title: "View transitions + dark mode", desc: "Smooth client-side routing with a persistent theme toggle." },
 ];
 
 const sparkleSeed = (i: number, salt: number) => {
@@ -63,7 +63,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     </div>
 
     <div class="relative mt-20">
-      <div aria-hidden="true" data-spotlight-overlay class="spotlight-overlay pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-300"></div>
+      <div aria-hidden="true" data-spotlight-overlay class="spotlight-overlay pointer-events-none absolute inset-0 z-20 opacity-0 transition-opacity duration-300"></div>
       <ul data-spotlight-grid class="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border-t border-l border-brand-primary/10 dark:border-brand-quaternary/10">
         {features.map((f, i) => (
           <li
@@ -159,20 +159,17 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     const grid = document.querySelector<HTMLElement>("[data-spotlight-grid]");
     const overlay = document.querySelector<HTMLElement>("[data-spotlight-overlay]");
     if (!grid || !overlay) return;
-    let gridRect = grid.getBoundingClientRect();
-    const onResize = () => { gridRect = grid.getBoundingClientRect(); };
     const onMove = (event: PointerEvent) => {
-      overlay.style.setProperty("--spotlight-x", `${event.clientX - gridRect.left}px`);
-      overlay.style.setProperty("--spotlight-y", `${event.clientY - gridRect.top}px`);
+      const rect = grid.getBoundingClientRect();
+      overlay.style.setProperty("--spotlight-x", `${event.clientX - rect.left}px`);
+      overlay.style.setProperty("--spotlight-y", `${event.clientY - rect.top}px`);
     };
     const onEnter = () => { overlay.style.opacity = "1"; };
     const onLeave = () => { overlay.style.opacity = "0"; };
-    window.addEventListener("resize", onResize);
     grid.addEventListener("pointermove", onMove);
     grid.addEventListener("pointerenter", onEnter);
     grid.addEventListener("pointerleave", onLeave);
     cleanups.push(() => {
-      window.removeEventListener("resize", onResize);
       grid.removeEventListener("pointermove", onMove);
       grid.removeEventListener("pointerenter", onEnter);
       grid.removeEventListener("pointerleave", onLeave);

@@ -7,7 +7,7 @@ import astronaut from "@/assets/astronaut.png";
 <section class="charts-section relative border-t border-brand-primary/10 dark:border-brand-quaternary/10 overflow-hidden">
   <div aria-hidden="true" class="charts-gradient pointer-events-none absolute inset-0 z-0"></div>
   <div aria-hidden="true" class="charts-dots pointer-events-none absolute inset-0 z-0"></div>
-  <div class="mx-auto max-w-6xl px-6 sm:px-10 py-32 relative">
+  <div class="mx-auto max-w-6xl px-6 sm:px-10 py-20 sm:py-32 relative">
     <p class="reveal-on-scroll font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">[ 02 / Star charts ]</p>
     <a
       href="/docs"
@@ -21,11 +21,11 @@ import astronaut from "@/assets/astronaut.png";
       </h2>
     </a>
 
-    <div class="mt-8 grid gap-8 sm:grid-cols-[1fr_auto] sm:items-center">
-      <p class="reveal-on-scroll max-w-xl text-brand-secondary dark:text-brand-tertiary">
+    <div class="mt-8 grid gap-6 sm:gap-8 sm:grid-cols-[1fr_auto] sm:items-center">
+      <p class="reveal-on-scroll max-w-xl text-brand-secondary dark:text-brand-tertiary order-2 sm:order-1">
         A friendly flight path from first launch to safe landing — learn theming, collections, SEO, and everything in between
       </p>
-      <div aria-hidden="true" class="hero-astronaut w-32 sm:w-40 lg:w-48 mx-auto sm:mx-0 sm:ml-auto">
+      <div aria-hidden="true" class="hero-astronaut w-24 sm:w-40 lg:w-48 mx-auto sm:mx-0 sm:ml-auto order-1 sm:order-2">
         <Image src={astronaut} alt="" class="h-auto w-full" />
       </div>
     </div>
