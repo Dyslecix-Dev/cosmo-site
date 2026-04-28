@@ -2,12 +2,12 @@
 title: Adding a content collection
 description: Define a new Astro content collection with a zod schema and render it.
 order: 4
-updatedDate: 2026-04-26
+updatedDate: 2026-04-28
 ---
 
 import Callout from "@/components/callouts/Callout.astro";
 
-Cosmo ships with two example collections — `blog` and `docs` — both wired up in `src/content.config.ts`. Add your own by following the same pattern.
+Cosmo ships with one example collection — `blog` — wired up in `src/content.config.ts`. Add your own by following the same pattern.
 
 ## 1. Define the schema
 
@@ -29,7 +29,7 @@ const projects = defineCollection({
     }),
 });
 
-export const collections = { docs, blog, projects };
+export const collections = { blog, projects };
 ```
 
 ## 2. Add entries
@@ -64,7 +64,7 @@ const { Content } = await render(entry);
   Deleting a collection removes all its entries and routes. Back up or commit your changes to git before proceeding.
 </Callout>
 
-If you don't need `blog` or `docs`, delete:
+If you don't need `blog`, delete:
 
 - The collection block in `src/content.config.ts`
 - The `src/content/<name>/` directory

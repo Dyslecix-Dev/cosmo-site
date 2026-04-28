@@ -3,6 +3,7 @@ import Charts from "@/components/sections/Charts.astro";
 import Features from "@/components/sections/Features.astro";
 import Hero from "@/components/sections/Hero.astro";
 import Marquee from "@/components/sections/Marquee.astro";
+import MissionControl from "@/components/sections/MissionControl.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
@@ -14,7 +15,6 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     "url": Astro.site?.toString(),
     "logo": new URL("/favicon.svg", Astro.site).toString(),
     "sameAs": [
-      "https://github.com/Dyslecix-Dev/cosmo",
       "https://github.com/DyslecixDev",
       "https://x.com/DyslecixDev",
       "https://www.instagram.com/dyslecixdev/",
@@ -25,6 +25,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     <Marquee />
     <Features />
     <Charts />
+    <MissionControl />
   </main>
 </BaseLayout>
 

@@ -1,0 +1,450 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+interface FrontmatterShape {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  updatedDate?: string;
+  noindex?: boolean;
+  image?: string;
+}
+
+interface Props {
+  frontmatter: FrontmatterShape;
+}
+
+const { frontmatter } = Astro.props;
+const { title, description, eyebrow = "Logbook", updatedDate, noindex = false, image } = frontmatter;
+
+const updatedISO = updatedDate ? new Date(updatedDate).toISOString() : undefined;
+const updatedLabel = updatedDate
+  ? new Date(updatedDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      timeZone: "UTC",
+    })
+  : undefined;
+
+function seed(i: number, salt: number) {
+  const x = Math.sin(i * 928.371 + salt * 13.27) * 10000;
+  return x - Math.floor(x);
+}
+
+// Three depth layers for parallax. Counts kept moderate so total DOM stays light.
+const farStars = Array.from({ length: 90 }, (_, i) => ({
+  top: +(seed(i, 1) * 100).toFixed(2),
+  left: +(seed(i, 2) * 100).toFixed(2),
+  size: +(0.4 + seed(i, 3) * 0.7).toFixed(2),
+  opacity: +(0.25 + seed(i, 4) * 0.35).toFixed(2),
+}));
+
+const midStars = Array.from({ length: 45 }, (_, i) => ({
+  top: +(seed(i, 11) * 100).toFixed(2),
+  left: +(seed(i, 12) * 100).toFixed(2),
+  size: +(0.7 + seed(i, 13) * 0.9).toFixed(2),
+  opacity: +(0.35 + seed(i, 14) * 0.4).toFixed(2),
+}));
+
+const nearStars = Array.from({ length: 22 }, (_, i) => ({
+  top: +(seed(i, 21) * 100).toFixed(2),
+  left: +(seed(i, 22) * 100).toFixed(2),
+  size: +(1.0 + seed(i, 23) * 1.6).toFixed(2),
+  opacity: +(0.5 + seed(i, 24) * 0.4).toFixed(2),
+  twinkleDur: +(3 + seed(i, 25) * 4).toFixed(2),
+  twinkleDelay: +(seed(i, 26) * -8).toFixed(2),
+}));
+
+const bokeh = Array.from({ length: 16 }, (_, i) => ({
+  top: +(seed(i, 31) * 100).toFixed(2),
+  left: +(seed(i, 32) * 100).toFixed(2),
+  size: +(8 + seed(i, 33) * 18).toFixed(2),
+  opacity: +(0.08 + seed(i, 34) * 0.18).toFixed(2),
+  bobDur: +(9 + seed(i, 35) * 8).toFixed(2),
+  bobDelay: +(seed(i, 36) * -10).toFixed(2),
+  driftX: +(seed(i, 37) * 30 - 15).toFixed(2),
+  driftY: +(seed(i, 38) * 30 - 15).toFixed(2),
+}));
+---
+
+<BaseLayout title={title} description={description} noindex={noindex} image={image}>
+  <div class="porthole-scene" aria-hidden="true">
+    <div class="porthole-void"></div>
+    <div class="porthole-aurora porthole-aurora-1"></div>
+    <div class="porthole-aurora porthole-aurora-2"></div>
+    <div class="porthole-aurora porthole-aurora-3"></div>
+
+    <!-- A large drifting celestial body — gives an obvious depth cue. -->
+    <div class="porthole-planet" data-parallax-speed="0.22" data-parallax-rotate="40"></div>
+
+    <!-- Second body: green moon, starts off-screen bottom-left and rises into
+         frame as the user scrolls. High parallax speed gives a strong arrival. -->
+    <div class="porthole-planet porthole-planet-green" data-parallax-speed="1.55" data-parallax-rotate="-25"></div>
+
+    <div class="porthole-stars porthole-stars-far" data-parallax-speed="0.18" data-parallax-rotate="-6">
+      {farStars.map((s) => (
+        <span
+          class="porthole-star"
+          style={`top:${s.top}%;left:${s.left}%;width:${s.size}px;height:${s.size}px;opacity:${s.opacity};`}
+        ></span>
+      ))}
+    </div>
+
+    <div class="porthole-stars porthole-stars-mid" data-parallax-speed="0.42" data-parallax-rotate="10">
+      {midStars.map((s) => (
+        <span
+          class="porthole-star"
+          style={`top:${s.top}%;left:${s.left}%;width:${s.size}px;height:${s.size}px;opacity:${s.opacity};`}
+        ></span>
+      ))}
+    </div>
+
+    <div class="porthole-stars porthole-stars-near" data-parallax-speed="0.78" data-parallax-rotate="-18">
+      {nearStars.map((s) => (
+        <span
+          class="porthole-star porthole-star-bright"
+          style={`top:${s.top}%;left:${s.left}%;width:${s.size}px;height:${s.size}px;--o:${s.opacity};animation-duration:${s.twinkleDur}s;animation-delay:${s.twinkleDelay}s;`}
+        ></span>
+      ))}
+    </div>
+
+    <div class="porthole-bokeh" data-parallax-speed="1.25" data-parallax-scale="0.6">
+      {bokeh.map((b) => (
+        <span
+          class="porthole-dust"
+          style={`top:${b.top}%;left:${b.left}%;width:${b.size}px;height:${b.size}px;--o:${b.opacity};--bob-d:${b.bobDur}s;--bob-delay:${b.bobDelay}s;--dx:${b.driftX}px;--dy:${b.driftY}px;`}
+        ></span>
+      ))}
+    </div>
+
+    <!-- Aurora layer also reacts to scroll for a slow drift behind the stars. -->
+    <div class="porthole-rim-light" data-parallax-speed="0.35"></div>
+    <div class="porthole-vignette"></div>
+  </div>
+
+  <main id="main" class="relative isolate overflow-x-clip pt-32 sm:pt-40 pb-40">
+    <div class="mx-auto w-full max-w-3xl px-6 sm:px-10">
+      <header class="porthole-reveal">
+        <div class="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.22em] text-brand-tertiary">
+          <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_10px_currentColor]"></span>
+          <span>{eyebrow}</span>
+          <span aria-hidden="true" class="opacity-50">&middot;</span>
+        </div>
+
+        <h1 class="mt-6 font-heading font-bold tracking-tight leading-[0.9] text-[clamp(2.5rem,7vw,5.5rem)] text-brand-quaternary">
+          {title}
+        </h1>
+        {description && (
+          <p class="mt-6 max-w-2xl text-lg sm:text-xl text-brand-quaternary/75">
+            {description}
+          </p>
+        )}
+        {updatedISO && updatedLabel && (
+          <p class="mt-8 font-mono text-xs uppercase tracking-[0.22em] text-brand-tertiary/85">
+            Last updated <time datetime={updatedISO}>{updatedLabel}</time>
+          </p>
+        )}
+      </header>
+
+      <article class="porthole-reveal porthole-card relative mt-16 rounded-3xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/40 dark:bg-brand-primary/40 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.45)] p-6 sm:p-12">
+        <div aria-hidden="true" class="porthole-card-rim"></div>
+        <div class="doc-prose relative">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  /* ---- Background scene ---- */
+  .porthole-scene {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  /* Backdrop stays the same in both modes — like the themed docs backgrounds. */
+  .porthole-void {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(80, 60, 130, 0.35), transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(20, 80, 120, 0.4), transparent 60%),
+      linear-gradient(180deg, #060814 0%, #0a0a1f 40%, #07060f 100%);
+  }
+
+  .porthole-aurora {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(110px) saturate(140%);
+    mix-blend-mode: screen;
+    opacity: 0.55;
+  }
+
+  .porthole-aurora-1 {
+    top: -10%;
+    left: -8%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(140, 95, 230, 0.55) 0%, transparent 70%);
+  }
+
+  .porthole-aurora-2 {
+    bottom: 0%;
+    right: -10%;
+    width: 55vw;
+    height: 55vw;
+    background: radial-gradient(circle, rgba(90, 200, 220, 0.45) 0%, transparent 70%);
+  }
+
+  .porthole-aurora-3 {
+    top: 35%;
+    left: 30%;
+    width: 35vw;
+    height: 35vw;
+    background: radial-gradient(circle, rgba(255, 165, 110, 0.18) 0%, transparent 75%);
+  }
+
+  .porthole-stars {
+    position: absolute;
+    inset: -20% -10% -20% -10%;
+    will-change: transform;
+  }
+
+  /* Large drifting celestial body — adds an unmistakable depth cue. */
+  .porthole-planet {
+    position: absolute;
+    top: 18%;
+    right: -18%;
+    width: 60vw;
+    max-width: 720px;
+    aspect-ratio: 1;
+    border-radius: 9999px;
+    background:
+      radial-gradient(circle at 32% 28%, rgba(255, 200, 150, 0.95) 0%, rgba(220, 130, 80, 0.85) 12%, rgba(140, 60, 90, 0.7) 35%, rgba(60, 25, 70, 0.6) 60%, rgba(20, 10, 40, 0) 78%),
+      radial-gradient(circle at 65% 70%, rgba(80, 40, 120, 0.6), transparent 60%);
+    box-shadow:
+      inset -40px -20px 80px rgba(0, 0, 0, 0.55),
+      0 0 80px rgba(255, 160, 100, 0.18);
+    filter: blur(1px);
+    will-change: transform;
+    opacity: 0.85;
+  }
+
+  /* Green companion — anchored below the fold; scroll lifts it into view. */
+  .porthole-planet-green {
+    top: auto;
+    right: auto;
+    bottom: -65%;
+    left: -18%;
+    width: 50vw;
+    max-width: 600px;
+    background:
+      radial-gradient(circle at 38% 32%, rgba(190, 255, 200, 0.95) 0%, rgba(110, 210, 150, 0.85) 14%, rgba(40, 130, 110, 0.75) 36%, rgba(20, 60, 80, 0.55) 62%, rgba(10, 25, 35, 0) 80%),
+      radial-gradient(circle at 70% 70%, rgba(30, 90, 120, 0.55), transparent 60%);
+    box-shadow:
+      inset 40px -30px 80px rgba(0, 0, 0, 0.55),
+      0 0 80px rgba(120, 220, 160, 0.22);
+    opacity: 0.88;
+  }
+
+  .porthole-star {
+    position: absolute;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+  }
+
+  .porthole-star-bright {
+    background: rgba(255, 250, 240, 0.95);
+    box-shadow: 0 0 10px rgba(255, 230, 200, 0.6);
+    animation: porthole-twinkle 3s ease-in-out infinite;
+  }
+
+  @keyframes porthole-twinkle {
+    0%, 100% { opacity: calc(var(--o) * 0.45); transform: scale(0.85); }
+    50% { opacity: var(--o); transform: scale(1.2); }
+  }
+
+  .porthole-bokeh {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+
+  .porthole-dust {
+    position: absolute;
+    border-radius: 9999px;
+    opacity: var(--o, 0.15);
+    background: radial-gradient(circle, rgba(255, 220, 180, 0.85) 0%, rgba(255, 220, 180, 0) 70%);
+    filter: blur(2px);
+    animation: porthole-drift var(--bob-d, 12s) ease-in-out infinite var(--bob-delay, 0s);
+    will-change: transform, opacity;
+  }
+
+  @keyframes porthole-drift {
+    0%, 100% { transform: translate(0, 0); opacity: calc(var(--o) * 0.6); }
+    50% { transform: translate(var(--dx, 10px), var(--dy, -10px)); opacity: var(--o); }
+  }
+
+  /* Warm rim light suggesting interior cabin lighting from above-right. */
+  .porthole-rim-light {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at 95% -5%,
+      rgba(255, 170, 100, 0.18) 0%,
+      transparent 45%
+    );
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .porthole-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.55) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* ---- Foreground content ---- */
+  .porthole-reveal {
+    opacity: 0;
+  }
+
+  .porthole-card {
+    /* Gentle vertical bob layered on top of scroll-driven lift + tilt. */
+    transform: translateY(calc(var(--scroll-lift, 0px) + var(--bob-y, 0px))) rotate(var(--scroll-tilt, 0deg));
+    animation: porthole-card-bob 14s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes porthole-card-bob {
+    0%, 100% { --bob-y: 0px; }
+    50% { --bob-y: -6px; }
+  }
+
+  @property --bob-y {
+    syntax: "<length>";
+    initial-value: 0px;
+    inherits: false;
+  }
+
+  /* Soft warm rim around the card edge — like the porthole frame. */
+  .porthole-card-rim {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 100% 0%, rgba(255, 180, 120, 0.16), transparent 50%),
+      radial-gradient(ellipse at 0% 100%, rgba(140, 200, 230, 0.12), transparent 55%);
+    mix-blend-mode: screen;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .porthole-reveal { opacity: 1; }
+    .porthole-card,
+    .porthole-dust,
+    .porthole-star-bright {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { animate, stagger } from "motion";
+  import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
+
+  let cleanup: (() => void) | null = null;
+
+  function initPorthole() {
+    cleanup?.();
+    cleanup = null;
+
+    const reduce = isMotionDisabled();
+
+    // Reveal entrance
+    const reveals = document.querySelectorAll<HTMLElement>(".porthole-reveal");
+    if (reveals.length) {
+      if (reduce) {
+        for (const el of reveals) el.style.opacity = "1";
+      } else {
+        animate(
+          reveals,
+          { opacity: [0, 1], transform: ["translateY(28px)", "translateY(0)"] },
+          { duration: 0.9, delay: stagger(0.12, { startDelay: 0.15 }), ease: [0.22, 1, 0.36, 1] },
+        );
+      }
+    }
+
+    if (reduce) return;
+
+    // Parallax: each layer translates / rotates / scales with scroll progress.
+    const layers = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-parallax-speed]"),
+    ).map((el) => ({
+      el,
+      speed: Number.parseFloat(el.dataset.parallaxSpeed || "0"),
+      rotate: Number.parseFloat(el.dataset.parallaxRotate || "0"),
+      scale: Number.parseFloat(el.dataset.parallaxScale || "0"),
+    }));
+    const card = document.querySelector<HTMLElement>(".porthole-card");
+    if (!layers.length && !card) return;
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, y / docHeight));
+
+      for (const layer of layers) {
+        const dy = -y * layer.speed;
+        const rot = layer.rotate * progress;
+        const scale = 1 + layer.scale * progress;
+        const parts = [`translate3d(0, ${dy.toFixed(2)}px, 0)`];
+        if (rot) parts.push(`rotate(${rot.toFixed(2)}deg)`);
+        if (layer.scale) parts.push(`scale(${scale.toFixed(3)})`);
+        layer.el.style.transform = parts.join(" ");
+      }
+
+      // Card itself drifts upward slightly and tilts a hair as you scroll —
+      // sells the "looking through glass" framing.
+      if (card) {
+        const lift = -y * 0.04;
+        const tilt = (progress - 0.5) * 1.6; // -0.8 → +0.8 deg
+        card.style.setProperty("--scroll-lift", `${lift.toFixed(2)}px`);
+        card.style.setProperty("--scroll-tilt", `${tilt.toFixed(3)}deg`);
+      }
+    };
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    cleanup = () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+      for (const layer of layers) layer.el.style.transform = "";
+      if (card) {
+        card.style.removeProperty("--scroll-lift");
+        card.style.removeProperty("--scroll-tilt");
+      }
+    };
+  }
+
+  initPorthole();
+  document.addEventListener("astro:page-load", initPorthole);
+  document.addEventListener(MOTION_EVENT, initPorthole);
+</script>

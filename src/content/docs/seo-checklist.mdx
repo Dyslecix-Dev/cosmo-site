@@ -1,8 +1,8 @@
 ---
 title: SEO checklist
-description: Before-you-ship list for cosmo's centralized SEO setup.
+description: Before-you-ship list for Cosmo's centralized SEO setup.
 order: 6
-updatedDate: 2026-04-26
+updatedDate: 2026-04-28
 ---
 
 import Callout from "@/components/callouts/Callout.astro";
@@ -43,7 +43,7 @@ Pages override defaults via props on `BaseLayout`:
 
 ## Draft content
 
-Both the `blog` and `docs` content collections support a `draft` field. Mark entries with `draft: true` in the frontmatter to write without publishing:
+The `blog` content collection supports a `draft` field. Mark entries with `draft: true` in the frontmatter to write without publishing:
 
 ```mdx
 ---
@@ -54,7 +54,7 @@ draft: true
 
 Drafts are automatically filtered from:
 
-- Blog and docs list pages
+- Blog list pages
 - Pagination
 - RSS feeds
 - Sitemap (via built page filtering)
