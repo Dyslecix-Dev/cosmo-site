@@ -177,10 +177,10 @@ try {
     mask-image: radial-gradient(ellipse at center, black 40%, transparent 75%);
   }
 
-  :where(.dark) .grid-overlay {
+  :global(.dark) .grid-overlay {
     background-image:
-      linear-gradient(to right, color-mix(in oklch, var(--color-brand-quaternary) 6%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-quaternary) 6%, transparent) 1px, transparent 1px);
+      linear-gradient(to right, color-mix(in oklch, var(--color-brand-quaternary) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-quaternary) 4%, transparent) 1px, transparent 1px);
   }
 
   .floating-stars {
