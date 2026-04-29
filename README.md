@@ -44,7 +44,7 @@ Two things:
 public/
   _headers              # CSP, HSTS, and other security headers
   robots.txt
-  theme.js              # Blocking theme + motion bootstrap (prevents FOUC)
+  theme.js              # Blocking theme + motion bootstrap (prevents flash of unstyled content)
   *.png                 # OG images (one per doc + homepage)
 src/
   assets/               # Bundled images (icons, constellation, astronaut, etc.)

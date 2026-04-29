@@ -1,5 +1,5 @@
 ---
-layout: "@/layouts/EventHorizonLayout.astro"
+layout: "@/layouts/PortholeLayout.astro"
 title: What's next for Cosmo
 description: Use-case guides and optional integration recipes.
 eyebrow: Roadmap
@@ -7,22 +7,28 @@ updatedDate: 2026-04-27
 image: /roadmap-og-image.png
 ---
 
-Cosmo's roadmap is organized around one rule: **guides drive recipes**. Use-case guides come first and optional-integration recipes are written when a guide pulls them in, when someone files an <a href="https://github.com/DyslecixDev/cosmo/issues" target="_blank" rel="noopener noreferrer">issue</a> asking for one, or when a real project reaches for one.
+Hello, my name is Christian Demesa and I'm the creator of Cosmo. Here's what I'm working on next, and how I decide what gets built. The short version: guides come first, recipes follow. I write a recipe when a guide actually needs it, when someone <a href="https://github.com/DyslecixDev/cosmo/issues" target="_blank" rel="noopener noreferrer">opens an issue</a> asking for it, or when I hit the need on a real project.
 
-## In progress: use-case guides
+## What's done: base build
 
-Each guide turns Cosmo into a specific kind of site. The output of each is: a public example repo (named `cosmo-<usecase>`), a deployed live demo, and a writeup whose spine is the **diff against Cosmo** — files added, modified, deleted.
+- **0.1.0 — initial release.** Astro 6 static boilerplate, Tailwind v4 with design tokens, MDX, blog and docs collections, `astro-seo` wrapper, dark mode (no flash of unstyled content), sitemap and RSS, Biome, Lefthook, and Astro fonts via Fontsource.
+- **0.2.0 — clean scaffolding.** Moved the template into a `template/` subdirectory so meta-repo files (LICENSE, CHANGELOG, `.github/`) stop leaking into downstream projects. Fixed an Astro install error from Lefthook's postinstall running too early.
+- **0.3.0 — multi-package-manager support.** Split into `template-pnpm`, `template-npm`, and `template-yarn` so you can scaffold with whichever you reach for. Added a sync script (and CI check) to keep the variants from drifting. Dropped the bundled `docs` collection — guides live here on cosmo.dyslecix.dev now.
 
-- **Docs site + landing page** — already shipped (this site). A short ["Blueprint"](/blueprint) writeup documents the diff.
-- **Blog** — an upcoming philosophy blog.
-- **Portfolio** — my own personal web dev portfolio.
-- **Storefront** — a faux e-commerce site.
+## What I'm building: use-case guides
 
-## Next: optional integration recipes
+Each guide takes Cosmo and turns it into a different kind of site. For every one, I ship three things: a public repo (`cosmo-<usecase>`), a live demo you can click around, and a writeup that walks through the **diff against Cosmo** — what got added, changed, or removed.
 
-Short copy-paste guides for optional integrations. Recipes are written when one of the use-case guides above pulls them in or when a user requests one. The current candidate list spans framework integrations, UI libraries, code blocks, CMS options, search, state, comments, forms, email, payments, images, performance, testing, deployment, analytics, monitoring, and accessibility tooling.
+- **Docs site + landing page** — done. You're looking at it. The ["Blueprint"](/blueprint) page covers the diff.
+- **Blog** — a philosophy blog I've been meaning to start.
+- **Portfolio** — my own web dev portfolio.
+- **Storefront** — a fake e-commerce build.
 
-If you would use Cosmo for a specific recipe, that's the most useful kind of issue to file — it's the demand signal that moves options from "candidate" to "queued." 
+## What's next: integration recipes
 
-<a href="https://github.com/DyslecixDev/cosmo/issues/new/choose" target="_blank" rel="noopener noreferrer">Open a recipe request &rarr;</a>
+These are short copy-paste guides for plugging things in. I write one when a use-case guide above needs it, or when someone asks. The running shortlist covers framework bits, UI libraries, code blocks, CMSes, search, state, comments, forms, email, payments, images, performance, testing, deployment, analytics, monitoring, and a11y tooling.
+
+If there's a recipe you'd actually use, file an issue — that's the signal that bumps something from "maybe someday" to "next up."
+
+<a href="https://github.com/DyslecixDev/cosmo/issues/new/choose" target="_blank" rel="noopener noreferrer">Request a recipe &rarr;</a>
 
