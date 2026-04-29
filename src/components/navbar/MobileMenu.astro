@@ -113,7 +113,7 @@ const aboutLinks = [
 
       <ul class="mt-1 space-y-0.5 pl-3">
         {
-          aboutLinks.map((link, i) => {
+          aboutLinks.map((link, _) => {
             const isCurrent = pathname === link.href || pathname === `${link.href}/`;
             return (
               <li>
