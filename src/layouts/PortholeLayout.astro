@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { frontmatter } = Astro.props;
-const { title, description, eyebrow = "Logbook", updatedDate, noindex = false, image } = frontmatter;
+const { title, description, eyebrow = "Roadmap", updatedDate, noindex = false, image } = frontmatter;
 
 const updatedISO = updatedDate ? new Date(updatedDate).toISOString() : undefined;
 const updatedLabel = updatedDate
