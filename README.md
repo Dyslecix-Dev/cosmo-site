@@ -9,7 +9,7 @@ This repo is itself scaffolded from the Cosmo template — dogfooding it in prod
 Two things:
 
 1. **Landing page** — markets the template with a hero, feature highlights, marquee, and interactive charts.
-2. **Docs** — hosts the six canonical guides for the Cosmo template (getting started, rebranding, content collections, RSS, SEO, deploying).
+2. **Docs** — hosts the six canonical guides for the Cosmo template (getting started, rebranding, content collections, RSS, SEO, deployment).
 
 ## Stack
 
