@@ -9,6 +9,17 @@ const statusPhrases = ["Now boarding", "Pre-flight check", "Cleared for launch"]
 
 const headlineLine1 = "One ship";
 const headlineLine2 = "Any orbit";
+
+let stars = "0";
+try {
+  const res = await fetch("https://api.github.com/repos/DyslecixDev/cosmo", {
+    headers: process.env.GITHUB_TOKEN ? { Authorization: `token ${process.env.GITHUB_TOKEN}` } : undefined,
+  });
+  const data = await res.json();
+  stars = (data.stargazers_count || 0).toLocaleString();
+} catch {
+  stars = "0";
+}
 ---
 
 <section class="relative isolate flex flex-col justify-center px-6 sm:px-10 pt-24 pb-24 sm:pt-32 sm:pb-32 min-h-dvh">
@@ -48,15 +59,15 @@ const headlineLine2 = "Any orbit";
         ))}
       </span>
       <span aria-hidden="true">&middot;</span>
-      <span>v0.2</span>
+      <span>v0.3.0</span>
     </div>
 
     <h1 class="mt-10 font-heading font-bold tracking-tight leading-[0.88] text-[clamp(3rem,11vw,11rem)]">
       <span class="block overflow-hidden">
-        <span class="split-line hero-outline block" data-text={headlineLine1}>{headlineLine1}</span>
+        <span class="split-line hero-outline block pb-10" data-text={headlineLine1}>{headlineLine1}</span>
       </span>
       <span class="block overflow-hidden">
-        <span class="split-line hero-outline block italic font-normal text-brand-secondary dark:text-brand-tertiary pl-1 sm:pl-2 pb-2 sm:pb-6" data-text={headlineLine2}>{headlineLine2}</span>
+        <span class="split-line block italic font-normal text-brand-secondary dark:text-brand-tertiary pl-1 sm:pl-2 pb-2 sm:pb-6" data-text={headlineLine2}>{headlineLine2}</span>
       </span>
     </h1>
 
@@ -69,7 +80,7 @@ const headlineLine2 = "Any orbit";
     <div class="hero-reveal mt-12 max-w-3xl">
       <div class="group relative flex items-center gap-3 rounded-xl border border-brand-primary/20 dark:border-brand-quaternary/20 bg-brand-quaternary/60 dark:bg-brand-primary/60 backdrop-blur px-4 sm:px-5 py-4 font-mono text-sm sm:text-base shadow-[0_1px_0_rgba(255,255,255,0.05)_inset]">
         <span aria-hidden="true" class="text-brand-tertiary select-none">$</span>
-        <code id="install-cmd" class="flex-1 overflow-x-auto whitespace-nowrap text-brand-primary dark:text-brand-quaternary">{installCmd}</code>
+        <code id="install-cmd" class="install-cmd flex-1 overflow-x-auto whitespace-nowrap text-brand-primary dark:text-brand-quaternary">{installCmd}</code>
         <span aria-hidden="true" class="terminal-caret select-none text-brand-tertiary -ml-1">_</span>
         <button
           type="button"
@@ -103,29 +114,18 @@ const headlineLine2 = "Any orbit";
         target="_blank"
         rel="noopener"
         data-magnetic
-        class="inline-flex items-center gap-2 rounded-full border border-brand-primary/30 dark:border-brand-quaternary/30 px-6 py-3.5 text-sm font-semibold text-brand-primary dark:text-brand-quaternary transition hover:border-brand-primary dark:hover:border-brand-quaternary will-change-transform backdrop-blur-xl"
+        class="inline-flex items-center gap-3 rounded-full border border-brand-primary/30 dark:border-brand-quaternary/30 px-6 py-3.5 text-sm font-semibold text-brand-primary dark:text-brand-quaternary transition hover:border-brand-primary dark:hover:border-brand-quaternary will-change-transform backdrop-blur-xl"
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4">
           <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1-.02-1.96-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.45.11-3.03 0 0 .97-.31 3.18 1.18a11.04 11.04 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.58.23 2.74.11 3.03.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.68.8.56C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5Z"></path>
         </svg>
-        GitHub
-      </a>
-      <a
-        href="https://github.com/DyslecixDev/cosmo"
-        target="_blank"
-        rel="noopener"
-        aria-label="GitHub stars"
-        class="group relative inline-flex items-center rounded-md ring-2 ring-transparent transition duration-300 hover:-translate-y-0.5 hover:ring-brand-tertiary hover:shadow-[0_0_28px_4px_color-mix(in_oklch,var(--color-brand-tertiary)_55%,transparent),0_0_0_5px_color-mix(in_oklch,var(--color-brand-tertiary)_28%,transparent)]"
-      >
-        <img
-          src="https://img.shields.io/github/stars/DyslecixDev/cosmo?style=for-the-badge&logo=github&label=stars&color=24292e&labelColor=24292e&logoColor=white"
-          alt="GitHub stars"
-          width="116"
-          height="28"
-          class="h-9 w-auto rounded-md transition-transform duration-300 group-hover:scale-[1.06]"
-          loading="lazy"
-          decoding="async"
-        />
+        <span>GitHub</span>
+        <span class="flex items-center gap-1.5 rounded-full bg-brand-primary/10 dark:bg-brand-quaternary/10 px-3 py-1 text-xs font-medium">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="h-3 w-3 text-brand-tertiary">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+          </svg>
+          {stars}
+        </span>
       </a>
     </div>
   </div>
@@ -225,6 +225,28 @@ const headlineLine2 = "Any orbit";
   @keyframes caret-blink {
     0%, 49% { opacity: 1; }
     50%, 100% { opacity: 0; }
+  }
+
+  .install-cmd {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent) transparent;
+  }
+
+  .install-cmd::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .install-cmd::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .install-cmd::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--color-brand-tertiary) 55%, transparent);
+    border-radius: 9999px;
+  }
+
+  .install-cmd::-webkit-scrollbar-thumb:hover {
+    background: var(--color-brand-tertiary);
   }
 
   .hero-rocket {
@@ -371,8 +393,8 @@ const headlineLine2 = "Any orbit";
     let cancelled = false;
     let currentAnim: { stop: () => void } | null = null;
 
-    const BASE_DURATION = 12;
-    const DURATION_VARIANCE = 10;
+    const BASE_DURATION = 8;
+    const DURATION_VARIANCE = 6;
     const PAUSE_MIN = 800;
     const PAUSE_MAX = 2600;
 
