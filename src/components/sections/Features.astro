@@ -6,10 +6,10 @@ import satellite from "@/assets/satellite.png";
 
 const features = [
   { title: "Tailwind v4 tokens", desc: "Re-skin the whole site by editing one @theme block." },
-  { title: "MDX + custom callouts", desc: "Type-safe content collections with callouts wired in." },
+  { title: "MDX + custom callouts", desc: "Type-safe content collections with callout components." },
   { title: "Biome + Lefthook", desc: "One lint/format tool with pre-commit and pre-push hooks." },
   { title: "Self-hosted fonts", desc: "Astro Font API + Fontsource. No third-party requests and fast LCP." },
-  { title: "Strict TypeScript", desc: "Strict mode, @/* aliases, and Zod-typed content collections checked on pre-push." },
+  { title: "Strict TypeScript", desc: "Strict mode, @/* aliases, and Zod-typed content collections." },
   { title: "View transitions + dark mode", desc: "Smooth client-side routing with a persistent theme toggle." },
 ];
 
@@ -29,7 +29,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
 ---
 
 <section data-features-section class="relative overflow-hidden">
-  <div aria-hidden="true" class="features-sparkles pointer-events-none absolute inset-0 z-0 text-brand-tertiary">
+  <div aria-hidden="true" class="features-sparkles pointer-events-none absolute inset-0 z-0 text-brand-tertiary dark:text-[oklch(96%_0.04_85)]">
     {sparkles.map((s) => (
       <span
         class={`sparkle${s.pulse ? " pulse" : ""}`}
@@ -40,7 +40,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
     ))}
   </div>
 
-  <div aria-hidden="true" class="features-constellation pointer-events-none absolute z-0 right-2 sm:right-8 top-12 w-64 sm:w-80 opacity-30 dark:opacity-25">
+  <div aria-hidden="true" class="features-constellation pointer-events-none absolute z-0 right-2 sm:right-8 top-12 w-64 sm:w-80 opacity-100 dark:opacity-25">
     <Image src={constellation} alt="" class="h-auto w-full" />
   </div>
 
@@ -156,6 +156,7 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
   }
 
   function initSpotlight() {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const grid = document.querySelector<HTMLElement>("[data-spotlight-grid]");
     const overlay = document.querySelector<HTMLElement>("[data-spotlight-overlay]");
     if (!grid || !overlay) return;
