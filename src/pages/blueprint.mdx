@@ -1,0 +1,95 @@
+---
+layout: "@/layouts/PortholeLayout.astro"
+title: Built with Cosmo
+description: A look at how this site was built on top of the Cosmo template — what changed, what stayed, and a few choices worth flagging.
+eyebrow: Blueprint
+updatedDate: 2026-04-27
+image: /blueprint-og-image.png
+---
+
+import Callout from "@/components/callouts/Callout.astro";
+
+This site (`cosmo.dyslecix.dev`) runs on the <a href="https://cosmo-example.dyslecix.dev/" target="_blank" rel="noopener noreferrer">Cosmo template</a> — we use it in production so we feel the same rough edges you would. Think of this page as the diff: what we kept, what we cut, and what we added on top. If you're adapting Cosmo for a marketing or docs site of your own, this is the shortcut.
+
+The full source lives at <a href="https://github.com/DyslecixDev/cosmo-site" target="_blank" rel="noopener noreferrer">DyslecixDev/cosmo-site</a>.
+
+## When Cosmo is the right pick
+
+Cosmo fits best when you want a marketing landing page sitting next to a smaller docs site — say, a couple dozen guides, a handful of blog posts, or a portfolio you plan to hand-tune. If you need versioned docs, deep nav, built-in search, or i18n on day one, <a href="https://starlight.astro.build/" target="_blank" rel="noopener noreferrer">Starlight</a> gives you all of that out of the box. Cosmo trades those features for full design control, so the question is really which side of that line you're on.
+
+## What we removed
+
+- The `blog` collection. There's no blog on this site, so we pulled `src/content/blog/`, dropped the `blog` entry from `src/content.config.ts`, and removed the matching routes (`src/pages/blog/`, `src/pages/tags/`).
+- The blog-specific layouts and partials that came with it.
+- The seed content — the example posts the template ships with.
+
+## What we kept
+
+- The whole landing page. The Hero, Marquee, Features, and Charts sections under `src/components/sections/` are template-derived. We rewrote the marquee and chart variants to talk about the template itself, but the structure is unchanged.
+- The Navbar and Footer, with the links re-pointed at our docs and the GitHub repo.
+- The theme system — design tokens in `src/styles/global.css` under `@theme`, plus the dark/light toggle and the motion-preference toggle.
+- The `astro-seo` wrapper at `src/components/SEO.astro`, with `siteName` and `titleDefault` swapped over.
+- Astro fonts via the `astro:assets` Font component, wired up in `BaseLayout`.
+
+## What we added
+
+### A `docs` content collection
+
+Defined in `src/content.config.ts` with a tight Zod schema (`title`, `description`, `order`, `updatedDate`, `draft`). Files live under `src/content/docs/`.
+
+Two routes render it:
+- `src/pages/docs/index.astro` — a themed card grid, sorted by `order`.
+- `src/pages/docs/\[slug\].astro` — the detail page, with a table of contents, prev/next, an "edit on GitHub" link, and JSON-LD.
+
+### Per-doc themed backgrounds
+
+A small lookup at `src/lib/doc-themes.ts` maps each doc slug to a visual theme — Solar System, Pulsar, Wormhole, and so on. The theme drives the card preview on the docs index and the gradient backdrop on the detail page. New docs without a registered theme fall back to the "Deep Space" nebula.
+
+### MDX callouts
+
+One Callout component handles `note`, `tip`, `warning`, and `danger`. Import it in any `.mdx` file when you need it.
+
+### Privacy + a custom 404
+
+Top-level Astro pages at `src/pages/privacy.astro` and `src/pages/404.astro`.
+
+### A weighted sitemap
+
+`@astrojs/sitemap` is wired up in `astro.config.mjs` with custom `changefreq` and `priority` values. The 404 is excluded, and `/privacy` is deprioritized.
+
+### JSON-LD schema
+
+Two flavors:
+- WebSite + Organization on the homepage.
+- TechArticle + BreadcrumbList on each doc detail page.
+
+Both are emitted as inline `<script type="application/ld+json">` — in `BaseLayout.astro` and in `[slug].astro` respectively.
+
+### Cookieless analytics
+
+<a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer">Cloudflare Web Analytics</a> — no consent banner, no cookies, no session replay. DNS lives at Namecheap rather than going through Cloudflare's proxy, so the beacon is injected by hand in `BaseLayout.astro` instead of relying on auto-injection. The CSP allows `static.cloudflareinsights.com` in `script-src` and `cloudflareinsights.com` in `connect-src`.
+
+### Security headers
+
+Set in `public/\_headers`: CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`. The CSP allows `'unsafe-inline'` in `script-src` because Astro 6 inlines hoisted `<script>` tags by default. The XSS surface here is essentially zero — static marketing and docs pages, no user-rendered HTML — so we took the pragmatic route instead of managing hashes or pulling in something like <a href="https://github.com/kindspells/astro-shield" target="_blank" rel="noopener noreferrer">astro-shield</a>.
+
+<Callout type="warning">
+If your site renders any user-controlled HTML — comments, search-driven content, anything coming back from an API — don't copy this CSP as-is. Tighten `script-src` first. The reasoning above only holds because no untrusted input ever reaches the page.
+</Callout>
+
+### Theme + motion bootstrap, lifted into `public/theme.js`
+
+A blocking script that runs before paint to set the initial theme and motion preference, so you don't get a flash of unstyled content. It lives outside the bundler so the document `<head>` can pull it in synchronously.
+
+### Google Search Console verification
+
+Added as a `<meta name="google-site-verification">` tag in `BaseLayout.astro`. We went with the HTML tag method instead of DNS so verification stays next to the rest of the site config.
+
+## Recipes we used
+
+This site is mostly Cosmo in its plainest form. The few "recipes" we leaned on are documented separately:
+
+- [Rebranding via tokens](/docs/rebranding-via-tokens) — we tweaked the design tokens but left the structure alone.
+- [Adding a content collection](/docs/adding-a-content-collection) — the `docs` collection follows that guide directly.
+- [SEO checklist](/docs/seo-checklist) — we ran through it end-to-end before launch.
+- [Deployment](/docs/deployment) — see the Cloudflare Pages section.

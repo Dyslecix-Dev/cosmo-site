@@ -78,9 +78,9 @@ const bokeh = Array.from({ length: 16 }, (_, i) => ({
     <!-- A large drifting celestial body — gives an obvious depth cue. -->
     <div class="porthole-planet" data-parallax-speed="0.22" data-parallax-rotate="40"></div>
 
-    <!-- Second body: green moon, starts off-screen bottom-left and rises into
-         frame as the user scrolls. High parallax speed gives a strong arrival. -->
-    <div class="porthole-planet porthole-planet-green" data-parallax-speed="1.55" data-parallax-rotate="-25"></div>
+    <!-- Second body: green moon, anchored well below the fold and drifting
+         slowly with scroll — present as a distant depth cue, not as an arrival. -->
+    <div class="porthole-planet porthole-planet-green" data-parallax-speed="0.75" data-parallax-rotate="-25"></div>
 
     <div class="porthole-stars porthole-stars-far" data-parallax-speed="0.18" data-parallax-rotate="-6">
       {farStars.map((s) => (
@@ -235,12 +235,12 @@ const bokeh = Array.from({ length: 16 }, (_, i) => ({
     opacity: 0.85;
   }
 
-  /* Green companion — anchored below the fold; scroll lifts it into view. */
+  /* Green companion — anchored far below the fold; drifts slowly with scroll. */
   .porthole-planet-green {
     top: auto;
     right: auto;
-    bottom: -65%;
-    left: -18%;
+    bottom: -95%;
+    left: -22%;
     width: 50vw;
     max-width: 600px;
     background:
