@@ -170,12 +170,42 @@ const aboutLinks = [
     controller = new AbortController();
     const { signal } = controller;
 
+    let pointerAt = 0;
+    toggle.addEventListener(
+      "pointerdown",
+      () => {
+        pointerAt = Date.now();
+      },
+      { signal },
+    );
+
     toggle.addEventListener(
       "click",
       (event) => {
         event.stopPropagation();
         const isOpen = toggle.getAttribute("aria-expanded") === "true";
         setOpen(root, !isOpen);
+      },
+      { signal },
+    );
+
+    // Open on keyboard focus so tabbing into the navbar reveals the menu
+    // contents (which would otherwise stay invisible but remain in the tab
+    // order). Skip pointer-induced focus — the click handler toggles.
+    root.addEventListener(
+      "focusin",
+      () => {
+        if (Date.now() - pointerAt < 400) return;
+        if (toggle.getAttribute("aria-expanded") !== "true") setOpen(root, true);
+      },
+      { signal },
+    );
+
+    root.addEventListener(
+      "focusout",
+      (event) => {
+        const next = (event as FocusEvent).relatedTarget as Node | null;
+        if (!next || !root.contains(next)) setOpen(root, false);
       },
       { signal },
     );

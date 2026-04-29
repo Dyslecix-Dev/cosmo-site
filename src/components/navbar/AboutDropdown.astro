@@ -45,7 +45,7 @@ const links: AboutLink[] = [
     class="absolute left-1/2 -translate-x-1/2 mt-3 w-72 origin-top rounded-2xl border border-brand-primary/10 dark:border-brand-quaternary/10 bg-brand-quaternary/95 dark:bg-brand-primary/95 backdrop-blur-xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.15)] opacity-0 -translate-y-1 scale-95 pointer-events-none transition duration-200 ease-out data-[open=true]:opacity-100 data-[open=true]:translate-y-0 data-[open=true]:scale-100 data-[open=true]:pointer-events-auto"
   >
     {
-      links.map((link, i) => {
+      links.map((link) => {
         const isCurrent = pathname === link.href || pathname === `${link.href}/`;
         return (
           <a
@@ -58,7 +58,7 @@ const links: AboutLink[] = [
                 : "text-brand-primary/85 dark:text-brand-quaternary/85 hover:bg-brand-primary/5 dark:hover:bg-brand-quaternary/5 hover:text-brand-primary dark:hover:text-brand-quaternary",
             ]}
           >
-            <span class="font-mono text-[0.7rem] text-brand-secondary dark:text-brand-tertiary tabular-nums mt-0.5">0{i + 1}</span>
+            <span class="font-mono text-[0.7rem] text-brand-secondary dark:text-brand-tertiary mt-0.5">&#9733;</span>
             <span class="flex-1">
               <span class="block font-medium">{link.label}</span>
             </span>

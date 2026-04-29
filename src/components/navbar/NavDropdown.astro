@@ -156,10 +156,16 @@ const { docs, pathname, isActive } = Astro.props;
       const target = event.target as Element | null;
       const dd = target?.closest("[data-dropdown]");
       if (!dd) return;
-      if (!target?.closest("[data-dropdown-toggle]")) return;
-      // Skip if a pointer interaction caused this focus — let the click
-      // handler decide; otherwise we'd open here, then the click would close.
-      if (Date.now() - (w.__dropdownPointerAt ?? 0) < 400) return;
+      // Skip if a pointer interaction on the toggle caused this focus — let
+      // the click handler decide; otherwise we'd open here, then the click
+      // would close. Doesn't apply when focus enters via keyboard (shift+tab
+      // into the menu items, or tab onto the toggle).
+      if (
+        target?.closest("[data-dropdown-toggle]") &&
+        Date.now() - (w.__dropdownPointerAt ?? 0) < 400
+      ) {
+        return;
+      }
 
       for (const other of document.querySelectorAll("[data-dropdown]")) {
         if (other !== dd) setOpen(other, false);
