@@ -80,8 +80,8 @@ const breadcrumbSchema = {
 
     <div class="mx-auto w-full max-w-6xl px-6 sm:px-10">
       <header class="doc-reveal rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
-        <a href="/docs" class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition">
-          <span aria-hidden="true">&larr;</span>
+        <a href="/docs" data-all-guides-link class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition group">
+          <span aria-hidden="true" class="all-guides-arrow">&larr;</span>
           <span>All guides</span>
         </a>
 
@@ -114,7 +114,7 @@ const breadcrumbSchema = {
             <a
               href={editUrl}
               target="_blank"
-              rel="noopener"
+              rel="noopener noreferrer"
               class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition"
             >
               <span>Edit this page on GitHub</span>
@@ -259,6 +259,28 @@ const breadcrumbSchema = {
 
     initScrollSpy();
     initTocSmoothScroll();
+    initAllGuidesLink();
+  }
+
+  function initAllGuidesLink() {
+    const reduce = isMotionDisabled();
+    const link = document.querySelector<HTMLAnchorElement>("[data-all-guides-link]");
+    if (!link) return;
+
+    const arrow = link.querySelector<HTMLElement>(".all-guides-arrow");
+    if (!arrow) return;
+
+    const onHoverStart = () => {
+      if (reduce) return;
+      animate(
+        arrow,
+        { transform: ["translateX(0)", "translateX(-4px)", "translateX(0)"] },
+        { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }
+      );
+    };
+
+    link.addEventListener("mouseenter", onHoverStart);
+    cleanups.push(() => link.removeEventListener("mouseenter", onHoverStart));
   }
 
   let setActiveExternal: ((slug: string | null) => void) | null = null;

@@ -58,7 +58,7 @@ html[data-motion="paused"] *::after {
   border-radius: 4px;
 }
 
-/* Long-form prose used by docs detail pages and standalone meta pages (built-with-cosmo, roadmap). */
+/* Long-form prose used by docs detail pages and standalone meta pages (blueprint, roadmap). */
 .doc-prose {
   color: color-mix(in oklch, var(--color-brand-primary) 92%, transparent);
   font-size: 1rem;

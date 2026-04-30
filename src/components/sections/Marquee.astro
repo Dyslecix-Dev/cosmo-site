@@ -1,19 +1,19 @@
 ---
-const useCases = ["Blog", "Docs", "Landing Page", "Storefront", "Portfolio", "Newsletter", "Marketing"];
+const useCases = ["Portfolios", "Marketing", "Blogs", "Docs", "E-Commerce", "News"];
 ---
 
 <section aria-hidden="true" class="relative border-y border-brand-primary/15 dark:border-brand-quaternary/15 overflow-hidden bg-brand-primary text-brand-quaternary dark:bg-brand-quaternary dark:text-brand-primary">
   <div class="marquee py-6 sm:py-8">
-    <div class="marquee-track flex gap-12 whitespace-nowrap font-heading text-3xl sm:text-5xl font-bold tracking-tight">
+    <div class="marquee-track whitespace-nowrap font-heading text-3xl sm:text-5xl font-bold tracking-tight">
       {Array.from({ length: 2 }).map(() => (
-        <div class="flex items-center gap-12 shrink-0">
+        <span class="marquee-set inline-flex items-center gap-12">
           {useCases.map((u) => (
-            <div class="flex items-center gap-12 shrink-0">
+            <span class="inline-flex items-center gap-12 shrink-0">
               <span>{u}</span>
               <span aria-hidden="true" class="marquee-glyph text-brand-tertiary">&#9670;</span>
-            </div>
+            </span>
           ))}
-        </div>
+        </span>
       ))}
     </div>
   </div>
@@ -21,11 +21,16 @@ const useCases = ["Blog", "Docs", "Landing Page", "Storefront", "Portfolio", "Ne
 
 <style>
   .marquee {
-    display: flex;
+    overflow: hidden;
   }
 
   .marquee-track {
-    animation: marquee 40s linear infinite;
+    display: inline-flex;
+    animation: marquee 25s linear infinite;
+  }
+
+  .marquee-set {
+    padding-right: 3rem; /* matches gap-12 so the loop is seamless */
   }
 
   .marquee-glyph {

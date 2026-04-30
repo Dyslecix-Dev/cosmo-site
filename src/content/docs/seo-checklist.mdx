@@ -10,12 +10,12 @@ import Callout from "@/components/callouts/Callout.astro";
 Cosmo centralizes SEO defaults in `src/components/SEO.astro`. Edit that file — not individual pages — to change defaults across the site.
 
 <Callout type="warning" title="SEO.astro will throw without site">
-  `SEO.astro` requires `site` in `astro.config.mjs`. Canonical URLs and absolute OG image URLs depend on it. The build will fail loudly if it's missing.
+  `SEO.astro` requires site in `astro.config.mjs`. Canonical URLs and absolute OG image URLs depend on it. The build will fail loudly if it's missing.
 </Callout>
 
 ## Before going live
 
-- Set `site` in `astro.config.mjs` to your production URL
+- Set site in `astro.config.mjs` to your production URL
 - Update `siteName` and `titleDefault` defaults in `SEO.astro`
 - Optionally set `twitterCreator` in `SEO.astro` to add a global Twitter creator meta tag (or pass it per-page)
 - Replace `public/placeholder-og-fallback.png` with a real OG image (1200×630 recommended)
@@ -23,7 +23,7 @@ Cosmo centralizes SEO defaults in `src/components/SEO.astro`. Edit that file —
 - Update sitemap URL in `public/robots.txt`
 - Confirm `@astrojs/sitemap` runs in your build (it's wired in `astro.config.mjs`)
 - Verify each page passes a meaningful `title` and `description` to `BaseLayout`
-- **Optional**: extend the auto-generated `WebSite` JSON-LD schema with page-specific schemas (e.g. `BlogPosting`) via the `<slot name="head">` in `BaseLayout`
+- **Optional**: extend the auto-generated `WebSite` JSON-LD schema with page-specific schemas (`BlogPosting`) via the `<slot name="head">` in `BaseLayout`
 
 ## Per-page overrides
 
