@@ -7,6 +7,8 @@ import AboutDropdown from "@/components/navbar/AboutDropdown.astro";
 import MobileMenu from "@/components/navbar/MobileMenu.astro";
 import MotionToggle from "@/components/navbar/MotionToggle.astro";
 import NavDropdown from "@/components/navbar/NavDropdown.astro";
+import SearchPanel from "@/components/navbar/SearchPanel.astro";
+import SearchToggle from "@/components/navbar/SearchToggle.astro";
 import ThemeToggle from "@/components/navbar/ThemeToggle.astro";
 
 const { pathname } = Astro.url;
@@ -67,6 +69,7 @@ const isAboutActive = pathname === "/blueprint" || pathname === "/blueprint/" ||
     </ul>
 
     <div>
+      <SearchToggle variant="icon" />
       <ThemeToggle variant="icon" />
       <MotionToggle variant="icon" />
     </div>
@@ -74,6 +77,8 @@ const isAboutActive = pathname === "/blueprint" || pathname === "/blueprint/" ||
     <MobileMenu docs={sortedDocs} pathname={pathname} isHomeActive={isHomeActive} />
   </nav>
 </header>
+
+<SearchPanel />
 
 <style>
   nav {
@@ -91,16 +96,8 @@ const isAboutActive = pathname === "/blueprint" || pathname === "/blueprint/" ||
     if (!container || !indicator) return;
 
     const items = Array.from(container.querySelectorAll<HTMLElement>("[data-nav-item]"));
-    const activeItem = items.find((el) => el.getAttribute("aria-current") === "page") ?? null;
 
-    const findOpenDropdownTrigger = () => {
-      const openMenu = container.querySelector<HTMLElement>("[data-dropdown-menu][data-open='true']");
-      if (!openMenu) return null;
-      const dd = openMenu.closest("[data-dropdown]");
-      return dd?.querySelector<HTMLElement>("[data-dropdown-toggle]") ?? null;
-    };
-
-    const moveTo = (target: HTMLElement | null, immediate = false) => {
+    const moveTo = (target: HTMLElement | null) => {
       if (!target) {
         animate(indicator, { opacity: 0 }, { duration: 0.15 });
         return;
@@ -109,39 +106,18 @@ const isAboutActive = pathname === "/blueprint" || pathname === "/blueprint/" ||
       const rect = target.getBoundingClientRect();
       const x = rect.left - containerRect.left;
       const width = rect.width;
-      if (immediate) {
-        indicator.style.transform = `translateX(${x}px)`;
-        indicator.style.width = `${width}px`;
-        indicator.style.opacity = "1";
-      } else {
-        animate(
-          indicator,
-          { transform: `translateX(${x}px)`, width: `${width}px`, opacity: 1 },
-          { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
-        );
-      }
+      animate(
+        indicator,
+        { transform: `translateX(${x}px)`, width: `${width}px`, opacity: 1 },
+        { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+      );
     };
 
-    if (activeItem) moveTo(activeItem, true);
-
+    // Pill is only visible on keyboard focus — never on hover
     for (const item of items) {
-      item.addEventListener("pointerenter", () => moveTo(item));
       item.addEventListener("focus", () => moveTo(item));
+      item.addEventListener("blur", () => animate(indicator, { opacity: 0 }, { duration: 0.15 }));
     }
-
-    container.addEventListener("pointerleave", () => {
-      // If a dropdown is open, keep the pill parked on its trigger so the
-      // indicator doesn't snap back to Home while the user moves into the menu.
-      const openTrigger = findOpenDropdownTrigger();
-      moveTo(openTrigger ?? activeItem);
-    });
-
-    // Re-park the pill whenever a dropdown opens/closes (e.g., via tab focus
-    // or click on a trigger), so the indicator follows dropdown state.
-    container.addEventListener("dropdown:state", () => {
-      const openTrigger = findOpenDropdownTrigger();
-      moveTo(openTrigger ?? activeItem);
-    });
   }
 
   initPillIndicator();
