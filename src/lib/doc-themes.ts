@@ -51,7 +51,7 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c2: "#e0e7ff",
     c3: "#1c1917",
   },
-  deploying: {
+  deployment: {
     key: "wormhole",
     label: "Hyperspace",
     c1: "#e0f2fe",
