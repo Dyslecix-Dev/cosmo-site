@@ -41,6 +41,21 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     })} />
     <slot name="head" />
     <script is:inline src="/theme.js"></script>
+    <script>
+      import { animate } from "motion";
+      import { isMotionDisabled } from "@/lib/motion";
+
+      document.addEventListener("pagereveal", () => {
+        if (isMotionDisabled()) return;
+        const burst = document.getElementById("vt-burst");
+        if (!burst) return;
+        animate(
+          burst,
+          { opacity: [0.85, 0], scale: [0.65, 1.7] },
+          { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+        );
+      });
+    </script>
   </head>
   <body class="min-h-screen bg-brand-quaternary dark:bg-brand-primary text-brand-primary dark:text-brand-quaternary antialiased">
     <a
@@ -52,6 +67,7 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     <Navbar />
     <slot />
     <Footer />
+    <div id="vt-burst" aria-hidden="true" class="pointer-events-none fixed inset-0 z-[9999] opacity-0" style="background: radial-gradient(circle at 50% 45%, oklch(76% 0.09 188 / 0.55) 0%, transparent 65%);"></div>
     <script is:inline defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2ac3323fca1d4fa3afcd3f6a28f5510e"}'></script>
   </body>
 </html>

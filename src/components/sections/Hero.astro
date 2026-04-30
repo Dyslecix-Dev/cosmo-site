@@ -99,7 +99,7 @@ try {
       </div>
     </div>
 
-    <div class="hero-reveal mt-8 flex flex-wrap items-center gap-4 justify-evenly sm:justify-start">
+    <div class="hero-reveal mt-8 flex items-center gap-4 justify-evenly sm:justify-start">
       <a
         href="/docs"
         data-magnetic
@@ -242,6 +242,7 @@ try {
 
   .hero-rocket {
     will-change: transform;
+    visibility: hidden;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -379,6 +380,7 @@ try {
       return;
     }
 
+    rocketEl.style.visibility = "visible";
     cruiser.style.transform = "none";
 
     let cancelled = false;
