@@ -6,10 +6,11 @@ This repo is itself scaffolded from the Cosmo template — dogfooding it in prod
 
 ## What this site is
 
-Two things:
+Three things:
 
 1. **Landing page** — markets the template with a hero, feature highlights, marquee, and interactive charts.
-2. **Docs** — hosts the six canonical guides for the Cosmo template (getting started, rebranding, content collections, RSS, SEO, deployment).
+2. **Docs** — hosts the seven canonical guides for the Cosmo template (getting started, rebranding, adding a content collection, minimum-viable collection, RSS, SEO, deployment).
+3. **About pages** — `/blueprint` (how this site was built on top of Cosmo) and `/roadmap` (what's planned next for the template).
 
 ## Stack
 
@@ -59,12 +60,16 @@ src/
   content/docs/         # Six guide MDX/MD files
   content.config.ts     # docs collection schema (zod)
   layouts/
-    BaseLayout.astro    # <html> shell — SEO, fonts, Navbar, Footer, ClientRouter
+    BaseLayout.astro          # <html> shell — SEO, fonts, Navbar, Footer, ClientRouter
+    EventHorizonLayout.astro  # MDX layout for /blueprint
+    PortholeLayout.astro      # MDX layout for /roadmap
   lib/
     doc-themes.ts       # Maps doc slugs to visual themes
     motion.ts           # Motion preference helpers
   pages/
     index.astro         # Landing page
+    blueprint.mdx       # "Built with Cosmo" — diff between this site and the template
+    roadmap.mdx         # What's next for the Cosmo template
     privacy.astro       # Privacy policy
     404.astro           # Custom 404
     docs/
