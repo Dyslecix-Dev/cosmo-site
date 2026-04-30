@@ -60,7 +60,7 @@ src/
   content/docs/         # Six guide MDX/MD files
   content.config.ts     # docs collection schema (zod)
   layouts/
-    BaseLayout.astro          # <html> shell — SEO, fonts, Navbar, Footer, ClientRouter
+    BaseLayout.astro          # <html> shell — SEO, fonts, Navbar, Footer
     EventHorizonLayout.astro  # MDX layout for /blueprint
     PortholeLayout.astro      # MDX layout for /roadmap
   lib/
