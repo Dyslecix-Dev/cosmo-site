@@ -321,8 +321,7 @@ const bokeh = Array.from({ length: 16 }, (_, i) => ({
   }
 
   .porthole-card {
-    /* Gentle vertical bob layered on top of scroll-driven lift + tilt. */
-    transform: translateY(calc(var(--scroll-lift, 0px) + var(--bob-y, 0px))) rotate(var(--scroll-tilt, 0deg));
+    transform: translateY(var(--bob-y, 0px));
     animation: porthole-card-bob 14s ease-in-out infinite;
     will-change: transform;
   }
@@ -397,14 +396,19 @@ const bokeh = Array.from({ length: 16 }, (_, i) => ({
       rotate: Number.parseFloat(el.dataset.parallaxRotate || "0"),
       scale: Number.parseFloat(el.dataset.parallaxScale || "0"),
     }));
-    const card = document.querySelector<HTMLElement>(".porthole-card");
-    if (!layers.length && !card) return;
+    if (!layers.length) return;
+
+    let targetY = window.scrollY;
+    let currentY = targetY;
+    let docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const measure = () => {
+      docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    };
 
     let raf = 0;
     const update = () => {
       raf = 0;
-      const y = window.scrollY;
-      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const y = currentY;
       const progress = Math.min(1, Math.max(0, y / docHeight));
 
       for (const layer of layers) {
@@ -417,30 +421,32 @@ const bokeh = Array.from({ length: 16 }, (_, i) => ({
         layer.el.style.transform = parts.join(" ");
       }
 
-      // Card itself drifts upward slightly and tilts a hair as you scroll —
-      // sells the "looking through glass" framing.
-      if (card) {
-        const lift = -y * 0.04;
-        const tilt = (progress - 0.5) * 1.6; // -0.8 → +0.8 deg
-        card.style.setProperty("--scroll-lift", `${lift.toFixed(2)}px`);
-        card.style.setProperty("--scroll-tilt", `${tilt.toFixed(3)}deg`);
+    };
+    const tick = () => {
+      raf = 0;
+      const diff = targetY - currentY;
+      if (Math.abs(diff) < 0.5) {
+        currentY = targetY;
+        update();
+        return;
       }
+      currentY += diff * 0.2;
+      update();
+      raf = window.requestAnimationFrame(tick);
     };
     const onScroll = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(update);
+      targetY = window.scrollY;
+      if (!raf) raf = window.requestAnimationFrame(tick);
     };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measure);
 
     cleanup = () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
       if (raf) window.cancelAnimationFrame(raf);
       for (const layer of layers) layer.el.style.transform = "";
-      if (card) {
-        card.style.removeProperty("--scroll-lift");
-        card.style.removeProperty("--scroll-tilt");
-      }
     };
   }
 
