@@ -1,6 +1,43 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+@view-transition {
+  navigation: auto;
+}
+
+/* Hide expensive fixed backgrounds during view transition snapshots so Safari
+   can complete the transition instead of bailing out. */
+html:active-view-transition .porthole-scene,
+html:active-view-transition .horizon-scene {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: 280ms cubic-bezier(0.55, 0, 1, 0.45) both vt-warp-out;
+  }
+
+  ::view-transition-new(root) {
+    animation: 500ms cubic-bezier(0, 0.55, 0.45, 1) 60ms both vt-warp-in;
+  }
+
+  @keyframes vt-warp-out {
+    to {
+      opacity: 0;
+      transform: scale(1.06);
+      filter: blur(18px) brightness(2.8);
+    }
+  }
+
+  @keyframes vt-warp-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+      filter: blur(12px) brightness(0.15);
+    }
+  }
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

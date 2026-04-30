@@ -1,0 +1,335 @@
+---
+---
+
+<!--
+  Desktop search panel. The outer container sits at top-4 (same as the navbar header's pt-4)
+  and has overflow-hidden so the upward-translated pill is clipped until it animates into view.
+-->
+<div
+  id="search-panel"
+  data-search-panel
+  aria-hidden="true"
+  class="hidden sm:block fixed left-0 right-0 top-4 z-50 px-4 sm:px-6 pointer-events-none overflow-hidden"
+>
+  <div
+    class="mx-auto max-w-3xl"
+    data-search-inner
+    style="transform: translateY(-100%); opacity: 0;"
+  >
+    <!-- Pill — identical shape/bg/border/shadow to the navbar -->
+    <nav
+      class="flex items-center gap-2 rounded-full border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary dark:bg-brand-primary px-2 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
+      aria-label="Search"
+    >
+      <input
+        id="search-input"
+        data-search-input
+        type="search"
+        placeholder="Search docs…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search"
+        aria-controls="search-results"
+        aria-autocomplete="list"
+        class="flex-1 h-10 bg-transparent text-sm text-brand-primary dark:text-brand-quaternary placeholder:text-brand-primary/40 dark:placeholder:text-brand-quaternary/40 outline-none min-w-0 pl-3"
+      />
+      <button
+        type="button"
+        aria-label="Clear search"
+        data-search-clear
+        class="hidden shrink-0 items-center justify-center rounded-full h-10 w-10 text-brand-primary/60 dark:text-brand-quaternary/60 hover:bg-brand-primary/8 dark:hover:bg-brand-quaternary/8 transition"
+      >
+        <svg aria-hidden="true" viewBox="0 0 15 15" fill="currentColor" class="h-3.5 w-3.5">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" />
+        </svg>
+      </button>
+      <kbd class="inline-flex items-center gap-1 rounded border border-brand-primary/20 dark:border-brand-quaternary/20 px-1.5 py-0.5 font-mono text-[0.65rem] text-brand-primary/40 dark:text-brand-quaternary/40 select-none mr-2">
+        Esc
+      </kbd>
+    </nav>
+  </div>
+</div>
+
+<!-- Results card — outside the overflow-hidden container so it can extend downward freely -->
+<div
+  id="search-results"
+  data-search-results
+  role="listbox"
+  aria-label="Search results"
+  class="hidden sm:block fixed left-4 right-4 sm:left-6 sm:right-6 z-50 pointer-events-none"
+  style="opacity: 0;"
+>
+  <div class="mx-auto max-w-3xl mt-2 max-h-80 overflow-y-auto overscroll-contain rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/98 dark:bg-brand-primary/98 backdrop-blur-lg shadow-[0_20px_60px_rgba(0,0,0,0.18)] py-2">
+    <p data-search-empty class="hidden px-4 py-6 text-center text-sm text-brand-primary/50 dark:text-brand-quaternary/50">
+      No results found.
+    </p>
+  </div>
+</div>
+
+<!-- Backdrop -->
+<div
+  data-search-backdrop
+  aria-hidden="true"
+  class="hidden sm:block fixed inset-0 z-30 bg-brand-primary/10 dark:bg-brand-primary/30 pointer-events-none"
+  style="opacity: 0;"
+></div>
+
+<style>
+  /* Hide the browser-native clear button on search inputs */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration {
+    display: none;
+  }
+  /* Suppress the global focus-visible outline — the pill border is indicator enough */
+  [data-search-input]:focus-visible {
+    outline: none;
+  }
+</style>
+
+<script>
+  import { animate } from "motion";
+
+  let pagefind: any = null;
+  let activeIndex = -1;
+
+  async function loadPagefind() {
+    if (pagefind) return pagefind;
+    try {
+      // Path assigned to a variable so Vite's static analyzer skips it at dev time.
+      // The bundle only exists after `pnpm build`; during dev, the try/catch silences the miss.
+      const src = "/pagefind/pagefind.js";
+      // @ts-ignore
+      pagefind = await import(/* @vite-ignore */ src);
+      await pagefind.options({ excerptLength: 20 });
+    } catch {
+      pagefind = null;
+    }
+    return pagefind;
+  }
+
+  function getEls() {
+    return {
+      panel: document.querySelector<HTMLElement>("[data-search-panel]"),
+      inner: document.querySelector<HTMLElement>("[data-search-inner]"),
+      input: document.querySelector<HTMLInputElement>("[data-search-input]"),
+      clear: document.querySelector<HTMLButtonElement>("[data-search-clear]"),
+      results: document.querySelector<HTMLElement>("[data-search-results]"),
+      resultsInner: document.querySelector<HTMLElement>("[data-search-results] > div"),
+      empty: document.querySelector<HTMLElement>("[data-search-empty]"),
+      backdrop: document.querySelector<HTMLElement>("[data-search-backdrop]"),
+      toggles: document.querySelectorAll<HTMLButtonElement>("[data-search-toggle]"),
+    };
+  }
+
+  function positionResults() {
+    const { panel, results } = getEls();
+    if (!panel || !results) return;
+    // Place results card directly below the pill container
+    const panelRect = panel.getBoundingClientRect();
+    results.style.top = `${panelRect.bottom + 8}px`;
+  }
+
+  function isOpen() {
+    const { panel } = getEls();
+    return panel?.getAttribute("aria-hidden") === "false";
+  }
+
+  function openSearch() {
+    const { panel, inner, input, results, backdrop, toggles } = getEls();
+    if (!panel || !inner) return;
+
+    panel.setAttribute("aria-hidden", "false");
+    panel.style.pointerEvents = "auto";
+    for (const t of toggles) t.setAttribute("aria-expanded", "true");
+
+    backdrop!.style.pointerEvents = "auto";
+    animate(backdrop!, { opacity: 1 }, { duration: 0.2 });
+
+    positionResults();
+    animate(inner, { translateY: "0%", opacity: 1 }, { duration: 0.35, ease: [0.22, 1, 0.36, 1] }).then(() => {
+      input?.focus();
+    });
+
+    loadPagefind();
+  }
+
+  function closeSearch() {
+    const { panel, inner, input, results, backdrop, toggles } = getEls();
+    if (!panel || !inner) return;
+
+    for (const t of toggles) t.setAttribute("aria-expanded", "false");
+
+    animate(backdrop!, { opacity: 0 }, { duration: 0.2 }).then(() => {
+      backdrop!.style.pointerEvents = "none";
+    });
+
+    if (results) animate(results, { opacity: 0 }, { duration: 0.15 });
+
+    animate(inner, { translateY: "-100%", opacity: 0 }, { duration: 0.3, ease: [0.55, 0, 1, 0.45] }).then(() => {
+      panel.setAttribute("aria-hidden", "true");
+      panel.style.pointerEvents = "none";
+      if (input) input.value = "";
+      clearResults();
+    });
+
+    activeIndex = -1;
+  }
+
+  function clearResults() {
+    const { results, empty, clear } = getEls();
+    if (!results) return;
+    for (const el of Array.from(results.querySelectorAll("[data-search-result]"))) el.remove();
+    empty?.classList.add("hidden");
+    clear?.classList.add("hidden");
+    clear?.classList.remove("flex");
+    results.style.pointerEvents = "none";
+    animate(results, { opacity: 0 }, { duration: 0.15 });
+    activeIndex = -1;
+  }
+
+  function renderResults(matches: any[]) {
+    const { results, empty } = getEls();
+    if (!results) return;
+
+    for (const el of Array.from(results.querySelectorAll("[data-search-result]"))) el.remove();
+    activeIndex = -1;
+
+    positionResults();
+    results.style.pointerEvents = "auto";
+    animate(results, { opacity: 1 }, { duration: 0.2 });
+
+    if (matches.length === 0) {
+      empty?.classList.remove("hidden");
+      return;
+    }
+    empty?.classList.add("hidden");
+
+    for (const [i, match] of matches.entries()) {
+      const item = document.createElement("a");
+      item.href = match.url;
+      item.setAttribute("role", "option");
+      item.setAttribute("aria-selected", "false");
+      item.setAttribute("data-search-result", "");
+      item.setAttribute("data-index", String(i));
+      item.className =
+        "flex flex-col gap-0.5 px-4 py-3 text-sm rounded-xl mx-2 transition hover:bg-brand-primary/5 dark:hover:bg-brand-quaternary/5 cursor-pointer outline-none focus:bg-brand-primary/8 dark:focus:bg-brand-quaternary/8";
+
+      const titleEl = document.createElement("span");
+      titleEl.className = "font-medium text-brand-primary dark:text-brand-quaternary";
+      titleEl.textContent = match.meta?.title ?? "Untitled";
+
+      const excerptEl = document.createElement("span");
+      excerptEl.className = "text-xs text-brand-primary/60 dark:text-brand-quaternary/60 line-clamp-1";
+      excerptEl.innerHTML = match.excerpt;
+
+      item.appendChild(titleEl);
+      item.appendChild(excerptEl);
+
+      item.addEventListener("click", () => closeSearch());
+
+      results.appendChild(item);
+    }
+  }
+
+  function setActiveIndex(index: number) {
+    const { results, input } = getEls();
+    if (!results) return;
+    const items = Array.from(results.querySelectorAll<HTMLElement>("[data-search-result]"));
+    for (const [i, item] of items.entries()) {
+      const active = i === index;
+      item.setAttribute("aria-selected", String(active));
+      if (active) {
+        item.classList.add("bg-brand-primary/8", "dark:bg-brand-quaternary/8");
+        item.scrollIntoView({ block: "nearest" });
+      } else {
+        item.classList.remove("bg-brand-primary/8", "dark:bg-brand-quaternary/8");
+      }
+    }
+    if (index === -1) input?.focus();
+  }
+
+  let debounceTimer: ReturnType<typeof setTimeout>;
+
+  async function handleInput(value: string) {
+    const { clear } = getEls();
+    const hasValue = value.trim().length > 0;
+    clear?.classList.toggle("hidden", !hasValue);
+    clear?.classList.toggle("flex", hasValue);
+
+    if (!hasValue) {
+      clearResults();
+      return;
+    }
+
+    const pf = await loadPagefind();
+    if (!pf) return;
+
+    const search = await pf.debouncedSearch(value);
+    if (!search) return;
+
+    const top10 = search.results.slice(0, 10);
+    const data = await Promise.all(top10.map((r: any) => r.data()));
+    renderResults(data);
+  }
+
+  function initSearch() {
+    const { input, clear, toggles, backdrop } = getEls();
+
+    for (const toggle of toggles) {
+      toggle.addEventListener("click", () => {
+        if (isOpen()) closeSearch();
+        else openSearch();
+      });
+    }
+
+    backdrop?.addEventListener("click", closeSearch);
+
+    input?.addEventListener("input", (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        handleInput((e.target as HTMLInputElement).value);
+      }, 120);
+    });
+
+    input?.addEventListener("keydown", (e) => {
+      const { results } = getEls();
+      const items = Array.from(results?.querySelectorAll<HTMLElement>("[data-search-result]") ?? []);
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+        setActiveIndex(activeIndex);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, -1);
+        setActiveIndex(activeIndex);
+      } else if (e.key === "Enter") {
+        if (activeIndex >= 0 && items[activeIndex]) {
+          (items[activeIndex] as HTMLAnchorElement).click();
+        }
+      } else if (e.key === "Escape") {
+        closeSearch();
+      }
+    });
+
+    clear?.addEventListener("click", () => {
+      if (input) {
+        input.value = "";
+        input.focus();
+      }
+      clearResults();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if ((e.key === "/" || (e.key === "k" && (e.metaKey || e.ctrlKey))) && !isOpen()) {
+        const tag = (document.activeElement as HTMLElement)?.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA") return;
+        e.preventDefault();
+        openSearch();
+      }
+      if (e.key === "Escape" && isOpen()) closeSearch();
+    });
+  }
+
+  initSearch();
+  document.addEventListener("astro:page-load", initSearch);
+</script>

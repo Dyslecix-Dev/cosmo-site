@@ -4,6 +4,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
+import pagefind from "astro-pagefind";
 
 export default defineConfig({
   output: "static",
@@ -31,6 +32,7 @@ export default defineConfig({
   site: "https://cosmo.dyslecix.dev",
 
   integrations: [
+    pagefind(),
     mdx(),
     sitemap({
       filter: (page) => !page.includes("/404"),
@@ -49,5 +51,10 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      rollupOptions: {
+        external: ["/pagefind/pagefind.js"],
+      },
+    },
   },
 });
