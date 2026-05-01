@@ -31,7 +31,20 @@ export async function getStaticPaths() {
 const { entry, prev, next, position, total } = Astro.props;
 const { Content, headings } = await render(entry);
 
-const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const tocFlat = headings.filter((h) => h.depth === 2 || h.depth === 3);
+type TocSection = { slug: string; text: string; children: { slug: string; text: string }[] };
+const tocSections: TocSection[] = [];
+for (const h of tocFlat) {
+  if (h.depth === 2) {
+    tocSections.push({ slug: h.slug, text: h.text, children: [] });
+  } else if (h.depth === 3) {
+    if (tocSections.length === 0) {
+      tocSections.push({ slug: "", text: "", children: [] });
+    }
+    tocSections[tocSections.length - 1].children.push({ slug: h.slug, text: h.text });
+  }
+}
+const tocHasGrouping = tocSections.some((s) => s.children.length > 0);
 const theme = themeForDoc(entry.id);
 const editUrl = `https://github.com/DyslecixDev/cosmo-site/edit/main/${entry.filePath}`;
 
@@ -158,27 +171,57 @@ const breadcrumbSchema = {
           )}
         </article>
 
-        {toc.length > 0 && (
+        {tocFlat.length > 0 && (
           <aside class="doc-reveal hidden lg:block">
             <div class="sticky top-32 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-5">
               <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
                 On this page
               </div>
               <ul class="mt-3 space-y-1.5 border-l border-brand-primary/15 dark:border-brand-quaternary/15">
-                {toc.map((h) => (
+                {tocSections.map((section) => (
                   <li>
-                    <a
-                      href={`#${h.slug}`}
-                      data-toc-link
-                      data-toc-target={h.slug}
-                      class:list={[
-                        "block border-l-2 -ml-px py-1 text-sm transition",
-                        h.depth === 3 ? "pl-6" : "pl-3",
-                        "border-transparent text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary",
-                      ]}
-                    >
-                      {h.text}
-                    </a>
+                    {section.children.length > 0 && tocHasGrouping ? (
+                      <details class="toc-section group/toc" open>
+                        <summary class="toc-summary flex items-center gap-2 border-l-2 -ml-px pl-3 pr-2 py-1 text-sm cursor-pointer list-none border-transparent text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition">
+                          {section.slug ? (
+                            <a
+                              href={`#${section.slug}`}
+                              data-toc-link
+                              data-toc-target={section.slug}
+                              class="flex-1 min-w-0 truncate"
+                            >
+                              {section.text}
+                            </a>
+                          ) : (
+                            <span class="flex-1 min-w-0 truncate font-mono text-[10px] uppercase tracking-[0.2em]">Sections</span>
+                          )}
+                          <span aria-hidden="true" class="toc-caret shrink-0 text-xs leading-none transition-transform">&#9656;</span>
+                        </summary>
+                        <ul class="mt-1 space-y-1.5">
+                          {section.children.map((child) => (
+                            <li>
+                              <a
+                                href={`#${child.slug}`}
+                                data-toc-link
+                                data-toc-target={child.slug}
+                                class="block border-l-2 -ml-px pl-6 py-1 text-sm transition border-transparent text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
+                              >
+                                {child.text}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    ) : (
+                      <a
+                        href={`#${section.slug}`}
+                        data-toc-link
+                        data-toc-target={section.slug}
+                        class="block border-l-2 -ml-px pl-3 py-1 text-sm transition border-transparent text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
+                      >
+                        {section.text}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -223,6 +266,30 @@ const breadcrumbSchema = {
   @media (prefers-reduced-motion: reduce) {
     .doc-reveal {
       opacity: 1;
+    }
+  }
+
+  .toc-summary::-webkit-details-marker { display: none; }
+  .toc-section .toc-caret { transition: transform 220ms ease; }
+  .toc-section[open] > .toc-summary .toc-caret { transform: rotate(90deg); }
+
+  .toc-section { interpolate-size: allow-keywords; }
+  .toc-section::details-content {
+    block-size: 0;
+    overflow: clip;
+    opacity: 0;
+    transition: block-size 240ms ease, opacity 180ms ease, content-visibility 240ms;
+    transition-behavior: allow-discrete;
+  }
+  .toc-section[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc-section .toc-caret,
+    .toc-section::details-content {
+      transition: none;
     }
   }
 </style>

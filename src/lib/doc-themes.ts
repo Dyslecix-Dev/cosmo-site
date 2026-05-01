@@ -1,4 +1,4 @@
-type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "green-starfield" | "pulsar" | "binary-star" | "wormhole";
+type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "green-starfield" | "pulsar" | "binary-star" | "wormhole" | "red-dwarf";
 
 export interface DocTheme {
   key: DocThemeKey;
@@ -64,6 +64,13 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c1: "#e0f2fe",
     c2: "#3b82f6",
     c3: "#0a1929",
+  },
+  "recommended-integrations": {
+    key: "red-dwarf",
+    label: "Red Dwarf",
+    c1: "#fee2e2",
+    c2: "#dc2626",
+    c3: "#1a0507",
   },
 };
 
