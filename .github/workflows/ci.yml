@@ -21,3 +21,8 @@ jobs:
         run: pnpm typecheck
       - name: Build
         run: pnpm build
+      - name: Check links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --root-dir /github/workspace/dist --exclude opengraph.xyz dist
+          fail: true
