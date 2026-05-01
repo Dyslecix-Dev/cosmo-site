@@ -1,0 +1,225 @@
+---
+title: Recommended integrations
+description: A curated catalog of tools that pair well with Cosmo — what each category covers, why these picks made the shortlist, and where to grab them.
+order: 8
+updatedDate: 2026-04-30
+---
+
+import Callout from "@/components/callouts/Callout.astro";
+
+Cosmo intentionally ships lean. The categories below are common things you might bolt on, with one or two picks per slot. These aren't step-by-step guides — just enough to know what something is, why it's on the shortlist, and where its docs live.
+
+<Callout type="note">
+None of these are installed by default. Add only what you actually need; every integration is more bytes, more config, and more surface to keep updated.
+</Callout>
+
+## Delivery & reach
+
+How the site gets to users — and how many of them it can serve.
+
+### i18n
+
+Routing and translated content for multilingual sites.
+
+- <a href="https://docs.astro.build/en/guides/internationalization/" target="_blank" rel="noopener noreferrer">Astro i18n routing</a> — Built-in. Locale-prefixed routes, fallbacks, and translation helpers without a third-party plugin.
+
+### PWA
+
+Make the site installable and available offline.
+
+- <a href="https://vite-pwa-org.netlify.app/frameworks/astro.html#astro-integration" target="_blank" rel="noopener noreferrer">Vite PWA</a> — Generates a service worker and manifest, handles offline caching. The standard choice in the Vite ecosystem. Wire it up after your first successful deploy — see [Deployment](/docs/deployment).
+
+### Script offloading
+
+Move third-party scripts (analytics, chat widgets, ads) off the main thread.
+
+- <a href="https://docs.astro.build/en/guides/integrations-guide/partytown/" target="_blank" rel="noopener noreferrer">Partytown</a> — Runs third-party scripts inside a web worker. Worth it when you can't drop a heavy script entirely. Now maintained by the Qwik team — install `@qwik.dev/partytown` (the old `@builder.io/partytown` package is deprecated). Pairs well with the analytics tools in the [Observability](#observability) section below.
+
+## UI building blocks
+
+What you reach for when building the visible surface.
+
+### Front-end framework
+
+Astro is HTML-first, but you can drop in islands of any major framework when you need real interactivity.
+
+- <a href="https://docs.astro.build/en/guides/integrations-guide/alpinejs/" target="_blank" rel="noopener noreferrer">Alpine.js</a> — Sprinkle reactivity directly in markup, no build step or VDOM. Best for tiny widgets where React would be overkill.
+- <a href="https://docs.astro.build/en/guides/integrations-guide/preact/" target="_blank" rel="noopener noreferrer">Preact</a> — 3 kB React-compatible runtime. Same JSX you already know, fraction of the shipped JS.
+- <a href="https://docs.astro.build/en/guides/integrations-guide/react/" target="_blank" rel="noopener noreferrer">React</a> — The default if you want access to the largest component ecosystem.
+- <a href="https://docs.astro.build/en/guides/integrations-guide/solid-js/" target="_blank" rel="noopener noreferrer">SolidJS</a> — Fine-grained reactivity with no VDOM, JSX syntax. Excellent runtime perf.
+- <a href="https://docs.astro.build/en/guides/integrations-guide/svelte/" target="_blank" rel="noopener noreferrer">Svelte</a> — Compiles components to vanilla JS at build time. Minimal runtime, great DX.
+- <a href="https://docs.astro.build/en/guides/integrations-guide/vue/" target="_blank" rel="noopener noreferrer">Vue</a> — Single-file components and a mature ecosystem if your team already speaks Vue.
+
+### Component library
+
+Pre-built accessible components so you're not rebuilding modals, popovers, and combo boxes from scratch.
+
+- <a href="https://starwind.dev/docs/getting-started/installation/" target="_blank" rel="noopener noreferrer">Starwind UI</a> — Astro-native, copy-in components built on Tailwind. No runtime dependency, you own the source.
+- <a href="https://daisyui.com/docs/install/astro/" target="_blank" rel="noopener noreferrer">daisyUI</a> — Class-based component layer on top of Tailwind. Themable, framework-agnostic, fast to adopt.
+
+### Icon library
+
+A consistent icon set that doesn't ship the entire pack to the browser.
+
+- <a href="https://lucide.dev/guide/astro/getting-started" target="_blank" rel="noopener noreferrer">Lucide</a> — Clean, opinionated, MIT-licensed icon set forked from Feather. Tree-shakeable per icon.
+- <a href="https://www.astroicon.dev/getting-started/" target="_blank" rel="noopener noreferrer">Astro Icon</a> — Pull from any Iconify set as static SVG, optimized at build time.
+
+### Animation library
+
+For motion that goes beyond what CSS keyframes can comfortably express.
+
+- <a href="https://auto-animate.formkit.com/#installation" target="_blank" rel="noopener noreferrer">AutoAnimate</a> — One line, zero config. Animates list/element add/remove/move automatically.
+- <a href="https://motion.dev/docs/quick-start" target="_blank" rel="noopener noreferrer">Motion</a> — Tiny imperative API plus declarative bindings. Hardware-accelerated, framework-agnostic.
+- <a href="https://gsap.com/docs/v3/Installation" target="_blank" rel="noopener noreferrer">GSAP</a> — The heavyweight option. Timeline orchestration, ScrollTrigger, and SVG morphing for complex sequences. Now 100% free for commercial use after the Webflow acquisition — every former Club plugin (SplitText, MorphSVG, etc.) is included.
+
+## Authoring & content
+
+Tools for getting words, diagrams, and embeds into pages.
+
+### CMS
+
+So a non-developer can edit content without opening a code editor.
+
+- <a href="https://docs.astro.build/en/guides/cms/tina-cms/" target="_blank" rel="noopener noreferrer">Tina CMS</a> — Git-based, visual editor that writes back to MDX in your repo. Keeps content in source control. Astro support works for content editing; the in-page visual editing piece is still flagged experimental for Astro.
+- <a href="https://docs.astro.build/en/guides/cms/decap-cms/" target="_blank" rel="noopener noreferrer">Decap CMS</a> — Open-source successor to Netlify CMS. Same git-backed model, no vendor.
+
+### Mermaid diagram
+
+Render flowcharts and sequence diagrams from fenced code blocks in MDX.
+
+- <a href="https://github.com/joesaby/astro-mermaid" target="_blank" rel="noopener noreferrer">astro-mermaid</a> — Drop-in remark plugin, theme-aware. Diagrams render in the browser (the Mermaid runtime ships with pages that use it), so nothing leaves the client.
+
+### Embed content
+
+Embed YouTube, Vimeo, tweets, and so on without the perf hit of pasting raw provider scripts.
+
+- <a href="https://astro-embed.netlify.app/getting-started/" target="_blank" rel="noopener noreferrer">Astro Embed</a> — Lazy-loaded, lightweight wrappers for the common embed providers. Big lighthouse win over default Embed.
+
+### OG image generation
+
+Per-page social cards so links to the site look good when shared on social platforms or in chat apps.
+
+- <a href="https://github.com/delucis/astro-og-canvas/tree/latest/packages/astro-og-canvas" target="_blank" rel="noopener noreferrer">astro-og-canvas</a> — Build-time programmatic generation. Define a card template in code and an image renders for every page during `astro build`. No runtime, no third party.
+- <a href="https://ogimagemaker.com/" target="_blank" rel="noopener noreferrer">OG Image Maker</a> — Hosted designer for one-off cards. Useful when you want a hand-crafted image for the homepage or a marquee page without writing a template.
+
+## Backend-as-a-service
+
+Things that replace bits of a server you'd otherwise have to run yourself.
+
+### Forms
+
+Static sites can't handle POST on their own — these accept the submission for you.
+
+- <a href="https://web3forms.com/features" target="_blank" rel="noopener noreferrer">Web3Forms</a> — Just `action="https://api.web3forms.com/submit"` plus an access key. No backend required, free tier, spam filtering included.
+
+### Email
+
+Transactional email (contact form, password reset, receipts) from a real API.
+
+- <a href="https://resend.com/features/email-api" target="_blank" rel="noopener noreferrer">Resend</a> — Developer-first API, React Email components, generous free tier. The current go-to for indie projects.
+
+### Newsletter
+
+A list and an editor for sending updates without rolling your own.
+
+- <a href="https://buttondown.com/pricing" target="_blank" rel="noopener noreferrer">Buttondown</a> — Markdown-first, indie-friendly pricing, embeddable subscribe form. Pleasant for solo creators.
+
+### Comments
+
+Reader discussion under blog posts or docs.
+
+- <a href="https://remark42.com/docs/getting-started/installation/" target="_blank" rel="noopener noreferrer">Remark42</a> — Self-hosted, lightweight, supports anonymous and OAuth. No tracking and no ads.
+
+### Search
+
+Client-side full-text search over your built pages.
+
+- <a href="https://github.com/shishkin/astro-pagefind" target="_blank" rel="noopener noreferrer">Astro-Pagefind</a> — Wraps Pagefind, which builds a static search index from your `dist/` output and ships a tiny runtime. Zero backend, scales to thousands of pages.
+
+### Payments
+
+Take money without standing up your own merchant-of-record.
+
+- <a href="https://docs.astro.build/en/guides/ecommerce/#paddle" target="_blank" rel="noopener noreferrer">Paddle</a> — Merchant of record — they handle global tax and compliance. Best for SaaS and digital products.
+- <a href="https://docs.astro.build/en/guides/ecommerce/#lemon-squeezy" target="_blank" rel="noopener noreferrer">Lemon Squeezy</a> — Same MoR model with a friendly indie-creator UX. Acquired by Stripe in 2024 and being folded into Stripe Managed Payments — existing accounts still work, but new projects should weigh whether to start on Lemon Squeezy or jump straight to the Stripe successor.
+- <a href="https://ko-fi.com/features" target="_blank" rel="noopener noreferrer">Ko-fi</a> — Simple tipping/membership/commissions widget. Already used by Cosmo's CTA — zero-fee on tips.
+
+## Media & state
+
+Heavier assets and any reactive state shared across islands.
+
+### Media CDN
+
+Offload images and video to a service that resizes, formats, and caches them globally.
+
+- <a href="https://docs.astro.build/en/guides/media/cloudinary/" target="_blank" rel="noopener noreferrer">Cloudinary</a> — Mature transform pipeline (resize, crop, format, AI), generous free tier, official Astro integration.
+
+### State
+
+A tiny store for sharing reactive state between islands.
+
+- <a href="https://docs.astro.build/en/recipes/sharing-state/" target="_blank" rel="noopener noreferrer">Nano Stores</a> — Sub-1 kB, framework-agnostic atoms. Astro's recommended way to share state between React, Svelte, and Vue islands on the same page.
+
+## Observability
+
+How you find out the site is working — or isn't.
+
+### Analytics
+
+Privacy-respecting traffic insight without dragging in a consent banner.
+
+- <a href="https://umami.is/features" target="_blank" rel="noopener noreferrer">Umami</a> — Self-hostable, cookieless, GDPR-friendly. A solid alternative to Cloudflare Web Analytics if you want full control of the data.
+
+### Error tracking
+
+So you find out about runtime errors before your users tell you.
+
+- <a href="https://docs.astro.build/en/guides/backend/sentry/" target="_blank" rel="noopener noreferrer">Sentry</a> — Industry-standard error and performance monitoring. Note: enabling session replay typically triggers consent-banner requirements.
+
+## Quality & DX
+
+Tooling that catches problems before users do.
+
+### Git hook
+
+Pre-commit / pre-push automation so lint, format, and typecheck run before bad code leaves your machine.
+
+- <a href="https://lefthook.dev/#how-to-install-lefthook" target="_blank" rel="noopener noreferrer">Lefthook</a> — Single Go binary, parallel hook execution, one YAML config. Previously bundled with Cosmo and removed in a later release; Biome stays as the lint/format default. Re-add Lefthook if you want Biome to run on commit and `astro check` on push.
+
+### Environment variables
+
+Type-safe, validated access to env vars at build and runtime.
+
+- <a href="https://docs.astro.build/en/guides/environment-variables/#getting-environment-variables" target="_blank" rel="noopener noreferrer">astro:env</a> — Built-in. Declare each variable's type and whether it's public/secret in `astro.config.mjs`; Astro validates at build time and gives you typed imports. No extra dependency.
+
+### Unit & integration test
+
+For exercising utilities, content schemas, and component logic.
+
+- <a href="https://docs.astro.build/en/guides/testing/#vitest" target="_blank" rel="noopener noreferrer">Vitest</a> — Vite-native, Jest-compatible API, very fast. The default for anything in the Astro / Vite world.
+
+### E2E test
+
+For driving a real browser against your built site.
+
+- <a href="https://docs.astro.build/en/guides/testing/#playwright" target="_blank" rel="noopener noreferrer">Playwright</a> — Cross-browser, parallel, great trace viewer. The current default for serious E2E.
+- <a href="https://docs.astro.build/en/guides/testing/#cypress" target="_blank" rel="noopener noreferrer">Cypress</a> — Friendlier UI and time-travel debugger if you prefer interactive authoring.
+
+### Accessibility testing
+
+Catches contrast, ARIA, and structural issues before they reach users. The two picks below are browser extensions you install in your dev browser, not project dependencies — nothing to add to `package.json`.
+
+- <a href="https://chromewebstore.google.com/detail/axe-devtools-web-accessib/lhdoppojpmngadmnindnejefpokejbdd" target="_blank" rel="noopener noreferrer">axe DevTools</a> — Chrome extension from Deque. Audits the page in DevTools with rule explanations and remediation hints. The industry standard.
+- <a href="https://chromewebstore.google.com/detail/wave-evaluation-tool/jbbplnpkjmmeebjpijfedlgcdilocofh" target="_blank" rel="noopener noreferrer">WAVE Evaluation Tool</a> — Visual overlay that pins issues directly on the rendered page. Pairs well with axe — different perspective, easier to spot structural problems at a glance.
+
+### Link checking
+
+Finds broken internal and external links across the built site before users do.
+
+- <a href="https://lychee.cli.rs/guides/getting-started/" target="_blank" rel="noopener noreferrer">Lychee</a> — Fast Rust CLI that checks every link in `dist/` (or your repo). Drop it into CI and fail the build on regressions.
+
+### Bundle analysis
+
+Visual answer to "why is this bundle so big?"
+
+- <a href="https://sonda.dev/frameworks/astro" target="_blank" rel="noopener noreferrer">Sonda</a> — Vite/Astro-native bundle visualizer. Highlights duplicated deps and oversized modules.

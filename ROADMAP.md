@@ -115,6 +115,15 @@ integrations.
 - You personally reach for it in a real project.
 - A user asks for it in a GitHub issue (see `.github/ISSUE_TEMPLATE/recipe-request.yml`).
 
+**The catalog.** A brief reference catalog now lives at
+`cosmo.dyslecix.dev/docs/recommended-integrations` — one or two picks per
+category with a sentence of "what + why + link," grouped under seven themes
+(Delivery & reach, UI building blocks, Authoring & content, BaaS, Media &
+state, Observability, Quality & DX). It is **not** a substitute for recipes.
+Recipes go deep on one tool with copy-paste config; the catalog answers
+"what should I even consider?" When a recipe lands, link to it from the
+catalog entry instead of duplicating prose.
+
 ### Recipe blocker convention
 
 Recipes that a Phase 3 guide explicitly pulls in are tagged **🔒 Blocks: \<guide\>**
@@ -139,7 +148,7 @@ exist **only** where there's cosmo-specific glue worth showing.
 | Feature | Glue page? | Notes |
 | --- | --- | --- |
 | i18n routing | Yes | `BaseLayout` updates for `lang` / `hreflang`, plus the cosmo nav. |
-| View Transitions (`ClientRouter`) | Maybe | Already enabled. Page only if customization patterns become a real ask. |
+| View Transitions (`@view-transition`) | Link only | Template doesn't ship a JS router; users opt in via the CSS API or re-add `ClientRouter` themselves. |
 | `astro:assets` (images) | Link only | Native, no glue. |
 | `astro:assets` Font component | Link only | Already wired in `BaseLayout`. |
 | Content collections | Link only | `content.config.ts` already demonstrates the pattern. |
@@ -260,7 +269,7 @@ Listed here so they don't drift back in via "completeness" instincts.
 - **Tier 3 storefront** (custom multi-line-item Stripe Checkout) — requires a
   server endpoint, which leaves static.
 - **Astro Font** — superseded by the native `astro:assets` Font component.
-- **swup** — overlaps with `ClientRouter`. Pick one transition story.
+- **swup** — the template doesn't ship a client-side router; users who want one should use Astro's `ClientRouter` directly.
 - **astro-compressor / Compress / astro-robots-txt** — most hosts handle
   compression; cosmo's existing `public/robots.txt` covers 95% of robot needs.
 - **Astro Auto Import, Astro Remote, astro-portabletext** — niche; revisit only
@@ -294,3 +303,17 @@ Listed here so they don't drift back in via "completeness" instincts.
 - **2026-04-27** — "Built with cosmo" writeup queued under Phase 3 step 1
   rather than waiting for a user request. The artifact already exists; cost
   is ~1 afternoon and it doubles as proof the dogfooding works.
+- **2026-04-30** — Backported small improvements from cosmo-site to
+  `template-{pnpm,npm,yarn}`: dropped `ClientRouter` (Safari compatibility),
+  externalized theme bootstrap to `public/theme.js`, added `subsets: ["latin"]`
+  to both Font entries, bumped skip-link to `z-60`, added an `ogType` prop to
+  `SEO.astro`, added a sitemap `filter` excluding `/404`, and added a `ci.yml`
+  workflow (typecheck + build).
+- **2026-04-30** — Shipped a `recommended-integrations` doc as a brief
+  curated catalog of tools by category (with one or two picks each), rather
+  than a deep recipe per tool. It complements Phase 4 — heads off the "what
+  even exists?" question for downstream users while keeping the recipe bar
+  high (real-world demand, not breadth-for-breadth's-sake). Doc grew to the
+  point that the per-page TOC needed collapsible H2/H3 grouping; same pattern
+  will apply to any future doc with deep nesting. New `red-dwarf` doc theme
+  added alongside.

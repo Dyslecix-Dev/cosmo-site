@@ -5,8 +5,7 @@
   navigation: auto;
 }
 
-/* Hide expensive fixed backgrounds during view transition snapshots so Safari
-   can complete the transition instead of bailing out. */
+/* Hide expensive fixed backgrounds during view transition snapshots so Safari can complete the transition instead of bailing out. */
 html:active-view-transition .porthole-scene,
 html:active-view-transition .horizon-scene {
   display: none;

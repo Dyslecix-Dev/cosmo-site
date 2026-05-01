@@ -18,7 +18,7 @@ Cosmo centralizes SEO defaults in `src/components/SEO.astro`. Edit that file —
 - Set site in `astro.config.mjs` to your production URL
 - Update `siteName` and `titleDefault` defaults in `SEO.astro`
 - Optionally set `twitterCreator` in `SEO.astro` to add a global Twitter creator meta tag (or pass it per-page)
-- Replace `public/placeholder-og-fallback.png` with a real OG image (1200×630 recommended)
+- Replace `public/placeholder-og-fallback.png` with a real OG image (1200×630 recommended) — or automate per-page cards with a generator (see <a href="/docs/recommended-integrations#og-image-generation">OG image generation</a>)
 - Replace `src/assets/placeholder-home-hero.png` and `placeholder-blog-hero.png`
 - Update sitemap URL in `public/robots.txt`
 - Confirm `@astrojs/sitemap` runs in your build (it's wired in `astro.config.mjs`)
@@ -61,3 +61,9 @@ Drafts are automatically filtered from:
 - Tag taxonomy
 
 The rest of your SEO checklist applies to non-draft content only — drafts won't be indexed or served to users.
+
+## See also
+
+- <a href="/docs/recommended-integrations#analytics">Analytics</a> — privacy-respecting traffic insight without a consent banner
+- <a href="/docs/recommended-integrations#error-tracking">Error tracking</a> — find out about runtime errors before your users do
+- <a href="/docs/deployment">Deployment</a> — verify OG images and the sitemap after your first deploy

@@ -1,23 +1,48 @@
 ---
 title: Adding a content collection
 description: Define a new Astro content collection with a zod schema and render it.
-order: 4
+order: 3
 updatedDate: 2026-04-28
 ---
 
 import Callout from "@/components/callouts/Callout.astro";
 
-Cosmo ships with one example collection — `blog` — wired up in `src/content.config.ts`. Add your own by following the same pattern.
+Work through the minimum viable shape — schema, entries, index page, and detail page — using `<your-collection>` as a placeholder for your own collection name.
+
+For a fuller, opinionated example with images, related entries, and tag pages, see the <a href="https://cosmo-example.dyslecix.dev/blog/" target="_blank" rel="noopener noreferrer">`blog` collection</a>.
 
 ## 1. Define the schema
 
-Add a new collection in `src/content.config.ts`:
+In `src/content.config.ts`:
 
 ```ts
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
+const yourCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/<your-collection>" }),
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { /* ...existing, */ yourCollection };
+```
+
+Keep the schema small at first — `title` and `description` cover almost every page. Add fields (dates, tags, images, authors) only when an entry actually needs them.
+
+<Callout type="note">
+  Field names in the exported `collections` map become the strings you pass to <code>getCollection()</code>. Pick a name you won't want to rename later.
+</Callout>
+
+### Real-world example
+
+A `projects` collection with an optional cover image and external URL:
+
+```ts
 const projects = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
   schema: ({ image }) =>
@@ -29,24 +54,52 @@ const projects = defineCollection({
     }),
 });
 
-export const collections = { blog, projects };
+export const collections = { projects };
 ```
 
 ## 2. Add entries
 
-Create `src/content/projects/` and drop in `.md` or `.mdx` files with matching frontmatter.
+Create `src/content/<your-collection>/` and drop in `.md` or `.mdx` files. The filename (minus extension) becomes the entry `id` and the URL slug.
 
-## 3. Render
+```md
+---
+title: My first entry
+description: A one-line summary.
+---
 
-Create a dynamic route at `src/pages/projects/[slug].astro`:
+Body content here.
+```
+
+## 3. Index page
+
+`src/pages/<your-collection>/index.astro` lists every non-draft entry:
+
+```astro
+---
+import { getCollection } from "astro:content";
+
+const entries = await getCollection("yourCollection", ({ data }) => !data.draft);
+---
+<ul>
+  {entries.map((entry) => (
+    <li>
+      <a href={`/<your-collection>/${entry.id}`}>{entry.data.title}</a>
+    </li>
+  ))}
+</ul>
+```
+
+## 4. Detail page
+
+`src/pages/<your-collection>/[slug].astro` renders one entry per route:
 
 ```astro
 ---
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
-  const projects = await getCollection("projects");
-  return projects.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+  const entries = await getCollection("yourCollection");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
 }
 
 const { entry } = Astro.props;
@@ -58,7 +111,9 @@ const { Content } = await render(entry);
 </article>
 ```
 
-## Deleting the example collections
+From here, swap a real layout in for `<article>`, add SEO via `src/components/SEO.astro`, and grow the schema as your entries actually demand it.
+
+## Deleting example collections
 
 <Callout type="danger" title="This is destructive">
   Deleting a collection removes all its entries and routes. Back up or commit your changes to git before proceeding.

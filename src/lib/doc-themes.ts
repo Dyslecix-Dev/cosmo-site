@@ -1,4 +1,4 @@
-type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "pulsar" | "binary-star" | "wormhole";
+type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "green-starfield" | "pulsar" | "binary-star" | "wormhole" | "red-dwarf";
 
 export interface DocTheme {
   key: DocThemeKey;
@@ -16,19 +16,12 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c2: "#ff7a18",
     c3: "#5a1a00",
   },
-  "minimum-viable-collection": {
+  "adding-a-content-collection": {
     key: "protoplanetary",
     label: "Protoplanetary Disk",
     c1: "#f4c47a",
     c2: "#a86a2e",
     c3: "#2a1608",
-  },
-  "adding-a-content-collection": {
-    key: "asteroid-belt",
-    label: "Asteroid Belt",
-    c1: "#94a3b8",
-    c2: "#22d3ee",
-    c3: "#0b1220",
   },
   "rebranding-via-tokens": {
     key: "nebula",
@@ -51,12 +44,26 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c2: "#e0e7ff",
     c3: "#1c1917",
   },
+  "design-decisions": {
+    key: "green-starfield",
+    label: "Green Starfield",
+    c1: "#d1fae5",
+    c2: "#22c55e",
+    c3: "#020a06",
+  },
   deployment: {
-    key: "wormhole",
-    label: "Hyperspace",
-    c1: "#e0f2fe",
-    c2: "#3b82f6",
-    c3: "#0a1929",
+    key: "asteroid-belt",
+    label: "Asteroid Belt",
+    c1: "#94a3b8",
+    c2: "#22d3ee",
+    c3: "#0b1220",
+  },
+  "recommended-integrations": {
+    key: "red-dwarf",
+    label: "Red Dwarf",
+    c1: "#fee2e2",
+    c2: "#dc2626",
+    c3: "#1a0507",
   },
 };
 
