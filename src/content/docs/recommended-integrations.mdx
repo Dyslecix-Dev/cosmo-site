@@ -27,13 +27,13 @@ Routing and translated content for multilingual sites.
 
 Make the site installable and available offline.
 
-- <a href="https://vite-pwa-org.netlify.app/frameworks/astro.html#astro-integration" target="_blank" rel="noopener noreferrer">Vite PWA</a> — Generates a service worker and manifest, handles offline caching. The standard choice in the Vite ecosystem.
+- <a href="https://vite-pwa-org.netlify.app/frameworks/astro.html#astro-integration" target="_blank" rel="noopener noreferrer">Vite PWA</a> — Generates a service worker and manifest, handles offline caching. The standard choice in the Vite ecosystem. Wire it up after your first successful deploy — see [Deployment](/docs/deployment).
 
 ### Script offloading
 
 Move third-party scripts (analytics, chat widgets, ads) off the main thread.
 
-- <a href="https://docs.astro.build/en/guides/integrations-guide/partytown/" target="_blank" rel="noopener noreferrer">Partytown</a> — Runs third-party scripts inside a web worker. Worth it when you can't drop a heavy script entirely. Now maintained by the Qwik team — install `@qwik.dev/partytown` (the old `@builder.io/partytown` package is deprecated).
+- <a href="https://docs.astro.build/en/guides/integrations-guide/partytown/" target="_blank" rel="noopener noreferrer">Partytown</a> — Runs third-party scripts inside a web worker. Worth it when you can't drop a heavy script entirely. Now maintained by the Qwik team — install `@qwik.dev/partytown` (the old `@builder.io/partytown` package is deprecated). Pairs well with the analytics tools in the [Observability](#observability) section below.
 
 ## UI building blocks
 
