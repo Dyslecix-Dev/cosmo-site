@@ -154,6 +154,60 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     animation: doc-bg-nebula-drift 11s ease-in-out infinite;
   }
 
+  .doc-bg[data-variant="green-starfield"] .doc-bg-base {
+    background:
+      radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 90%, white) 0%, transparent 2%),
+      radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c2) 80%, transparent) 0%, color-mix(in oklch, var(--c2) 40%, transparent) 12%, transparent 28%),
+      radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c2) 30%, transparent) 0%, transparent 45%),
+      radial-gradient(ellipse at 50% 50%, var(--c3) 60%, color-mix(in oklch, var(--c3) 90%, black) 100%);
+    filter: saturate(140%);
+  }
+  .doc-bg[data-variant="green-starfield"] .doc-bg-accent {
+    background:
+      conic-gradient(from 0deg at 50% 50%, transparent 0deg, color-mix(in oklch, black 70%, transparent) 25deg, transparent 50deg, transparent 110deg, color-mix(in oklch, black 60%, transparent) 140deg, transparent 170deg, transparent 230deg, color-mix(in oklch, black 65%, transparent) 260deg, transparent 290deg, transparent 350deg, color-mix(in oklch, black 55%, transparent) 360deg),
+      radial-gradient(circle at 50% 50%, transparent 30%, color-mix(in oklch, var(--c2) 25%, transparent) 38%, transparent 50%);
+    mix-blend-mode: multiply;
+    mask-image: radial-gradient(circle at 50% 50%, black 8%, black 38%, transparent 55%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 8%, black 38%, transparent 55%);
+    animation: doc-bg-galaxy-spin 60s linear infinite;
+  }
+  .doc-bg[data-variant="green-starfield"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 100% at 50% 50%, color-mix(in oklch, var(--c1) 60%, transparent) 0%, color-mix(in oklch, var(--c2) 50%, transparent) 18%, color-mix(in oklch, var(--c2) 28%, transparent) 38%, color-mix(in oklch, var(--c2) 12%, transparent) 65%, transparent 90%);
+    filter: blur(40px);
+    opacity: 0.85;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    animation: doc-bg-haze-pulse 8s ease-in-out infinite;
+  }
+  .doc-bg[data-variant="green-starfield"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      conic-gradient(from 90deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 35%, transparent) 40deg, transparent 90deg, color-mix(in oklch, var(--c2) 30%, transparent) 150deg, transparent 200deg, color-mix(in oklch, var(--c1) 30%, transparent) 250deg, transparent 310deg, color-mix(in oklch, var(--c2) 35%, transparent) 350deg);
+    mask-image: radial-gradient(circle at 50% 50%, transparent 42%, black 50%, black 58%, transparent 66%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent 42%, black 50%, black 58%, transparent 66%);
+    filter: blur(8px);
+    mix-blend-mode: screen;
+    opacity: 0.8;
+    pointer-events: none;
+    animation: doc-bg-galaxy-spin 90s linear infinite reverse;
+  }
+  .doc-bg[data-variant="green-starfield"] .doc-bg-vignette {
+    z-index: 2;
+  }
+  .doc-bg[data-variant="green-starfield"] .doc-bg-stars {
+    z-index: 3;
+  }
+  .doc-bg[data-paused="true"][data-variant="green-starfield"]::before,
+  .doc-bg[data-paused="true"][data-variant="green-starfield"]::after {
+    animation-play-state: paused;
+  }
+
   .doc-bg[data-variant="pulsar"] .doc-bg-base {
     background:
       radial-gradient(circle at 50% 50%, var(--c1) 0%, transparent 6%),
@@ -218,6 +272,14 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
   @keyframes doc-bg-nebula-drift {
     0%, 100% { transform: scale(1) translate3d(-3%, 1%, 0); opacity: 0.7; }
     50% { transform: scale(1.25) translate3d(4%, -2%, 0); opacity: 1; }
+  }
+  @keyframes doc-bg-galaxy-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes doc-bg-haze-pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.06); }
   }
   @keyframes doc-bg-belt-drift {
     0% { transform: translate3d(-12%, 1%, 0); }

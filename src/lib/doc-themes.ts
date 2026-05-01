@@ -1,4 +1,4 @@
-type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "pulsar" | "binary-star" | "wormhole";
+type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "green-starfield" | "pulsar" | "binary-star" | "wormhole";
 
 export interface DocTheme {
   key: DocThemeKey;
@@ -50,6 +50,13 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c1: "#fbbf24",
     c2: "#e0e7ff",
     c3: "#1c1917",
+  },
+  "design-decisions": {
+    key: "green-starfield",
+    label: "Green Starfield",
+    c1: "#d1fae5",
+    c2: "#22c55e",
+    c3: "#020a06",
   },
   deployment: {
     key: "wormhole",

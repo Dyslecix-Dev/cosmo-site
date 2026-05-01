@@ -139,7 +139,7 @@ exist **only** where there's cosmo-specific glue worth showing.
 | Feature | Glue page? | Notes |
 | --- | --- | --- |
 | i18n routing | Yes | `BaseLayout` updates for `lang` / `hreflang`, plus the cosmo nav. |
-| View Transitions (`ClientRouter`) | Maybe | Already enabled. Page only if customization patterns become a real ask. |
+| View Transitions (`@view-transition`) | Link only | Template doesn't ship a JS router; users opt in via the CSS API or re-add `ClientRouter` themselves. |
 | `astro:assets` (images) | Link only | Native, no glue. |
 | `astro:assets` Font component | Link only | Already wired in `BaseLayout`. |
 | Content collections | Link only | `content.config.ts` already demonstrates the pattern. |
@@ -260,7 +260,7 @@ Listed here so they don't drift back in via "completeness" instincts.
 - **Tier 3 storefront** (custom multi-line-item Stripe Checkout) — requires a
   server endpoint, which leaves static.
 - **Astro Font** — superseded by the native `astro:assets` Font component.
-- **swup** — overlaps with `ClientRouter`. Pick one transition story.
+- **swup** — the template doesn't ship a client-side router; users who want one should use Astro's `ClientRouter` directly.
 - **astro-compressor / Compress / astro-robots-txt** — most hosts handle
   compression; cosmo's existing `public/robots.txt` covers 95% of robot needs.
 - **Astro Auto Import, Astro Remote, astro-portabletext** — niche; revisit only
@@ -294,3 +294,9 @@ Listed here so they don't drift back in via "completeness" instincts.
 - **2026-04-27** — "Built with cosmo" writeup queued under Phase 3 step 1
   rather than waiting for a user request. The artifact already exists; cost
   is ~1 afternoon and it doubles as proof the dogfooding works.
+- **2026-04-30** — Backported small improvements from cosmo-site to
+  `template-{pnpm,npm,yarn}`: dropped `ClientRouter` (Safari compatibility),
+  externalized theme bootstrap to `public/theme.js`, added `subsets: ["latin"]`
+  to both Font entries, bumped skip-link to `z-60`, added an `ogType` prop to
+  `SEO.astro`, added a sitemap `filter` excluding `/404`, and added a `ci.yml`
+  workflow (typecheck + build).
