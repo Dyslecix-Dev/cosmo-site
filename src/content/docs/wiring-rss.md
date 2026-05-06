@@ -5,11 +5,9 @@ order: 4
 updatedDate: 2026-05-05
 ---
 
-Cosmo ships with a stub RSS endpoint at `src/pages/rss.xml.js`. Until you wire it to a collection, the feed renders with zero items.
+## Connecting to the blog collection
 
-## Wire to the blog collection
-
-It includes a `blog` collection you can wire the feed to.
+Cosmo includes a `blog` collection you can wire the feed to.
 
 Replace the stub with a `getCollection` call that filters drafts and sorts by `pubDate`:
 
