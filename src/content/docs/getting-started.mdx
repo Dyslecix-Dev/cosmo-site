@@ -6,6 +6,8 @@ updatedDate: 2026-05-05
 ---
 
 import Callout from "@/components/callouts/Callout.astro";
+import Tabs from "@/components/tabs/Tabs.astro";
+import TabItem from "@/components/tabs/TabItem.astro";
 
 Cosmo is a minimal Astro starter. This guide walks through scaffolding a new project from the template and running it locally.
 
@@ -20,29 +22,29 @@ Cosmo is a minimal Astro starter. This guide walks through scaffolding a new pro
 
 ## Scaffold and install
 
-With pnpm:
-
-```sh
-pnpm create astro@latest -- --template DyslecixDev/cosmo/template-pnpm my-site
-cd my-site
-pnpm install
-```
-
-Or with npm:
-
-```sh
-npm create astro@latest -- --template DyslecixDev/cosmo/template-npm my-site
-cd my-site
-npm install
-```
-
-Or with yarn:
-
-```sh
-yarn create astro --template DyslecixDev/cosmo/template-yarn my-site
-cd my-site
-yarn install
-```
+<Tabs>
+  <TabItem label="pnpm">
+    ```sh
+    pnpm create astro@latest -- --template DyslecixDev/cosmo/template-pnpm my-site
+    cd my-site
+    pnpm install
+    ```
+  </TabItem>
+  <TabItem label="npm">
+    ```sh
+    npm create astro@latest -- --template DyslecixDev/cosmo/template-npm my-site
+    cd my-site
+    npm install
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```sh
+    yarn create astro --template DyslecixDev/cosmo/template-yarn my-site
+    cd my-site
+    yarn install
+    ```
+  </TabItem>
+</Tabs>
 
 ## Commands
 
