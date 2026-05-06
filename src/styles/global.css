@@ -152,7 +152,7 @@ html[data-motion="paused"] *::after {
 }
 
 .doc-prose a {
-  color: var(--color-brand-secondary);
+  color: var(--color-brand-tertiary);
   text-decoration: underline;
   text-decoration-color: color-mix(in oklch, var(--color-brand-tertiary) 60%, transparent);
   text-underline-offset: 3px;
@@ -186,10 +186,7 @@ html[data-motion="paused"] *::after {
   margin: 0.4rem 0;
 }
 .doc-prose li::marker {
-  color: var(--color-brand-secondary);
-}
-:where(.dark) .doc-prose li::marker {
-  color: color-mix(in oklch, var(--color-brand-tertiary) 80%, transparent);
+  color: var(--color-brand-tertiary);
 }
 
 .doc-prose blockquote {
@@ -362,6 +359,16 @@ html[data-motion="paused"] *::after {
 .install-cmd,
 .footer-snippet-code {
   padding-bottom: 2px;
+}
+
+.doc-reveal {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doc-reveal {
+    opacity: 1;
+  }
 }
 
 .panel-blur::before {

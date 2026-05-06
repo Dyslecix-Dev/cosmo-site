@@ -92,13 +92,13 @@ const breadcrumbSchema = {
   <main id="main" class="relative isolate overflow-x-clip pt-32 sm:pt-36 pb-24">
 
     <div class="mx-auto w-full max-w-6xl px-6 sm:px-10">
-      <header class="doc-reveal rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/20 dark:bg-brand-primary/10 relative panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
-        <a href="/docs" data-all-guides-link class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition group">
+      <header class="doc-reveal rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
+        <a href="/docs" data-all-guides-link class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition group">
           <span aria-hidden="true" class="all-guides-arrow">&larr;</span>
           <span>All guides</span>
         </a>
 
-        <div class="mt-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+        <div class="mt-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-tertiary">
           <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_10px_currentColor]"></span>
           <span>Briefing {String(position).padStart(2, "0")} of {String(total).padStart(2, "0")}</span>
         </div>
@@ -107,18 +107,18 @@ const breadcrumbSchema = {
           {entry.data.title}
         </h1>
         {entry.data.description && (
-          <p class="mt-5 max-w-2xl text-lg sm:text-xl text-brand-secondary dark:text-brand-tertiary">
+          <p class="mt-5 max-w-2xl text-lg sm:text-xl text-brand-tertiary">
             {entry.data.description}
           </p>
         )}
 
-        <p class="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary/80 dark:text-brand-tertiary/80">
+        <p class="mt-6 font-mono text-xs uppercase tracking-[0.2em]/80 text-brand-tertiary/80">
           Last updated <time datetime={updatedISO}>{updatedLabel}</time>
         </p>
       </header>
 
       <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_240px]">
-        <article class="doc-reveal min-w-0 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/20 dark:bg-brand-primary/10 relative panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
+        <article class="doc-reveal min-w-0 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
           <div class="doc-prose">
             <Content />
           </div>
@@ -128,7 +128,7 @@ const breadcrumbSchema = {
               href={editUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition"
+              class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition"
             >
               <span>Edit this page on GitHub</span>
               <span aria-hidden="true">&rarr;</span>
@@ -141,9 +141,9 @@ const breadcrumbSchema = {
                 {prev && (
                   <a
                     href={`/docs/${prev.id}`}
-                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/20 dark:bg-brand-primary/10 relative panel-blur px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
+                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
                   >
-                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                       &larr; Previous
                     </span>
                     <span class="mt-1 block font-medium text-brand-primary dark:text-brand-quaternary">
@@ -156,9 +156,9 @@ const breadcrumbSchema = {
                 {next && (
                   <a
                     href={`/docs/${next.id}`}
-                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/20 dark:bg-brand-primary/10 relative panel-blur px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
+                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
                   >
-                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                       Next &rarr;
                     </span>
                     <span class="mt-1 block font-medium text-brand-primary dark:text-brand-quaternary">
@@ -173,8 +173,8 @@ const breadcrumbSchema = {
 
         {tocFlat.length > 0 && (
           <aside class="doc-reveal hidden lg:block">
-            <div class="sticky top-32 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/20 dark:bg-brand-primary/10 panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-5">
-              <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+            <div class="sticky top-32 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-5">
+              <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                 On this page
               </div>
               <ul class="mt-3 space-y-1.5 border-l border-brand-primary/15 dark:border-brand-quaternary/15">
@@ -182,7 +182,7 @@ const breadcrumbSchema = {
                   <li>
                     {section.children.length > 0 && tocHasGrouping ? (
                       <div class="toc-section" data-toc-section>
-                        <div class="toc-summary flex items-center gap-2 border-l-2 -ml-px pl-3 pr-2 py-1 text-sm border-transparent text-brand-secondary dark:text-brand-tertiary">
+                        <div class="toc-summary flex items-center gap-2 border-l-2 -ml-px pl-3 pr-2 py-1 text-sm border-transparent text-brand-tertiary">
                           {section.slug ? (
                             <a
                               href={`#${section.slug}`}
@@ -213,7 +213,7 @@ const breadcrumbSchema = {
                                   href={`#${child.slug}`}
                                   data-toc-link
                                   data-toc-target={child.slug}
-                                  class="block border-l-2 -ml-px pl-6 py-1 text-sm transition border-transparent text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
+                                  class="block border-l-2 -ml-px pl-6 py-1 text-sm transition border-transparent text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
                                 >
                                   {child.text}
                                 </a>
@@ -227,7 +227,7 @@ const breadcrumbSchema = {
                         href={`#${section.slug}`}
                         data-toc-link
                         data-toc-target={section.slug}
-                        class="block border-l-2 -ml-px pl-3 py-1 text-sm transition border-transparent text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
+                        class="block border-l-2 -ml-px pl-3 py-1 text-sm transition border-transparent text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
                       >
                         {section.text}
                       </a>
@@ -240,7 +240,7 @@ const breadcrumbSchema = {
                 <div class="mt-8 space-y-6 border-t border-brand-primary/15 dark:border-brand-quaternary/15 pt-6 text-sm">
                   {prev && (
                     <a href={`/docs/${prev.id}`} class="block group">
-                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                         &larr; Previous
                       </span>
                       <span class="mt-0.5 block text-brand-primary/80 dark:text-brand-quaternary/80 group-hover:text-brand-primary dark:group-hover:text-brand-quaternary transition">
@@ -250,7 +250,7 @@ const breadcrumbSchema = {
                   )}
                   {next && (
                     <a href={`/docs/${next.id}`} class="block group">
-                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                         Next &rarr;
                       </span>
                       <span class="mt-0.5 block text-brand-primary/80 dark:text-brand-quaternary/80 group-hover:text-brand-primary dark:group-hover:text-brand-quaternary transition">
@@ -269,16 +269,6 @@ const breadcrumbSchema = {
 </BaseLayout>
 
 <style>
-  .doc-reveal {
-    opacity: 0;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .doc-reveal {
-      opacity: 1;
-    }
-  }
-
   .toc-toggle { background: none; border: 0; padding: 0; color: inherit; }
   .toc-section .toc-caret { transition: transform 220ms ease; display: inline-block; }
   .toc-section[data-open="true"] .toc-caret { transform: rotate(90deg); }
