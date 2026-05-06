@@ -2,7 +2,7 @@
 title: Design decisions
 description: Why Cosmo is built the way it is — the non-obvious choices and the reasoning behind them.
 order: 8
-updatedDate: 2026-04-30
+updatedDate: 2026-05-05
 ---
 
 A running list of "why is this here?" questions for the Cosmo template. If a choice in the codebase looks odd, the answer is probably below.

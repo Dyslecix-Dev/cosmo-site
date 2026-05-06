@@ -361,31 +361,46 @@ html[data-motion="paused"] *::after {
   padding-bottom: 2px;
 }
 
+.panel-blur::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
 @supports (scrollbar-color: auto) {
   .install-cmd,
-  .footer-snippet-code {
+  .footer-snippet-code,
+  .doc-prose pre {
     scrollbar-width: thin;
     scrollbar-color: oklch(76% 0.09 188 / 0.7) transparent;
   }
 }
 
 .install-cmd::-webkit-scrollbar,
-.footer-snippet-code::-webkit-scrollbar {
+.footer-snippet-code::-webkit-scrollbar,
+.doc-prose pre::-webkit-scrollbar {
   height: 4px;
 }
 
 .install-cmd::-webkit-scrollbar-track,
-.footer-snippet-code::-webkit-scrollbar-track {
+.footer-snippet-code::-webkit-scrollbar-track,
+.doc-prose pre::-webkit-scrollbar-track {
   background: transparent;
 }
 
 .install-cmd::-webkit-scrollbar-thumb,
-.footer-snippet-code::-webkit-scrollbar-thumb {
+.footer-snippet-code::-webkit-scrollbar-thumb,
+.doc-prose pre::-webkit-scrollbar-thumb {
   background: oklch(76% 0.09 188 / 0.55);
   border-radius: 9999px;
 }
 
 .install-cmd::-webkit-scrollbar-thumb:hover,
-.footer-snippet-code::-webkit-scrollbar-thumb:hover {
+.footer-snippet-code::-webkit-scrollbar-thumb:hover,
+.doc-prose pre::-webkit-scrollbar-thumb:hover {
   background: oklch(76% 0.09 188);
 }
