@@ -4,6 +4,7 @@ import { Font } from "astro:assets";
 import Footer from "@/components/Footer.astro";
 import KoFiPopover from "@/components/KoFiPopover.astro";
 import Navbar from "@/components/Navbar.astro";
+import NoCookieBanner from "@/components/NoCookieBanner.astro";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 
@@ -69,6 +70,7 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     <slot />
     <Footer />
     <KoFiPopover />
+    <NoCookieBanner />
     <div id="vt-burst" aria-hidden="true" class="pointer-events-none fixed inset-0 z-[9999] opacity-0" style="background: radial-gradient(circle at 50% 45%, oklch(76% 0.09 188 / 0.55) 0%, transparent 65%);"></div>
     <script is:inline defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2ac3323fca1d4fa3afcd3f6a28f5510e"}'></script>
   </body>

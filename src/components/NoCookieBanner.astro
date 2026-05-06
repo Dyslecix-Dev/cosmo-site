@@ -1,0 +1,89 @@
+---
+---
+
+<div
+  id="nocookie-banner"
+  role="status"
+  aria-live="polite"
+  class="nocookie-banner pointer-events-none fixed z-40 opacity-0 left-3 right-3 top-20 md:left-6 md:right-auto md:top-auto md:bottom-6 md:max-w-sm"
+>
+  <div class="relative flex items-start gap-3 rounded-xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary dark:bg-brand-primary text-brand-primary dark:text-brand-quaternary shadow-[0_8px_40px_-12px_rgba(0,0,0,0.35)] pl-4 pr-2 py-2.5 md:py-3">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-4 w-4 shrink-0 text-brand-secondary dark:text-brand-tertiary" aria-hidden="true">
+      <path d="M12 2a10 10 0 1 0 10 10" />
+      <path d="M12 2a10 10 0 0 1 10 10" stroke-dasharray="2 3" />
+      <circle cx="9" cy="10" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="13" r="1" fill="currentColor" stroke="none" />
+      <circle cx="10" cy="16" r="1" fill="currentColor" stroke="none" />
+    </svg>
+    <p class="text-xs leading-snug opacity-85">
+      Cookieless analytics and no session replay. We respect your personal space.
+    </p>
+    <button
+      type="button"
+      id="nocookie-dismiss"
+      aria-label="Dismiss"
+      class="ml-1 shrink-0 rounded-md p-1 text-brand-primary/40 dark:text-brand-quaternary/40 hover:text-brand-primary dark:hover:text-brand-quaternary transition"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .nocookie-banner {
+    transition: opacity 400ms cubic-bezier(0.22, 1, 0.36, 1), transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform: translateY(-8px);
+  }
+  @media (min-width: 768px) {
+    .nocookie-banner {
+      transform: translateY(8px);
+    }
+  }
+  .nocookie-banner.is-visible {
+    pointer-events: auto;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .nocookie-banner.is-hiding {
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nocookie-banner {
+      transition: opacity 200ms ease;
+      transform: none !important;
+    }
+  }
+</style>
+
+<script is:inline>
+  function initNoCookieBanner() {
+    const banner = document.getElementById("nocookie-banner");
+    const dismiss = document.getElementById("nocookie-dismiss");
+    if (!banner || !dismiss) return;
+
+    if (localStorage.getItem("nocookie-dismissed") === "1") return;
+
+    const show = () => banner.classList.add("is-visible");
+    const hide = () => {
+      banner.classList.add("is-hiding");
+      banner.classList.remove("is-visible");
+      localStorage.setItem("nocookie-dismissed", "1");
+    };
+
+    const showTimer = window.setTimeout(show, 600);
+    dismiss.addEventListener("click", hide);
+
+    return () => {
+      window.clearTimeout(showTimer);
+      dismiss.removeEventListener("click", hide);
+    };
+  }
+
+  initNoCookieBanner();
+  document.addEventListener("astro:page-load", initNoCookieBanner);
+</script>
