@@ -254,9 +254,34 @@ const aboutLinks = [
       { signal },
     );
 
-    for (const link of root.querySelectorAll<HTMLAnchorElement>("[data-mobile-link]")) {
-      link.addEventListener("click", () => setOpen(root, false), { signal });
-    }
+    const panel = root.querySelector<HTMLElement>("[data-mobile-panel]");
+    root.addEventListener(
+      "click",
+      (event) => {
+        const target = event.target as Element | null;
+        const link = target?.closest<HTMLAnchorElement>("[data-mobile-link]");
+        if (!link || !root.contains(link)) return;
+        if (event.defaultPrevented) return;
+        const me = event as MouseEvent;
+        if (me.metaKey || me.ctrlKey || me.shiftKey || me.altKey || me.button !== 0) {
+          setOpen(root, false);
+          return;
+        }
+        const href = link.getAttribute("href");
+        if (!href || link.target === "_blank") {
+          setOpen(root, false);
+          return;
+        }
+        event.preventDefault();
+        if (panel) panel.style.transition = "none";
+        setOpen(root, false);
+        // Force the closed state to commit before the snapshot is taken so
+        // Safari's view-transition old-snapshot doesn't include the menu mid-close.
+        if (panel) void panel.offsetHeight;
+        window.location.href = href;
+      },
+      { signal },
+    );
 
     document.addEventListener(
       "click",
