@@ -1,23 +1,17 @@
 ---
 title: Deployment
-description: "Ship a Cosmo build to a static host: Cloudflare Pages, GitHub Pages, Netlify, or Vercel."
+description: "Ship a Cosmo build to a static host."
 order: 6
 updatedDate: 2026-05-05
 ---
 
 import Callout from "@/components/callouts/Callout.astro";
 
-Cosmo builds to fully static HTML, CSS, and JS in `./dist/`. Any static host works. Four common options are documented below.
+## Common build settings
 
-<Callout type="note">
+<Callout type="danger" title="Set site first">
 Before deploying, set `site` in `astro.config.mjs` to the production URL you'll deploy to. The `SEO.astro` component throws at build time if it isn't set, and the sitemap and RSS feed both rely on it for absolute URLs.
 </Callout>
-
-<Callout type="note" title="Package manager">
-Examples below use **pnpm**. The template also supports **npm** and **yarn** — substitute `npm install` / `npm run build` or `yarn install` / `yarn build`, and use the matching lockfile (`package-lock.json` or `yarn.lock`) for cache and install commands.
-</Callout>
-
-## Common build settings
 
 Every host below uses the same build inputs:
 
@@ -26,11 +20,13 @@ Every host below uses the same build inputs:
 - **Output directory:** `dist`
 - **Node version:** `22 LTS` (matches `.nvmrc`)
 
-<Callout type="tip">
-`--frozen-lockfile` (and `npm ci`) fails the install if `package.json` and the lockfile are out of sync, and refuses to update the lockfile during install. That guarantees CI builds resolve to the exact versions you tested locally — no silent dependency drift between commits.
+<Callout type="tip" title="Frozen lock file">
+`--frozen-lockfile` (and `npm ci`) fails the install if `package.json` and the lockfile are out of sync, and refuses to update the lockfile during install. That guarantees CI builds resolve to the exact versions you tested locally.
 </Callout>
 
-## <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare Pages</a>
+## Static hosting
+
+### <a href="https://pages.cloudflare.com/" target="_blank" rel="noopener noreferrer">Cloudflare Pages</a>
 
 1. Push the repo to GitHub, GitLab, or Bitbucket.
 2. In the Cloudflare dashboard, go to **Workers & Pages → Create application → Pages → Connect to Git** and pick the repo.
@@ -42,7 +38,7 @@ Every host below uses the same build inputs:
    - `NODE_VERSION` = `22`
 5. Save and deploy. Cloudflare will rebuild on every push to the production branch.
 
-## <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">GitHub Pages</a>
+### <a href="https://pages.github.com/" target="_blank" rel="noopener noreferrer">GitHub Pages</a>
 
 GitHub Pages serves static files from a branch or from a workflow artifact. Cosmo recommends the workflow approach — it lets the build run in CI rather than committing `dist/` to the repo.
 
@@ -85,7 +81,7 @@ GitHub Pages serves static files from a branch or from a workflow artifact. Cosm
 
 3. If you're deploying to a project page (`username.github.io/repo`), set `base: "/repo"` in `astro.config.mjs` so asset paths resolve correctly. User/org pages (`username.github.io`) don't need this.
 
-## <a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer">Netlify</a>
+### <a href="https://www.netlify.com/" target="_blank" rel="noopener noreferrer">Netlify</a>
 
 1. Push the repo to your Git provider.
 2. In Netlify, go to **Add new site → Import an existing project** and pick the repo.
@@ -107,7 +103,7 @@ GitHub Pages serves static files from a branch or from a workflow artifact. Cosm
 
 Netlify auto-detects pnpm via `pnpm-lock.yaml` (or npm/yarn via their respective lockfiles) and installs the matching package manager for you.
 
-## <a href="https://vercel.com/" target="_blank" rel="noopener noreferrer">Vercel</a>
+### <a href="https://vercel.com/" target="_blank" rel="noopener noreferrer">Vercel</a>
 
 1. Push the repo to your Git provider.
 2. In Vercel, click **Add New → Project**, import the repo, and accept the auto-detected **Astro** preset.
@@ -118,11 +114,11 @@ Netlify auto-detects pnpm via `pnpm-lock.yaml` (or npm/yarn via their respective
 4. Under **Project Settings → General**, confirm **Node.js Version** is `22.x`.
 5. Deploy. Every push to the production branch redeploys; PRs get preview URLs automatically.
 
-## After your first deploy
+## After your first deployment
 
 - Verify the sitemap is reachable at `/sitemap-index.xml` and that `robots.txt` points to the production URL.
 - Test the RSS feed at `/rss.xml`.
-- Check that OG images render by pasting your URL into the <a href="https://www.opengraph.xyz/" target="_blank" rel="noopener noreferrer">Open Graph debugger</a> or a Slack/Discord message — see the [SEO checklist](/docs/seo-checklist) for the full pre-launch list.
+- Check that OG images render by pasting your URL into the <a href="https://www.opengraph.xyz/" target="_blank" rel="noopener noreferrer">Open Graph debugger</a> and see the [SEO checklist](/docs/seo-checklist) for the full pre-launch list.
 - Run <a href="https://pagespeed.web.dev/" target="_blank" rel="noopener noreferrer">PageSpeed Insights</a> against the deployed URL to confirm the build is performing as expected.
 
 ## See also
