@@ -1,7 +1,7 @@
 ---
 title: Design decisions
 description: Why Cosmo is built the way it is — the non-obvious choices and the reasoning behind them.
-order: 9
+order: 8
 updatedDate: 2026-04-30
 ---
 

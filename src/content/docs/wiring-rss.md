@@ -1,7 +1,7 @@
 ---
 title: Wiring RSS
 description: Hook the RSS feed up to a content collection.
-order: 5
+order: 4
 updatedDate: 2026-04-26
 ---
 
