@@ -42,11 +42,13 @@ const socials = [
           Light Speed Development
         </p>
         <p class="mt-4 max-w-md text-sm opacity-75 leading-relaxed">
-          Easy, fast, and mission-ready
+          Free, fast, and mission-ready
         </p>
         <div class="footer-snippet mt-6 flex max-w-full items-center gap-3 rounded-lg border border-current/20 bg-brand-quaternary/10 dark:bg-brand-primary/10 pl-4 pr-2 py-1.5 font-mono text-xs sm:text-sm">
           <span aria-hidden="true" class="text-brand-tertiary shrink-0">$</span>
-          <code data-footer-copy-text class="footer-snippet-code overflow-x-auto whitespace-nowrap py-1">pnpm create astro@latest -- --template DyslecixDev/cosmo</code>
+          <div class="footer-snippet-code overflow-x-auto">
+            <code data-footer-copy-text class="whitespace-nowrap py-1 block">pnpm create astro@latest -- --template DyslecixDev/cosmo/template-pnpm my-site</code>
+          </div>
           <button
             type="button"
             data-footer-copy-btn
@@ -160,27 +162,6 @@ const socials = [
     background-size: 100% 1px;
   }
 
-  .footer-snippet-code {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent) transparent;
-  }
-
-  .footer-snippet-code::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .footer-snippet-code::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .footer-snippet-code::-webkit-scrollbar-thumb {
-    background: color-mix(in oklch, var(--color-brand-tertiary) 55%, transparent);
-    border-radius: 9999px;
-  }
-
-  .footer-snippet-code::-webkit-scrollbar-thumb:hover {
-    background: var(--color-brand-tertiary);
-  }
 
   .footer-social:hover {
     box-shadow:
