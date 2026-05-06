@@ -1,10 +1,6 @@
 ---
 ---
 
-<!--
-  Desktop search panel. The outer container sits at top-4 (same as the navbar header's pt-4)
-  and has overflow-hidden so the upward-translated pill is clipped until it animates into view.
--->
 <div
   id="search-panel"
   data-search-panel
@@ -16,7 +12,6 @@
     data-search-inner
     style="transform: translateY(-100%); opacity: 0;"
   >
-    <!-- Pill — identical shape/bg/border/shadow to the navbar -->
     <nav
       class="flex items-center gap-2 rounded-full border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary dark:bg-brand-primary px-2 py-2 shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
       aria-label="Search"
@@ -50,37 +45,33 @@
   </div>
 </div>
 
-<!-- Results card — outside the overflow-hidden container so it can extend downward freely -->
 <div
   id="search-results"
   data-search-results
   role="listbox"
   aria-label="Search results"
-  class="hidden sm:block fixed left-4 right-4 sm:left-6 sm:right-6 z-50 pointer-events-none"
-  style="opacity: 0;"
+  class="fixed left-4 right-4 sm:left-6 sm:right-6 z-50 pointer-events-none"
+  style="opacity: 0; display: none;"
 >
-  <div class="mx-auto max-w-3xl mt-2 max-h-80 overflow-y-auto overscroll-contain rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/98 dark:bg-brand-primary/98 backdrop-blur-lg shadow-[0_20px_60px_rgba(0,0,0,0.18)] py-2">
-    <p data-search-empty class="hidden px-4 py-6 text-center text-sm text-brand-primary/50 dark:text-brand-quaternary/50">
+  <div class="mx-auto max-w-3xl mt-2 max-h-80 overflow-y-auto overscroll-contain rounded-2xl border border-brand-primary/10 dark:border-brand-quaternary/10 bg-brand-quaternary dark:bg-brand-primary backdrop-blur-lg shadow-[0_20px_60px_rgba(0,0,0,0.18)] py-2" data-results-inner>
+    <p data-search-empty class="hidden px-4 py-6 text-center text-sm text-brand-primary/70 dark:text-brand-quaternary/70">
       No results found.
     </p>
   </div>
 </div>
 
-<!-- Backdrop -->
 <div
   data-search-backdrop
   aria-hidden="true"
-  class="hidden sm:block fixed inset-0 z-30 bg-brand-primary/10 dark:bg-brand-primary/30 pointer-events-none"
-  style="opacity: 0;"
+  class="fixed inset-0 z-30 bg-brand-primary/10 dark:bg-brand-primary/30 pointer-events-none"
+  style="opacity: 0; display: none;"
 ></div>
 
 <style>
-  /* Hide the browser-native clear button on search inputs */
   input[type="search"]::-webkit-search-cancel-button,
   input[type="search"]::-webkit-search-decoration {
     display: none;
   }
-  /* Suppress the global focus-visible outline — the pill border is indicator enough */
   [data-search-input]:focus-visible {
     outline: none;
   }
@@ -95,8 +86,6 @@
   async function loadPagefind() {
     if (pagefind) return pagefind;
     try {
-      // Path assigned to a variable so Vite's static analyzer skips it at dev time.
-      // The bundle only exists after `pnpm build`; during dev, the try/catch silences the miss.
       const src = "/pagefind/pagefind.js";
       // @ts-ignore
       pagefind = await import(/* @vite-ignore */ src);
@@ -114,7 +103,7 @@
       input: document.querySelector<HTMLInputElement>("[data-search-input]"),
       clear: document.querySelector<HTMLButtonElement>("[data-search-clear]"),
       results: document.querySelector<HTMLElement>("[data-search-results]"),
-      resultsInner: document.querySelector<HTMLElement>("[data-search-results] > div"),
+      resultsInner: document.querySelector<HTMLElement>("[data-results-inner]"),
       empty: document.querySelector<HTMLElement>("[data-search-empty]"),
       backdrop: document.querySelector<HTMLElement>("[data-search-backdrop]"),
       toggles: document.querySelectorAll<HTMLButtonElement>("[data-search-toggle]"),
@@ -124,7 +113,7 @@
   function positionResults() {
     const { panel, results } = getEls();
     if (!panel || !results) return;
-    // Place results card directly below the pill container
+
     const panelRect = panel.getBoundingClientRect();
     results.style.top = `${panelRect.bottom + 8}px`;
   }
@@ -142,8 +131,11 @@
     panel.style.pointerEvents = "auto";
     for (const t of toggles) t.setAttribute("aria-expanded", "true");
 
-    backdrop!.style.pointerEvents = "auto";
-    animate(backdrop!, { opacity: 1 }, { duration: 0.2 });
+    if (backdrop) {
+      backdrop.style.display = "block";
+      backdrop.style.pointerEvents = "auto";
+      animate(backdrop, { opacity: 1 }, { duration: 0.2 });
+    }
 
     positionResults();
     animate(inner, { translateY: "0%", opacity: 1 }, { duration: 0.35, ease: [0.22, 1, 0.36, 1] }).then(() => {
@@ -159,9 +151,12 @@
 
     for (const t of toggles) t.setAttribute("aria-expanded", "false");
 
-    animate(backdrop!, { opacity: 0 }, { duration: 0.2 }).then(() => {
-      backdrop!.style.pointerEvents = "none";
-    });
+    if (backdrop) {
+      animate(backdrop, { opacity: 0 }, { duration: 0.2 }).then(() => {
+        backdrop.style.pointerEvents = "none";
+        backdrop.style.display = "none";
+      });
+    }
 
     if (results) animate(results, { opacity: 0 }, { duration: 0.15 });
 
@@ -176,34 +171,37 @@
   }
 
   function clearResults() {
-    const { results, empty, clear } = getEls();
-    if (!results) return;
-    for (const el of Array.from(results.querySelectorAll("[data-search-result]"))) el.remove();
+    const { results, resultsInner, empty, clear } = getEls();
+    if (!results || !resultsInner) return;
+    for (const el of Array.from(resultsInner.querySelectorAll("[data-search-result]"))) el.remove();
     empty?.classList.add("hidden");
     clear?.classList.add("hidden");
     clear?.classList.remove("flex");
     results.style.pointerEvents = "none";
-    animate(results, { opacity: 0 }, { duration: 0.15 });
+    animate(results, { opacity: 0 }, { duration: 0.15 }).then(() => {
+      results.style.display = "none";
+    });
     activeIndex = -1;
   }
 
   function renderResults(matches: any[]) {
-    const { results, empty } = getEls();
-    if (!results) return;
+    const { results, resultsInner, empty } = getEls();
+    if (!results || !resultsInner) return;
 
-    for (const el of Array.from(results.querySelectorAll("[data-search-result]"))) el.remove();
+    for (const el of Array.from(resultsInner.querySelectorAll("[data-search-result]"))) el.remove();
     activeIndex = -1;
-
-    positionResults();
-    results.style.pointerEvents = "auto";
-    animate(results, { opacity: 1 }, { duration: 0.2 });
 
     if (matches.length === 0) {
       empty?.classList.remove("hidden");
+      positionResults();
+      results.style.pointerEvents = "auto";
+      results.style.display = "block";
+      results.style.opacity = "0";
+      animate(results, { opacity: 1 }, { duration: 0.2 });
       return;
     }
-    empty?.classList.add("hidden");
 
+    empty?.classList.add("hidden");
     for (const [i, match] of matches.entries()) {
       const item = document.createElement("a");
       item.href = match.url;
@@ -227,14 +225,20 @@
 
       item.addEventListener("click", () => closeSearch());
 
-      results.appendChild(item);
+      resultsInner.appendChild(item);
     }
+
+    positionResults();
+    results.style.pointerEvents = "auto";
+    results.style.display = "block";
+    results.style.opacity = "0";
+    animate(results, { opacity: 1 }, { duration: 0.2 });
   }
 
   function setActiveIndex(index: number) {
-    const { results, input } = getEls();
-    if (!results) return;
-    const items = Array.from(results.querySelectorAll<HTMLElement>("[data-search-result]"));
+    const { resultsInner, input } = getEls();
+    if (!resultsInner) return;
+    const items = Array.from(resultsInner.querySelectorAll<HTMLElement>("[data-search-result]"));
     for (const [i, item] of items.entries()) {
       const active = i === index;
       item.setAttribute("aria-selected", String(active));
@@ -292,8 +296,8 @@
     });
 
     input?.addEventListener("keydown", (e) => {
-      const { results } = getEls();
-      const items = Array.from(results?.querySelectorAll<HTMLElement>("[data-search-result]") ?? []);
+      const { resultsInner } = getEls();
+      const items = Array.from(resultsInner?.querySelectorAll<HTMLElement>("[data-search-result]") ?? []);
       if (e.key === "ArrowDown") {
         e.preventDefault();
         activeIndex = Math.min(activeIndex + 1, items.length - 1);
