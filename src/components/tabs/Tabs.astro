@@ -75,7 +75,6 @@ const id = Math.random().toString(36).slice(2);
     color: var(--color-brand-quaternary);
   }
 
-  /* Hide buttons rendered in content area before JS moves them */
   .tabs-content [data-tab-button] {
     display: none;
   }
@@ -91,14 +90,32 @@ const id = Math.random().toString(36).slice(2);
     grid-area: stack;
     width: 100%;
     opacity: 0;
-    transform: translateX(40px);
+    transform: translate3d(40px, 0, 0);
+    pointer-events: none;
+    will-change: transform, opacity;
+    transition:
+      opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  [data-tab-panel][data-tab-leaving="true"],
+  [data-tab-panel][data-tab-entering="true"] {
+    opacity: 0;
+    transform: translate3d(var(--tab-offset-x, 40px), 0, 0);
     pointer-events: none;
   }
 
   [data-tab-panel][data-tab-active="true"] {
     opacity: 1;
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
     pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-tab-panel] {
+      transition: none;
+      transform: none;
+    }
   }
 
   [data-tab-panel] > :first-child {
@@ -122,7 +139,6 @@ const id = Math.random().toString(36).slice(2);
     const contentWrapper = wrapper.querySelector(".tabs-content") as HTMLElement;
     const indicator = wrapper.querySelector("[data-tabs-pill-indicator]") as HTMLElement;
 
-    // Move buttons from content area into the buttons container
     const buttonElements = Array.from(contentWrapper.querySelectorAll<HTMLElement>("[data-tab-button]"));
     const buttons: HTMLElement[] = [];
     for (const btn of buttonElements) {
@@ -132,7 +148,6 @@ const id = Math.random().toString(36).slice(2);
 
     const panels = Array.from(wrapper.querySelectorAll<HTMLElement>("[data-tab-panel]"));
 
-    // Set initial active state on default panel (CSS will handle the visual state)
     panels.forEach((panel, i) => {
       if (i === defaultIndex) {
         panel.setAttribute("data-tab-active", "true");
@@ -184,29 +199,28 @@ const id = Math.random().toString(36).slice(2);
 
       panels.forEach((panel, i) => {
         if (i === index) {
-          // Incoming panel: slide in from opposite direction
-          panel.setAttribute("data-tab-active", "true");
-          panel.setAttribute("aria-hidden", "false");
-          animate(
-            panel,
-            { opacity: [0, 1], transform: [`translateX(${direction * 40}px)`, "translateX(0px)"] },
-            { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
-          );
-        } else if (i === previousIndex) {
-          // Outgoing panel: slide out in direction of movement
-          animate(
-            panel,
-            { opacity: [1, 0], transform: ["translateX(0px)", `translateX(${-direction * 40}px)`] },
-            { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
-          ).then(() => {
-            panel.setAttribute("data-tab-active", "false");
-            panel.setAttribute("aria-hidden", "true");
+          panel.style.setProperty("--tab-offset-x", `${direction * 40}px`);
+          panel.removeAttribute("data-tab-leaving");
+          panel.setAttribute("data-tab-entering", "true");
+          panel.setAttribute("data-tab-active", "false");
+          void panel.offsetWidth;
+          requestAnimationFrame(() => {
+            panel.removeAttribute("data-tab-entering");
+            panel.setAttribute("data-tab-active", "true");
+            panel.setAttribute("aria-hidden", "false");
           });
+        } else if (i === previousIndex) {
+          panel.style.setProperty("--tab-offset-x", `${-direction * 40}px`);
+          panel.setAttribute("data-tab-active", "false");
+          panel.setAttribute("data-tab-leaving", "true");
+          panel.setAttribute("aria-hidden", "true");
+        } else {
+          panel.removeAttribute("data-tab-leaving");
+          panel.removeAttribute("data-tab-entering");
         }
       });
     };
 
-    // Hover/focus: pill follows
     buttons.forEach((btn, index) => {
       btn.addEventListener("mouseenter", () => movePill(btn));
       btn.addEventListener("mouseleave", () => {
@@ -231,12 +245,10 @@ const id = Math.random().toString(36).slice(2);
       });
     });
 
-    // Initialize aria-selected on default button
     buttons.forEach((btn, i) => {
       btn.setAttribute("aria-selected", i === defaultIndex ? "true" : "false");
     });
 
-    // Show pill on the active tab by default
     movePill(buttons[defaultIndex]);
   }
 

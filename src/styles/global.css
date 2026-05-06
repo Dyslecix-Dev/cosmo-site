@@ -186,6 +186,9 @@ html[data-motion="paused"] *::after {
   margin: 0.4rem 0;
 }
 .doc-prose li::marker {
+  color: var(--color-brand-secondary);
+}
+:where(.dark) .doc-prose li::marker {
   color: color-mix(in oklch, var(--color-brand-tertiary) 80%, transparent);
 }
 

@@ -23,7 +23,7 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c2: "#a86a2e",
     c3: "#2a1608",
   },
-  "rebranding-via-tokens": {
+  "rebranding-theme": {
     key: "carina-nebula",
     label: "Carina Nebula",
     c1: "#f472b6",

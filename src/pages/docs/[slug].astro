@@ -452,45 +452,6 @@ const breadcrumbSchema = {
 
   let scrollLock: { slug: string } | null = null;
 
-  function smoothScrollTo(targetY: number, duration = 800, onDone?: () => void) {
-    const startY = window.scrollY;
-    const distance = targetY - startY;
-    if (Math.abs(distance) < 2) {
-      onDone?.();
-      return;
-    }
-    const start = performance.now();
-    const html = document.documentElement;
-    const prevBehavior = html.style.scrollBehavior;
-    html.style.scrollBehavior = "auto";
-
-    let cancelled = false;
-    const onUserScroll = () => { cancelled = true; };
-    window.addEventListener("wheel", onUserScroll, { passive: true, once: true });
-    window.addEventListener("touchmove", onUserScroll, { passive: true, once: true });
-
-    const finish = () => {
-      html.style.scrollBehavior = prevBehavior;
-      onDone?.();
-    };
-
-    const easeInOutCubic = (t: number) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-    const step = (now: number) => {
-      if (cancelled) {
-        finish();
-        return;
-      }
-      const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
-      window.scrollTo(0, startY + distance * easeInOutCubic(t));
-      if (t < 1) window.requestAnimationFrame(step);
-      else finish();
-    };
-    window.requestAnimationFrame(step);
-  }
-
   function initTocSmoothScroll() {
     const reduce = isMotionDisabled();
     const links = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
@@ -505,11 +466,7 @@ const breadcrumbSchema = {
         const targetY = target.getBoundingClientRect().top + window.scrollY - offset;
         scrollLock = { slug };
         setActiveExternal?.(slug);
-        if (reduce) {
-          window.scrollTo(0, targetY);
-        } else {
-          smoothScrollTo(targetY, 500);
-        }
+        window.scrollTo({ top: targetY, behavior: reduce ? "auto" : "smooth" });
         history.replaceState(null, "", `#${slug}`);
       };
       link.addEventListener("click", onClick);
