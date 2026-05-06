@@ -16,7 +16,7 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c2: "#ff7a18",
     c3: "#5a1a00",
   },
-  "adding-a-content-collection": {
+  "managing-content-collections": {
     key: "protoplanetary-disk",
     label: "Protoplanetary Disk",
     c1: "#f4c47a",
