@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 
 import rocket from "@/assets/rocket.png";
+import starsData from "@/data/stars.json";
 
 const installCmd = "pnpm create astro@latest -- --template DyslecixDev/cosmo/template-pnpm my-site";
 
@@ -10,16 +11,7 @@ const statusPhrases = ["Now boarding", "Pre-flight check", "Cleared for launch"]
 const headlineLine1 = "One ship";
 const headlineLine2 = "Any orbit";
 
-let stars = "0";
-try {
-  const res = await fetch("https://api.github.com/repos/DyslecixDev/cosmo", {
-    headers: process.env.GITHUB_TOKEN ? { Authorization: `token ${process.env.GITHUB_TOKEN}` } : undefined,
-  });
-  const data = await res.json();
-  stars = (data.stargazers_count || 0).toLocaleString();
-} catch {
-  stars = "0";
-}
+const stars = (starsData.stargazers_count ?? 0).toLocaleString();
 ---
 
 <section class="relative isolate flex flex-col justify-center px-6 sm:px-10 pt-24 pb-24 sm:pt-32 sm:pb-32 min-h-dvh">

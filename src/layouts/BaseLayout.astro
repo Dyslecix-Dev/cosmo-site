@@ -75,11 +75,6 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     >
       Skip to main content
     </a>
-    <Navbar />
-    <slot />
-    <Footer />
-    <KoFiPopover />
-    <NoCookieBanner />
     <div id="page-curtain" class="page-curtain" aria-hidden="true">
       <div class="page-curtain-layer page-curtain-layer-1"></div>
       <div class="page-curtain-layer page-curtain-layer-2"></div>
@@ -89,6 +84,11 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
         <Image src={iconLight} alt="" loading="eager" class="page-curtain-icon page-curtain-icon-dark-mode" />
       </div>
     </div>
+    <Navbar />
+    <slot />
+    <Footer />
+    <KoFiPopover />
+    <NoCookieBanner />
     <script is:inline>
       (() => {
         const curtain = document.getElementById("page-curtain");

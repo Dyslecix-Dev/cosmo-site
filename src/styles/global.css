@@ -39,6 +39,17 @@ html.curtain-active main {
   will-change: transform;
 }
 
+.page-curtain-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
 html.curtain-active .page-curtain-layer {
   transform: translate3d(0, 0, 0);
 }
@@ -99,15 +110,6 @@ html.curtain-active .page-curtain-content {
   }
 }
 
-.page-curtain-content {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-}
 .page-curtain[data-state="closing"] .page-curtain-content {
   animation: page-curtain-icon-in 280ms ease 1780ms both;
 }
@@ -115,7 +117,8 @@ html.curtain-active .page-curtain-content {
   opacity: 1;
 }
 .page-curtain[data-state="opening"] .page-curtain-content {
-  animation: page-curtain-icon-out 180ms ease both;
+  opacity: 1;
+  animation: page-curtain-icon-out 450ms ease both;
 }
 
 @keyframes page-curtain-icon-in {
@@ -146,11 +149,9 @@ html.curtain-active .page-curtain-content {
   0%,
   100% {
     transform: scale(0.94);
-    opacity: 0.78;
   }
   50% {
     transform: scale(1.06);
-    opacity: 1;
   }
 }
 
