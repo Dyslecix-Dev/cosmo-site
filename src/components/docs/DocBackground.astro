@@ -243,8 +243,9 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
       linear-gradient(155deg, color-mix(in oklch, var(--c3) 80%, var(--c2) 20%), var(--c3));
   }
   .doc-bg[data-variant="red-dwarf"] .doc-bg-accent {
+    inset: -100%;
     background:
-      conic-gradient(from 0deg at 70% 35%,
+      conic-gradient(from 0deg at 56.67% 45%,
         transparent 0deg,
         color-mix(in oklch, var(--c1) 70%, transparent) 2deg,
         transparent 6deg,
@@ -258,9 +259,9 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
         color-mix(in oklch, var(--c1) 70%, transparent) 270deg,
         transparent 274deg,
         transparent 360deg),
-      radial-gradient(circle at 70% 35%, color-mix(in oklch, var(--c1) 90%, transparent) 0%, transparent 4%);
+      radial-gradient(circle at 56.67% 45%, color-mix(in oklch, var(--c1) 90%, transparent) 0%, transparent 4%);
     mix-blend-mode: screen;
-    transform-origin: 70% 35%;
+    transform-origin: 56.67% 45%;
     filter: blur(0.5px);
     animation: doc-bg-flare-burst 5s ease-in-out infinite;
   }
