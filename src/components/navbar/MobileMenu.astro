@@ -139,7 +139,6 @@ const aboutLinks = [
 
       <div class="mx-3 my-2 h-px bg-brand-primary/10 dark:bg-brand-quaternary/10"></div>
 
-      <!-- Mobile search -->
       <div class="px-1">
         <div class="flex items-center gap-3 rounded-full border border-brand-primary/20 dark:border-brand-quaternary/20 px-4 py-3">
           <svg aria-hidden="true" viewBox="0 0 15 15" fill="currentColor" class="h-4 w-4 shrink-0 text-brand-primary/50 dark:text-brand-quaternary/50">
@@ -233,9 +232,6 @@ const aboutLinks = [
       { signal },
     );
 
-    // Open on keyboard focus so tabbing into the navbar reveals the menu
-    // contents (which would otherwise stay invisible but remain in the tab
-    // order). Skip pointer-induced focus — the click handler toggles.
     root.addEventListener(
       "focusin",
       () => {
@@ -275,8 +271,7 @@ const aboutLinks = [
         event.preventDefault();
         if (panel) panel.style.transition = "none";
         setOpen(root, false);
-        // Force the closed state to commit before the snapshot is taken so
-        // Safari's view-transition old-snapshot doesn't include the menu mid-close.
+        
         if (panel) void panel.offsetHeight;
         window.location.href = href;
       },

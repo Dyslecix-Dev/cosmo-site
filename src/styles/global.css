@@ -3,10 +3,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ---- Page curtain transition ---- */
-
-/* While the curtain is up, the page's main content is hidden so it can't peek through gaps
-   between the swept layers (most visible on busy pages like the home Hero). */
 main {
   transition: opacity 320ms ease;
 }
@@ -37,18 +33,12 @@ html.curtain-active main {
 
 .page-curtain-layer {
   position: absolute;
-  /* Oversized so the clipped corners sit well outside the viewport at rest. */
   inset: -60vh -60vw;
-  /* Parallelogram: top-left cut (entry-leading edge) AND bottom-right cut (exit-trailing edge). Both diagonals point the same direction so the layer reads as a tilted band on both sweeps. */
   clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
   transform: translate3d(130%, 130%, 0);
   will-change: transform;
 }
 
-/* When the head script has marked the document as incoming, lock the layers in their
-   covering position from the very first paint — eliminates the race between page parse
-   and the body curtain script running on slow/cached navigations. The state-driven
-   rules below override this once the JS hands off to "closing"/"opening". */
 html.curtain-active .page-curtain-layer {
   transform: translate3d(0, 0, 0);
 }
@@ -66,12 +56,10 @@ html.curtain-active .page-curtain-content {
   background-color: var(--curtain-3);
 }
 
-/* Closed = curtain held over screen between in- and out-sweeps. */
 .page-curtain[data-state="closed"] .page-curtain-layer {
   transform: translate3d(0, 0, 0);
 }
 
-/* In-sweep: back layer first, front layer last. */
 .page-curtain[data-state="closing"] .page-curtain-layer {
   animation: page-curtain-in 1400ms cubic-bezier(0.76, 0, 0.24, 1) both;
 }
@@ -82,9 +70,7 @@ html.curtain-active .page-curtain-content {
   animation-delay: 360ms;
 }
 
-/* Out-sweep: front layer first, back layer last (peels away). */
 .page-curtain[data-state="opening"] .page-curtain-layer {
-  /* Start the layers covering the screen so the keyframe begins at translate(0). */
   transform: translate3d(0, 0, 0);
   animation: page-curtain-out 1400ms cubic-bezier(0.76, 0, 0.24, 1) both;
 }
@@ -123,7 +109,6 @@ html.curtain-active .page-curtain-content {
   pointer-events: none;
 }
 .page-curtain[data-state="closing"] .page-curtain-content {
-  /* Wait for all three layers to finish covering (1400ms + 360ms last stagger) before fading the icon in. */
   animation: page-curtain-icon-in 280ms ease 1780ms both;
 }
 .page-curtain[data-state="closed"] .page-curtain-content {
@@ -169,7 +154,6 @@ html.curtain-active .page-curtain-content {
   }
 }
 
-/* Light-mode curtain: dark final layer (brand-primary), uses light-on-dark icon (icon-dark). */
 .page-curtain {
   --curtain-1: var(--color-brand-tertiary);
   --curtain-2: var(--color-brand-secondary);
@@ -182,7 +166,6 @@ html.curtain-active .page-curtain-content {
   display: none;
 }
 
-/* Dark-mode curtain: ends on a near-white panel so the dark icon's cyan halo is visible (would blend into a cyan/tertiary final layer). */
 :where(.dark) .page-curtain {
   --curtain-1: var(--color-brand-primary);
   --curtain-2: var(--color-brand-tertiary);
@@ -259,7 +242,6 @@ html[data-motion="paused"] *::after {
   border-radius: 4px;
 }
 
-/* Long-form prose used by docs detail pages and standalone meta pages (blueprint, roadmap). */
 .doc-prose {
   color: color-mix(in oklch, var(--color-brand-primary) 92%, transparent);
   font-size: 1rem;
@@ -407,9 +389,6 @@ html[data-motion="paused"] *::after {
   font-size: inherit;
 }
 
-/* Callouts: keep dark-on-light contrast in both themes. Colors are set
-   explicitly here (not via Tailwind classes on the aside) so .doc-prose's
-   dark-mode descendant rules can't flip the inner text. */
 .callout {
   border-left-width: 4px;
   border-left-style: solid;

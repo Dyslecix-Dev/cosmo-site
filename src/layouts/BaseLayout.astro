@@ -46,8 +46,6 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     <slot name="head" />
     <script is:inline src="/theme.js"></script>
     <script is:inline>
-      // If we arrived via an internal navigation, hide page content immediately so the open sweep
-      // doesn't reveal a partially-rendered page underneath the layers.
       try {
         if (sessionStorage.getItem("page-curtain:incoming") === "1") {
           document.documentElement.classList.add("curtain-active");
@@ -100,19 +98,14 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
         const incoming = sessionStorage.getItem("page-curtain:incoming") === "1";
         sessionStorage.removeItem("page-curtain:incoming");
 
-        const SWEEP_MS = 1400 + 360; // longest layer + last delay
-        const ICON_FADE_MS = 280 + 380; // icon fade duration + a brief hold once visible
+        const SWEEP_MS = 1400 + 360;
+        const ICON_FADE_MS = 280 + 380;
 
         if (incoming && !reduce) {
-          // We arrived via an internal link — start fully covered, then sweep open.
           curtain.dataset.state = "closed";
-          // Force a paint then trigger the open sweep.
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               curtain.dataset.state = "opening";
-              // Reveal main *while the layers still cover it* — the 320ms fade completes
-              // long before the layers peel back enough to expose main, so there's no
-              // visible fade-in once the curtain leaves.
               document.documentElement.classList.remove("curtain-active");
               setTimeout(() => {
                 curtain.dataset.state = "idle";
@@ -133,7 +126,7 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
           try {
             const url = new URL(a.href, window.location.href);
             if (url.origin !== window.location.origin) return false;
-            // Same-page navigation (with or without hash) — skip; nothing's actually changing.
+
             if (url.pathname === window.location.pathname && url.search === window.location.search) {
               return false;
             }
@@ -152,20 +145,16 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
           e.preventDefault();
           const href = a.href;
           sessionStorage.setItem("page-curtain:incoming", "1");
-          // Hide current page's main immediately so home's busy Hero/marquee can't peek through
-          // the gaps in the in-sweep.
+
           document.documentElement.classList.add("curtain-active");
           curtain.dataset.state = "closing";
 
-          // Floor the cover time so the in-sweep finishes + icon shows briefly,
-          // even on instant navigations.
           const minCover = SWEEP_MS + ICON_FADE_MS;
           setTimeout(() => {
             window.location.assign(href);
           }, minCover);
         });
 
-        // Restoring from bfcache (back/forward) — don't leave curtain stuck.
         window.addEventListener("pageshow", (e) => {
           if (e.persisted) {
             curtain.dataset.state = "idle";

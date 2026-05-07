@@ -909,17 +909,8 @@ const cards = [
     const progress = stage.querySelector<HTMLElement>("[data-tablet-progress]");
     if (!slides.length || !frames.length) return;
 
-    // Read tablet content from data already in DOM. Code/eyebrow text is
-    // pulled from the slide href markup we wrote — but simpler: look it up
-    // by indexed dataset on the slides parent. We just store metadata as
-    // plain fields here, mirroring the source frontmatter.
     const meta = slides.map((slide) => {
-      // Use the eyebrow text rendered inside each illustration's adjacent
-      // siblings is awkward; instead derive from the data we control:
-      // each slide has an href and we can pick code/eyebrow from index.
       const idx = Number.parseInt(slide.dataset.index || "0", 10);
-      // The two transmissions have stable codes/eyebrows; mirror them here
-      // so we don't have to scrape the DOM.
       const TX = ["TX-001", "TX-002"];
       const EYE = ["Blueprint", "Roadmap"];
       return { idx, code: TX[idx] ?? "TX-???", eyebrow: EYE[idx] ?? "" };
@@ -933,8 +924,7 @@ const cards = [
       active = ((next % slides.length) + slides.length) % slides.length;
       for (const slide of slides) {
         const isActive = Number(slide.dataset.index) === active;
-        // Retrigger the glitch-in animation: removing then re-adding the
-        // class doesn't restart the keyframe by itself; force a reflow first.
+
         if (isActive) {
           slide.classList.remove("is-active");
           void slide.offsetWidth;
@@ -949,10 +939,10 @@ const cards = [
       for (const dot of dots) {
         const isActive = Number(dot.dataset.index) === active;
         dot.setAttribute("aria-selected", isActive ? "true" : "false");
-        // Active state — secondary in light mode, tertiary in dark mode.
+
         dot.classList.toggle("bg-brand-secondary", isActive);
         dot.classList.toggle("dark:bg-brand-tertiary", isActive);
-        // Inactive state — primary tint in light mode, quaternary tint in dark.
+
         dot.classList.toggle("bg-brand-primary/15", !isActive);
         dot.classList.toggle("dark:bg-brand-quaternary/15", !isActive);
         dot.classList.toggle("hover:bg-brand-primary/30", !isActive);
@@ -969,7 +959,7 @@ const cards = [
       if (!progress) return;
       progress.classList.remove("is-running");
       progress.style.setProperty("--cycle-ms", `${CYCLE_MS}ms`);
-      // Force reflow so the transition restarts.
+
       void progress.offsetWidth;
       if (!paused && !isMotionDisabled()) progress.classList.add("is-running");
     };
@@ -1001,9 +991,6 @@ const cards = [
       startTimer();
     };
 
-    // Pause only when the user is engaging with a slide itself (the thing
-    // that shows the hover ring) — not just being on the tablet bezel or
-    // the hologram side.
     for (const slide of slides) {
       slide.addEventListener("pointerenter", onPause);
       slide.addEventListener("pointerleave", onResume);
@@ -1011,9 +998,6 @@ const cards = [
       cleanups.push(() => slide.removeEventListener("pointerleave", onResume));
     }
 
-    // Tabbing into an inactive slide should bring it into view (otherwise
-    // focus lands on hidden content). We swap the active index *and* keep
-    // the timer paused while focus stays inside.
     const onSlideFocus = (e: FocusEvent) => {
       const target = e.currentTarget as HTMLElement;
       const idx = Number.parseInt(target.dataset.index || "0", 10);
@@ -1031,7 +1015,6 @@ const cards = [
       const handler = () => {
         const idx = Number.parseInt(dot.dataset.index || "0", 10);
         setActive(idx);
-        // Restart cycle from the user's pick.
         stopTimer();
         if (!paused) startTimer();
       };
