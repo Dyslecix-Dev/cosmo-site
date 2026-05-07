@@ -1,7 +1,7 @@
 ---
 layout: "@/layouts/EventHorizonLayout.astro"
 title: Built with Cosmo
-description: A look at how this site was built on top of the Cosmo template — what changed, what stayed, and a few choices worth flagging.
+description: Behind-the-scenes on how this site was built on top of Cosmo.
 eyebrow: Blueprint
 updatedDate: 2026-05-05
 image: /blueprint-og-image.png
@@ -9,33 +9,34 @@ image: /blueprint-og-image.png
 
 import Callout from "@/components/callouts/Callout.astro";
 
-This site (`cosmo.dyslecix.dev`) runs on the <a href="https://cosmo-example.dyslecix.dev/" target="_blank" rel="noopener noreferrer">Cosmo template</a> — we use it in production so we feel the same rough edges you would. Think of this page as the diff: what we kept, what we cut, and what we added on top. If you're adapting Cosmo for a marketing or docs site of your own, this is the shortcut.
+This site runs on the <a href="https://cosmo-example.dyslecix.dev/" target="_blank" rel="noopener noreferrer">Cosmo template</a>. The original purpose was to find any rough edges that needed to be smoothed out for the developer experience. If you're adapting Cosmo for a marketing or docs site, this is a real world look into how it works.
 
-The full source lives at <a href="https://github.com/DyslecixDev/cosmo-site" target="_blank" rel="noopener noreferrer">DyslecixDev/cosmo-site</a>.
+You can find the source code <a href="https://github.com/DyslecixDev/cosmo-site" target="_blank" rel="noopener noreferrer">here</a>.
 
 ## When Cosmo is the right pick
 
-Cosmo fits best when you want a marketing landing page sitting next to a smaller docs site — say, a couple dozen guides, a handful of blog posts, or a portfolio you plan to hand-tune. If you need versioned docs, deep nav, built-in search, or i18n on day one, <a href="https://starlight.astro.build/" target="_blank" rel="noopener noreferrer">Starlight</a> gives you all of that out of the box. Cosmo trades those features for full design control, so the question is really which side of that line you're on.
+Cosmo was made for a wide range of static sites: portfolios, blogs, etc. If you need versioned docs, deep nav, built-in search, or i18n on day one, <a href="https://starlight.astro.build/" target="_blank" rel="noopener noreferrer">Starlight</a> gives you all of that out of the box. Cosmo trades those features for an agnostic codebase with minimal opinionated code.
 
 ## What we removed
 
-- The `blog` collection. There's no blog on this site, so we pulled `src/content/blog/`, dropped the `blog` entry from `src/content.config.ts`, and removed the matching routes (`src/pages/blog/`, `src/pages/tags/`).
+- There's no blog on this site, so we pulled `src/content/blog/`, dropped the `blog` entry from `src/content.config.ts`, and removed the matching routes (`src/pages/blog/`, `src/pages/tags/`).
 - The blog-specific layouts and partials that came with it.
-- The seed content — the example posts the template ships with.
+- The example posts the template ships with.
 
 ## What we kept
 
-- The whole landing page. The Hero, Marquee, Features, and Charts sections under `src/components/sections/` are template-derived. We rewrote the marquee and chart variants to talk about the template itself, but the structure is unchanged.
-- The Navbar and Footer, with the links re-pointed at our docs and the GitHub repo.
-- The theme system — design tokens in `src/styles/global.css` under `@theme`, plus the dark/light toggle and the motion-preference toggle.
+- The Hero, Marquee, Features, and Charts sections under `src/components/sections/` are template-derived. All we did was style it.
+- Another style refresh on the Navbar and Footer with the links now pointing at our docs and the GitHub repo.
+- The theme system's design tokens in `src/styles/global.css`, plus the dark/light mode toggle and the motion preference toggle.
 - The `astro-seo` wrapper at `src/components/SEO.astro`, with `siteName` and `titleDefault` swapped over.
-- Astro fonts via the `astro:assets` Font component, wired up in `BaseLayout`.
+- Astro fonts via the `astro:assets` Font component, which are wired up in `BaseLayout`.
+- The reusable Callout component handles `note`, `tip`, `warning`, and `danger`.
 
 ## What we added
 
 ### A `docs` content collection
 
-Defined in `src/content.config.ts` with a tight Zod schema (`title`, `description`, `order`, `updatedDate`, `draft`). Files live under `src/content/docs/`.
+Defined in `src/content.config.ts` with a tight Zod schema (`title`, `description`, `order`, `updatedDate`, `draft`).
 
 Two routes render it:
 - `src/pages/docs/index.astro` — a themed card grid, sorted by `order`.
@@ -43,15 +44,13 @@ Two routes render it:
 
 ### Per-doc themed backgrounds
 
-A small lookup at `src/lib/doc-themes.ts` maps each doc slug to a visual theme — Solar System, Pulsar, Wormhole, and so on. The theme drives the card preview on the docs index and the gradient backdrop on the detail page. New docs without a registered theme fall back to the "Deep Space" nebula.
+A small lookup at `src/lib/doc-themes.ts` maps each doc slug to a visual theme: Solar System, Pulsar, and so on. New docs without a registered theme fall back to the "Deep Space" nebula.
 
-### MDX callouts
+### Blueprint + roadmap + privacy + a custom 404
 
-One Callout component handles `note`, `tip`, `warning`, and `danger`. Import it in any `.mdx` file when you need it.
+The page you're reading is itself an addition. `src/pages/blueprint.mdx` and `src/pages/roadmap.mdx` each get their own layout, `EventHorizonLayout.astro` and `PortholeLayout.astro`, so they can have a distinct visual identity from the rest of the site without bleeding into `BaseLayout`.
 
-### Privacy + a custom 404
-
-Top-level Astro pages at `src/pages/privacy.astro` and `src/pages/404.astro`.
+Additionally, there are two more top-level Astro pages at `src/pages/privacy.astro` and `src/pages/404.astro`.
 
 ### A weighted sitemap
 
@@ -63,27 +62,35 @@ Two flavors:
 - WebSite + Organization on the homepage.
 - TechArticle + BreadcrumbList on each doc detail page.
 
-Both are emitted as inline `<script type="application/ld+json">` — in `BaseLayout.astro` and in `[slug].astro` respectively.
+Both are emitted as inline `<script type="application/ld+json">` in `BaseLayout.astro` and in `[slug].astro` respectively.
 
 ### Cookieless analytics
 
-<a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer">Cloudflare Web Analytics</a> — no consent banner, no cookies, no session replay. DNS lives at Namecheap rather than going through Cloudflare's proxy, so the beacon is injected by hand in `BaseLayout.astro` instead of relying on auto-injection. The CSP allows `static.cloudflareinsights.com` in `script-src` and `cloudflareinsights.com` in `connect-src`.
+<a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer">Cloudflare Web Analytics</a> has no consent banner because there are no cookies nor session replay. DNS lives at Namecheap rather than going through Cloudflare's proxy, so the beacon is injected by hand in `BaseLayout.astro` instead of relying on auto-injection. The CSP allows `static.cloudflareinsights.com` in `script-src` and `cloudflareinsights.com` in `connect-src`.
 
 ### Security headers
 
-Set in `public/\_headers`: CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`. The CSP allows `'unsafe-inline'` in `script-src` because Astro 6 inlines hoisted `<script>` tags by default. The XSS surface here is essentially zero — static marketing and docs pages, no user-rendered HTML — so we took the pragmatic route instead of managing hashes or pulling in something like <a href="https://github.com/kindspells/astro-shield" target="_blank" rel="noopener noreferrer">astro-shield</a>.
+Set in `public/\_headers`: CSP, HSTS, `X-Content-Type-Options`, `Referrer-Policy`, and `Permissions-Policy`. The CSP allows `'unsafe-inline'` in `script-src` because Astro 6 inlines hoisted `<script>` tags by default. The XSS surface here is essentially zero since there is no user-rendered HTML.
 
-<Callout type="warning">
-If your site renders any user-controlled HTML — comments, search-driven content, anything coming back from an API — don't copy this CSP as-is. Tighten `script-src` first. The reasoning above only holds because no untrusted input ever reaches the page.
+<Callout type="warning" title="CSP control">
+If your site renders any user-controlled HTML (comments, search-driven content, anything coming back from an API) don't copy this CSP as-is. Tighten `script-src` first. The reasoning above only holds because no untrusted input ever reaches the page.
 </Callout>
 
 ### Theme + motion bootstrap, lifted into `public/theme.js`
 
 A blocking script that runs before paint to set the initial theme and motion preference, so you don't get a flash of unstyled content. It lives outside the bundler so the document `<head>` can pull it in synchronously.
 
+### Build-time GitHub stars badge
+
+The Hero shows a live star count for the upstream Cosmo repo. Instead of pulling <a href="https://shields.io/" target="_blank" rel="noopener noreferrer">shields.io</a> at runtime (which would mean a third-party request on every page view, plus an extra `img-src` entry in the CSP), we hit the GitHub API once at build time and bake the number into the static output.
+
+### Native CSS view transitions
+
+Page navigations use the browser's <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_view_transitions" target="_blank" rel="noopener noreferrer">CSS View Transitions API</a> via `@view-transition { navigation: auto; }` in `src/styles/global.css` instead of `<ClientRouter />`. Each navigation is still a full document load, but the browser cross-fades the old and new pages with a "warp" keyframe on `::view-transition-old(root)` and `::view-transition-new(root)`. The fixed `.porthole-scene` and `.horizon-scene` backdrops are hidden during `html:active-view-transition` so Safari doesn't bail out trying to snapshot them, and the whole effect is gated behind `prefers-reduced-motion`.
+
 ### Google Search Console verification
 
-Added as a `<meta name="google-site-verification">` tag in `BaseLayout.astro`. We went with the HTML tag method instead of DNS so verification stays next to the rest of the site config.
+Added as a `<meta name="google-site-verification">` tag in `BaseLayout.astro`. We went with the HTML tag method instead of DNS so verification stays next to the site config.
 
 ## Recipes we used
 
@@ -92,4 +99,4 @@ This site is mostly Cosmo in its plainest form. The few "recipes" we leaned on a
 - [Rebranding theme](/docs/rebranding-theme) — we tweaked the design tokens but left the structure alone.
 - [Managing content collections](/docs/managing-content-collections) — the `docs` collection follows that guide directly.
 - [SEO checklist](/docs/seo-checklist) — we ran through it end-to-end before launch.
-- [Deployment](/docs/deployment) — see the Cloudflare Pages section.
+- [Deployment](/docs/deployment#cloudflare-pages) — this site is deployed via Cloudflare Pages.
