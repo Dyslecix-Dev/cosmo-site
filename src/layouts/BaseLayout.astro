@@ -1,6 +1,8 @@
 ---
-import { Font } from "astro:assets";
+import { Font, Image } from "astro:assets";
 
+import iconDark from "@/assets/icon-dark.png";
+import iconLight from "@/assets/icon-light.png";
 import Footer from "@/components/Footer.astro";
 import KoFiPopover from "@/components/KoFiPopover.astro";
 import Navbar from "@/components/Navbar.astro";
@@ -43,6 +45,15 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     })} />
     <slot name="head" />
     <script is:inline src="/theme.js"></script>
+    <script is:inline>
+      // If we arrived via an internal navigation, hide page content immediately so the open sweep
+      // doesn't reveal a partially-rendered page underneath the layers.
+      try {
+        if (sessionStorage.getItem("page-curtain:incoming") === "1") {
+          document.documentElement.classList.add("curtain-active");
+        }
+      } catch (_) {}
+    </script>
     <script>
       import { animate } from "motion";
       import { isMotionDisabled } from "@/lib/motion";
@@ -71,7 +82,99 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     <Footer />
     <KoFiPopover />
     <NoCookieBanner />
-    <div id="vt-burst" aria-hidden="true" class="pointer-events-none fixed inset-0 z-[9999] opacity-0" style="background: radial-gradient(circle at 50% 45%, oklch(76% 0.09 188 / 0.55) 0%, transparent 65%);"></div>
+    <div id="page-curtain" class="page-curtain" aria-hidden="true">
+      <div class="page-curtain-layer page-curtain-layer-1"></div>
+      <div class="page-curtain-layer page-curtain-layer-2"></div>
+      <div class="page-curtain-layer page-curtain-layer-3"></div>
+      <div class="page-curtain-content">
+        <Image src={iconDark} alt="" loading="eager" class="page-curtain-icon page-curtain-icon-light-mode" />
+        <Image src={iconLight} alt="" loading="eager" class="page-curtain-icon page-curtain-icon-dark-mode" />
+      </div>
+    </div>
+    <script is:inline>
+      (() => {
+        const curtain = document.getElementById("page-curtain");
+        if (!curtain) return;
+
+        const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+        const incoming = sessionStorage.getItem("page-curtain:incoming") === "1";
+        sessionStorage.removeItem("page-curtain:incoming");
+
+        const SWEEP_MS = 1400 + 360; // longest layer + last delay
+        const ICON_FADE_MS = 280 + 380; // icon fade duration + a brief hold once visible
+
+        if (incoming && !reduce) {
+          // We arrived via an internal link — start fully covered, then sweep open.
+          curtain.dataset.state = "closed";
+          // Force a paint then trigger the open sweep.
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              curtain.dataset.state = "opening";
+              // Reveal main *while the layers still cover it* — the 320ms fade completes
+              // long before the layers peel back enough to expose main, so there's no
+              // visible fade-in once the curtain leaves.
+              document.documentElement.classList.remove("curtain-active");
+              setTimeout(() => {
+                curtain.dataset.state = "idle";
+              }, SWEEP_MS + 60);
+            });
+          });
+        } else {
+          curtain.dataset.state = "idle";
+          document.documentElement.classList.remove("curtain-active");
+        }
+
+        if (reduce) return;
+
+        const isInternalLink = (a) => {
+          if (!a || a.target === "_blank" || a.hasAttribute("download")) return false;
+          const href = a.getAttribute("href");
+          if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return false;
+          try {
+            const url = new URL(a.href, window.location.href);
+            if (url.origin !== window.location.origin) return false;
+            // Same-page navigation (with or without hash) — skip; nothing's actually changing.
+            if (url.pathname === window.location.pathname && url.search === window.location.search) {
+              return false;
+            }
+            return true;
+          } catch {
+            return false;
+          }
+        };
+
+        document.addEventListener("click", (e) => {
+          if (e.defaultPrevented || e.button !== 0) return;
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          const a = e.target.closest?.("a[href]");
+          if (!a || !isInternalLink(a)) return;
+
+          e.preventDefault();
+          const href = a.href;
+          sessionStorage.setItem("page-curtain:incoming", "1");
+          // Hide current page's main immediately so home's busy Hero/marquee can't peek through
+          // the gaps in the in-sweep.
+          document.documentElement.classList.add("curtain-active");
+          curtain.dataset.state = "closing";
+
+          // Floor the cover time so the in-sweep finishes + icon shows briefly,
+          // even on instant navigations.
+          const minCover = SWEEP_MS + ICON_FADE_MS;
+          setTimeout(() => {
+            window.location.assign(href);
+          }, minCover);
+        });
+
+        // Restoring from bfcache (back/forward) — don't leave curtain stuck.
+        window.addEventListener("pageshow", (e) => {
+          if (e.persisted) {
+            curtain.dataset.state = "idle";
+            document.documentElement.classList.remove("curtain-active");
+            sessionStorage.removeItem("page-curtain:incoming");
+          }
+        });
+      })();
+    </script>
     <script is:inline defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2ac3323fca1d4fa3afcd3f6a28f5510e"}'></script>
   </body>
 </html>

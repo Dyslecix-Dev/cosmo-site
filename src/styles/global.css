@@ -1,41 +1,208 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@view-transition {
-  navigation: auto;
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---- Page curtain transition ---- */
+
+/* While the curtain is up, the page's main content is hidden so it can't peek through gaps
+   between the swept layers (most visible on busy pages like the home Hero). */
+main {
+  transition: opacity 320ms ease;
+}
+html.curtain-active main {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  main {
+    transition: none;
+  }
+  html.curtain-active main {
+    opacity: 1;
+  }
 }
 
-/* Hide expensive fixed backgrounds during view transition snapshots so Safari can complete the transition instead of bailing out. */
-html:active-view-transition .porthole-scene,
-html:active-view-transition .horizon-scene {
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.page-curtain[data-state="closing"],
+.page-curtain[data-state="closed"] {
+  pointer-events: auto;
+}
+
+.page-curtain-layer {
+  position: absolute;
+  /* Oversized so the clipped corners sit well outside the viewport at rest. */
+  inset: -60vh -60vw;
+  /* Parallelogram: top-left cut (entry-leading edge) AND bottom-right cut (exit-trailing edge). Both diagonals point the same direction so the layer reads as a tilted band on both sweeps. */
+  clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
+  transform: translate3d(130%, 130%, 0);
+  will-change: transform;
+}
+
+/* When the head script has marked the document as incoming, lock the layers in their
+   covering position from the very first paint — eliminates the race between page parse
+   and the body curtain script running on slow/cached navigations. The state-driven
+   rules below override this once the JS hands off to "closing"/"opening". */
+html.curtain-active .page-curtain-layer {
+  transform: translate3d(0, 0, 0);
+}
+html.curtain-active .page-curtain-content {
+  opacity: 1;
+}
+
+.page-curtain-layer-1 {
+  background-color: var(--curtain-1);
+}
+.page-curtain-layer-2 {
+  background-color: var(--curtain-2);
+}
+.page-curtain-layer-3 {
+  background-color: var(--curtain-3);
+}
+
+/* Closed = curtain held over screen between in- and out-sweeps. */
+.page-curtain[data-state="closed"] .page-curtain-layer {
+  transform: translate3d(0, 0, 0);
+}
+
+/* In-sweep: back layer first, front layer last. */
+.page-curtain[data-state="closing"] .page-curtain-layer {
+  animation: page-curtain-in 1400ms cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+.page-curtain[data-state="closing"] .page-curtain-layer-2 {
+  animation-delay: 180ms;
+}
+.page-curtain[data-state="closing"] .page-curtain-layer-3 {
+  animation-delay: 360ms;
+}
+
+/* Out-sweep: front layer first, back layer last (peels away). */
+.page-curtain[data-state="opening"] .page-curtain-layer {
+  /* Start the layers covering the screen so the keyframe begins at translate(0). */
+  transform: translate3d(0, 0, 0);
+  animation: page-curtain-out 1400ms cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+.page-curtain[data-state="opening"] .page-curtain-layer-2 {
+  animation-delay: 180ms;
+}
+.page-curtain[data-state="opening"] .page-curtain-layer-1 {
+  animation-delay: 360ms;
+}
+
+@keyframes page-curtain-in {
+  from {
+    transform: translate3d(130%, 130%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes page-curtain-out {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-130%, -130%, 0);
+  }
+}
+
+.page-curtain-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+.page-curtain[data-state="closing"] .page-curtain-content {
+  /* Wait for all three layers to finish covering (1400ms + 360ms last stagger) before fading the icon in. */
+  animation: page-curtain-icon-in 280ms ease 1780ms both;
+}
+.page-curtain[data-state="closed"] .page-curtain-content {
+  opacity: 1;
+}
+.page-curtain[data-state="opening"] .page-curtain-content {
+  animation: page-curtain-icon-out 180ms ease both;
+}
+
+@keyframes page-curtain-icon-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes page-curtain-icon-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.page-curtain-icon {
+  width: clamp(96px, 14vmin, 144px);
+  height: clamp(96px, 14vmin, 144px);
+  animation: page-curtain-pulse 1.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes page-curtain-pulse {
+  0%,
+  100% {
+    transform: scale(0.94);
+    opacity: 0.78;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+/* Light-mode curtain: dark final layer (brand-primary), uses light-on-dark icon (icon-dark). */
+.page-curtain {
+  --curtain-1: var(--color-brand-tertiary);
+  --curtain-2: var(--color-brand-secondary);
+  --curtain-3: var(--color-brand-primary);
+}
+.page-curtain-icon-light-mode {
+  display: block;
+}
+.page-curtain-icon-dark-mode {
   display: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root) {
-    animation: 280ms cubic-bezier(0.55, 0, 1, 0.45) both vt-warp-out;
-  }
-
-  ::view-transition-new(root) {
-    animation: 500ms cubic-bezier(0, 0.55, 0.45, 1) 60ms both vt-warp-in;
-  }
-
-  @keyframes vt-warp-out {
-    to {
-      opacity: 0;
-      transform: scale(1.06);
-    }
-  }
-
-  @keyframes vt-warp-in {
-    from {
-      opacity: 0;
-      transform: scale(0.96);
-    }
-  }
+/* Dark-mode curtain: ends on a near-white panel so the dark icon's cyan halo is visible (would blend into a cyan/tertiary final layer). */
+:where(.dark) .page-curtain {
+  --curtain-1: var(--color-brand-primary);
+  --curtain-2: var(--color-brand-tertiary);
+  --curtain-3: var(--color-brand-quaternary);
+}
+:where(.dark) .page-curtain-icon-light-mode {
+  display: none;
+}
+:where(.dark) .page-curtain-icon-dark-mode {
+  display: block;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
+@media (prefers-reduced-motion: reduce) {
+  .page-curtain-layer {
+    transition: none;
+  }
+  .page-curtain-icon {
+    animation: none;
+  }
+}
 
 @theme {
   --font-sans: var(--font-roboto-mono), ui-monospace, monospace;
