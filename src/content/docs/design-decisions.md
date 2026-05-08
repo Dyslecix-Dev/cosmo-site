@@ -29,6 +29,8 @@ Cosmo previously used Astro's `<ClientRouter />` for SPA-style navigation with v
 
 The trade was about predictability over polish. View transitions interact awkwardly with hoisted scripts, theme bootstrap, and any code that runs on initial load. Additionally, there were subtle bugs (animations re-running, listeners doubling up, theme flicker) in Safari.
 
+This site layers a "curtain" page transition on top of the full-page loads, which lives in `BaseLayout.astro` and `global.css`.
+
 If you want the SPA feel back, re-adding `<ClientRouter />` to `BaseLayout.astro` is a one-line change — just budget time to re-test scripts that assume a fresh document on each navigation.
 
 ### Why does the CSP allow `'unsafe-inline'` for scripts?
@@ -43,8 +45,8 @@ For a static marketing/docs site with no user-rendered HTML, the XSS surface is 
 
 This site uses Cloudflare Web Analytics, which is cookieless and doesn't collect personal data. There is no error tracking and no session replay either by design.
 
-### Why is the GitHub stars badge fetched at build time?
+### Why is the GitHub stars badge cached?
 
-The hero star count is fetched from the GitHub API during `astro build` and baked into the HTML, rather than loaded at runtime.
+The hero star count lives in `src/data/stars.json`. A daily GitHub Action (`.github/workflows/update-stars.yml`) hits the GitHub API, writes the count back to that file, and commits it. The Hero reads the JSON at build time and bakes the number into the HTML.
 
-This keeps the CSP tight (no third-party image host in `img-src`), avoids a render-time network dependency, and means the page has no external requests beyond the Cloudflare beacon. The trade-off is that the count only updates on rebuild.
+This keeps the CSP tight (no third-party image host in `img-src`), avoids a render-time network dependency, and means the page has no external requests beyond the Cloudflare beacon. The trade-off is that the count only updates once per day plus on rebuild.

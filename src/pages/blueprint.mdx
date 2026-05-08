@@ -25,7 +25,7 @@ Cosmo was made for a wide range of static sites: portfolios, blogs, etc. If you 
 
 ## What we kept
 
-- The Hero, Marquee, Features, and Charts sections under `src/components/sections/` are template-derived. All we did was style it.
+- The Hero, Marquee, Features, and Charts sections under `src/components/sections/` are template-derived. All we did was style it and add internal links.
 - Another style refresh on the Navbar and Footer with the links now pointing at our docs and the GitHub repo.
 - The theme system's design tokens in `src/styles/global.css`, plus the dark/light mode toggle and the motion preference toggle.
 - The `astro-seo` wrapper at `src/components/SEO.astro`, with `siteName` and `titleDefault` swapped over.
@@ -64,6 +64,10 @@ Two flavors:
 
 Both are emitted as inline `<script type="application/ld+json">` in `BaseLayout.astro` and in `[slug].astro` respectively.
 
+### Dismissible popovers
+
+Two small persistent UI bits live in `BaseLayout.astro`: `NoCookieBanner.astro` (a one-time "cookieless analytics" disclosure, dismissal stored in `localStorage`) and `KoFiPopover.astro` (a Ko-fi support nudge, dismissal stored in `sessionStorage` so it returns once per visit). Neither sends any data anywhere and hide themselves once dismissed.
+
 ### Cookieless analytics
 
 <a href="https://www.cloudflare.com/web-analytics/" target="_blank" rel="noopener noreferrer">Cloudflare Web Analytics</a> has no consent banner because there are no cookies nor session replay. DNS lives at Namecheap rather than going through Cloudflare's proxy, so the beacon is injected by hand in `BaseLayout.astro` instead of relying on auto-injection. The CSP allows `static.cloudflareinsights.com` in `script-src` and `cloudflareinsights.com` in `connect-src`.
@@ -80,13 +84,21 @@ If your site renders any user-controlled HTML (comments, search-driven content, 
 
 A blocking script that runs before paint to set the initial theme and motion preference, so you don't get a flash of unstyled content. It lives outside the bundler so the document `<head>` can pull it in synchronously.
 
-### Build-time GitHub stars badge
+### Cached GitHub stars badge
 
-The Hero shows a live star count for the upstream Cosmo repo. Instead of pulling <a href="https://shields.io/" target="_blank" rel="noopener noreferrer">shields.io</a> at runtime (which would mean a third-party request on every page view, plus an extra `img-src` entry in the CSP), we hit the GitHub API once at build time and bake the number into the static output.
+The Hero shows a star count for the upstream Cosmo repo. Instead of pulling <a href="https://shields.io/" target="_blank" rel="noopener noreferrer">shields.io</a> at runtime (which would mean a third-party request on every page view, plus an extra `img-src` entry in the CSP), the count is cached in `src/data/stars.json` and refreshed by a daily GitHub Action (`.github/workflows/update-stars.yml`) that hits the GitHub API and commits the updated JSON. The Hero reads the file at build time and bakes the number into the static output.
 
-### Native CSS view transitions
+### Pagefind search
 
-Page navigations use the browser's <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_view_transitions" target="_blank" rel="noopener noreferrer">CSS View Transitions API</a> via `@view-transition { navigation: auto; }` in `src/styles/global.css` instead of `<ClientRouter />`. Each navigation is still a full document load, but the browser cross-fades the old and new pages with a "warp" keyframe on `::view-transition-old(root)` and `::view-transition-new(root)`. The fixed `.porthole-scene` and `.horizon-scene` backdrops are hidden during `html:active-view-transition` so Safari doesn't bail out trying to snapshot them, and the whole effect is gated behind `prefers-reduced-motion`.
+In-site search is wired up via <a href="https://pagefind.app/" target="_blank" rel="noopener noreferrer">Pagefind</a> through the `astro-pagefind` integration. The index is generated at build, lives entirely in `dist/`, and is loaded lazily by `SearchPanel.astro` only when the user opens the search overlay.
+
+### Curtain page transition
+
+Page navigations are intercepted in `BaseLayout.astro`: a click on an internal link draws a three-layer curtain over the page, then performs a full document load. The new page boots with the curtain already covering it (signalled via `sessionStorage`) and animates it open after the document is ready. All the animation work lives in `.page-curtain*` rules in `src/styles/global.css`, and the entire effect is gated behind `prefers-reduced-motion`.
+
+### Build-time OG images
+
+Open Graph images are generated at build by <a href="https://github.com/delucis/astro-og-canvas" target="_blank" rel="noopener noreferrer">`astro-og-canvas`</a> via the dynamic route at `src/pages/open-graph/[...route].ts`. The route enumerates the `docs` content collection and a small static map (home, blueprint, roadmap, privacy) and emits a themed PNG per page. `SEO.astro` points each page's `og:image` at the matching route.
 
 ### Google Search Console verification
 

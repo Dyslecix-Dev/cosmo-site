@@ -2,21 +2,9 @@
 
 Internal planning doc for what to build next. Lives at the repo root because it applies to the meta-repo, not the template. A trimmed public version is published separately at `cosmo.dyslecix.dev/roadmap`; sync manually on major updates rather than trying to keep them identical.
 
+This file is **forward-looking only** — only unfinished work belongs here. When something ships, delete it from this file (the public roadmap and git history are the record).
+
 The phases below are coupled: **guides drive recipes**. We don't write a recipe until a guide pulls it in (or someone files an issue, or we reach for it in a real project). Anything else is spec writing for an imaginary reader.
-
----
-
-## Phase 2.5 — Template: multi-PM support (in flight)
-
-Before Phase 3 guides start scaffolding new repos, the upstream `cosmo` template is being updated to support **npm**, **yarn**, and **pnpm** equally. pnpm stays the first-line default in cosmo-site and template docs; npm and yarn are shown as alternatives so we don't turn users away.
-
-**Implications for guides and recipes:**
-- Scaffolding commands in guides use `pnpm create astro@latest -- --template DyslecixDev/cosmo/template` as the default, with `npm create astro@latest …` / `yarn create astro …` shown alongside.
-- Same pattern for `pnpm astro add <name>` install steps.
-- Lockfile policy and CI examples in `template/` need to either stay pnpm-default or document the three options. Decide once in the template repo, not per-guide.
-- This is a **template-level capability**, not a recipe. The "Package-manager comparisons" line under Out of scope below still holds.
-
-Doc sweep on cosmo-site (`src/content/docs/getting-started.md`, `deploying.mdx`, `README.md`) waits until the template change has shipped — premature rewrites would describe capabilities that don't exist yet.
 
 ---
 
@@ -40,15 +28,7 @@ breaks links.
 
 ### Order
 
-1. [x] **Docs site + landing page** — already shipped as cosmo.dyslecix.dev
-   ([DyslecixDev/cosmo-site](https://github.com/DyslecixDev/cosmo-site)).
-   A short **"Built with cosmo"** writeup is queued (the cheapest guide we'll
-   write — the artifact already exists; spine is the `git diff` between
-   `cosmo/template` and `cosmo-site`). Include a "cosmo vs Starlight" callout
-   (cosmo for lighter docs sites alongside marketing pages; Starlight for
-   heavy docs portals with versioning/deep nav/built-in search/i18n).
-
-2. [ ] **Blog** — *philosophy blog as the real example.* Lowest activation
+1. [ ] **Blog** — *philosophy blog as the real example.* Lowest activation
    energy: cosmo already ships the collection, layout, tags, RSS, pagination.
    Guide is mostly documenting what's there + recipes the blog needs.
    **Blocking recipes:** Cusdis (comments), Expressive Code (code blocks),
@@ -56,13 +36,13 @@ breaks links.
    Pre-launch: pick the first 3 essays before scaffolding so the example isn't
    another lorem-ipsum site.
 
-3. [ ] **Portfolio** — personal web-dev portfolio. Structurally "blog with
+2. [ ] **Portfolio** — personal web-dev portfolio. Structurally "blog with
    images + projects collection," so most blog learnings port over. Spine of
    the guide is the **image strategy**: `astro:assets` for local case-study
    screenshots, **Unpic** for any remote/CDN images. Decide before building.
    **Blocking recipes:** Unpic, Motion, Astro Icon.
 
-4. [ ] **Faux e-commerce storefront** — Tier 1 and Tier 2 only (see scope below).
+3. [ ] **Faux e-commerce storefront** — Tier 1 and Tier 2 only (see scope below).
    **Blocking recipes:** Stripe Payment Links, Lemon Squeezy (Tier 1);
    Snipcart (Tier 2).
 
@@ -115,14 +95,12 @@ integrations.
 - You personally reach for it in a real project.
 - A user asks for it in a GitHub issue (see `.github/ISSUE_TEMPLATE/recipe-request.yml`).
 
-**The catalog.** A brief reference catalog now lives at
+**The catalog.** A brief reference catalog lives at
 `cosmo.dyslecix.dev/docs/recommended-integrations` — one or two picks per
-category with a sentence of "what + why + link," grouped under seven themes
-(Delivery & reach, UI building blocks, Authoring & content, BaaS, Media &
-state, Observability, Quality & DX). It is **not** a substitute for recipes.
-Recipes go deep on one tool with copy-paste config; the catalog answers
-"what should I even consider?" When a recipe lands, link to it from the
-catalog entry instead of duplicating prose.
+category with a sentence of "what + why + link." It is **not** a substitute
+for recipes. Recipes go deep on one tool with copy-paste config; the catalog
+answers "what should I even consider?" When a recipe lands, link to it from
+the catalog entry instead of duplicating prose.
 
 ### Recipe blocker convention
 
@@ -165,18 +143,22 @@ exist **only** where there's cosmo-specific glue worth showing.
 Organized by category. **Bold** = primary pick. Alternatives listed after.
 **🔒 Blocks** = recipe must ship before the named Phase 3 guide can land complete.
 
-**Framework integrations** *(one recipe, not six)*
+**Framework integrations** *(one recipe, not six)* — **next up; called out on the public roadmap**
 - [ ] **Adding interactive islands** — single recipe covering Alpine.js, Preact,
       React, SolidJS, Svelte, Vue. Setup is identical (`pnpm astro add <name>`,
       or the npm/yarn equivalent); what users actually need is the islands
       pattern + a one-paragraph guide on which framework to pick. Link to
-      Astro's per-framework docs.
+      Astro's per-framework docs. Framed on the public roadmap as the recipe
+      currently in planning, so this should be the first Phase 4 recipe to land
+      regardless of guide-driven demand.
 
 **UI**
 - [ ] **Starwind UI** (Astro-native component library)
 - [ ] **Astro Icon** + **Lucide** — 🔒 Blocks: portfolio
 - [ ] **Motion** (animation; alts: **GSAP**, **Auto-Animate**) — 🔒 Blocks: blog, portfolio
 - [ ] **Astro OG Canvas** (OG image generation; alts: **Satori**, **@vercel/og**)
+      *Already wired on cosmo-site at `src/pages/open-graph/[...route].ts` —
+      recipe can lift the route + theme palette from there when written.*
 
 **Code blocks & diagrams**
 - [ ] **Expressive Code** — 🔒 Blocks: blog. (De facto standard in the Astro
@@ -196,6 +178,8 @@ Organized by category. **Bold** = primary pick. Alternatives listed after.
 - [ ] **Pagefind** (static, build-time indexed; the canonical static-site search;
       possible blocker for blog if post count crosses ~30).
       Alts: **Orama** (richer querying), **Algolia DocSearch** (free for OSS docs).
+      *Already wired on cosmo-site itself via `astro-pagefind` — recipe can lift
+      from there when written.*
 
 **State**
 - [ ] **Nano Stores** (Astro's recommended cross-island state).
@@ -278,7 +262,7 @@ Listed here so they don't drift back in via "completeness" instincts.
   single recipes. Mine for individual ideas if a real use case hits.
 - **Data & storage** — no DB, no ORM. cosmo is static-site only.
 - **Package-manager comparisons (pnpm/npm/yarn/Bun) as a recipe** — multi-PM
-  support is now a template-level capability (see Phase 2.5). The README
+  support shipped as a template-level capability in 0.3.0. The README
   paragraph documents the choice; it does not warrant a standalone recipe.
 
 ---
@@ -288,32 +272,3 @@ Listed here so they don't drift back in via "completeness" instincts.
 - [ ] When the blog guide ships, does the "Why no recipe for X?" page on
       cosmo.dyslecix.dev land at the same time? It pre-empts frustration and
       points users at the issue template.
-
----
-
-## Decision log
-
-- **2026-04-27** — Public roadmap: ship it. Demand-signal argument wins.
-  Public version lives at `cosmo.dyslecix.dev/roadmap`; this internal file
-  stays at the repo root and is the source of truth.
-- **2026-04-27** — Multi-PM support added to the template as Phase 2.5.
-  pnpm stays default in cosmo-site and template docs; npm/yarn shown as
-  alternatives. cosmo-site itself remains pnpm-only (deployed site, not a
-  template).
-- **2026-04-27** — "Built with cosmo" writeup queued under Phase 3 step 1
-  rather than waiting for a user request. The artifact already exists; cost
-  is ~1 afternoon and it doubles as proof the dogfooding works.
-- **2026-04-30** — Backported small improvements from cosmo-site to
-  `template-{pnpm,npm,yarn}`: dropped `ClientRouter` (Safari compatibility),
-  externalized theme bootstrap to `public/theme.js`, added `subsets: ["latin"]`
-  to both Font entries, bumped skip-link to `z-60`, added an `ogType` prop to
-  `SEO.astro`, added a sitemap `filter` excluding `/404`, and added a `ci.yml`
-  workflow (typecheck + build).
-- **2026-04-30** — Shipped a `recommended-integrations` doc as a brief
-  curated catalog of tools by category (with one or two picks each), rather
-  than a deep recipe per tool. It complements Phase 4 — heads off the "what
-  even exists?" question for downstream users while keeping the recipe bar
-  high (real-world demand, not breadth-for-breadth's-sake). Doc grew to the
-  point that the per-page TOC needed collapsible H2/H3 grouping; same pattern
-  will apply to any future doc with deep nesting. New `red-dwarf` doc theme
-  added alongside.
