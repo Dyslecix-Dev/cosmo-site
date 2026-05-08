@@ -341,7 +341,7 @@ const stars = (starsData.stargazers_count ?? 0).toLocaleString();
           checkIcon?.classList.add("hidden");
         }, 1500);
       } catch {
-        // fail silently
+        /* fail silently */
       }
     };
     btn.addEventListener("click", onClick);
