@@ -2,24 +2,16 @@
 import { Image } from "astro:assets";
 
 import rocket from "@/assets/rocket.png";
+import starsData from "@/data/stars.json";
 
-const installCmd = "pnpm create astro@latest -- --template DyslecixDev/cosmo/template my-site";
+const installCmd = "pnpm create astro@latest -- --template DyslecixDev/cosmo/template-pnpm my-site";
 
 const statusPhrases = ["Now boarding", "Pre-flight check", "Cleared for launch"];
 
 const headlineLine1 = "One ship";
 const headlineLine2 = "Any orbit";
 
-let stars = "0";
-try {
-  const res = await fetch("https://api.github.com/repos/DyslecixDev/cosmo", {
-    headers: process.env.GITHUB_TOKEN ? { Authorization: `token ${process.env.GITHUB_TOKEN}` } : undefined,
-  });
-  const data = await res.json();
-  stars = (data.stargazers_count || 0).toLocaleString();
-} catch {
-  stars = "0";
-}
+const stars = (starsData.stargazers_count ?? 0).toLocaleString();
 ---
 
 <section class="relative isolate flex flex-col justify-center px-6 sm:px-10 pt-24 pb-24 sm:pt-32 sm:pb-32 min-h-dvh">
@@ -59,7 +51,7 @@ try {
         ))}
       </span>
       <span aria-hidden="true">&middot;</span>
-      <span>v0.3.0</span>
+      <span>v0.3.1</span>
     </div>
 
     <h1 class="mt-10 font-heading font-bold tracking-tight leading-[0.88] text-[clamp(3rem,11vw,11rem)]">
@@ -73,14 +65,16 @@ try {
 
     <div class="mt-10 grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-end">
       <p class="hero-reveal hero-outline-soft max-w-xl text-lg sm:text-xl dark:text-brand-quaternary text-brand-primary">
-        Cosmo is the free Astro-powered launchpad for fast, scalable, static sites
+        Cosmo is the open-source Astro-powered launchpad for fast, scalable, static sites
       </p>
     </div>
 
     <div class="hero-reveal mt-12 max-w-3xl">
       <div class="group relative flex items-center gap-3 rounded-xl border border-brand-primary/20 dark:border-brand-quaternary/20 bg-brand-quaternary/60 dark:bg-brand-primary/60 backdrop-blur px-4 sm:px-5 py-4 font-mono text-sm sm:text-base shadow-[0_1px_0_rgba(255,255,255,0.05)_inset]">
         <span aria-hidden="true" class="text-brand-tertiary select-none">$</span>
-        <code id="install-cmd" class="install-cmd flex-1 overflow-x-auto whitespace-nowrap text-brand-primary dark:text-brand-quaternary">{installCmd}</code>
+        <div class="install-cmd flex-1 min-w-0 overflow-x-auto">
+          <code id="install-cmd" class="whitespace-nowrap text-brand-primary dark:text-brand-quaternary">{installCmd}</code>
+        </div>
         <span aria-hidden="true" class="terminal-caret select-none text-brand-tertiary -ml-1">_</span>
         <button
           type="button"
@@ -218,27 +212,6 @@ try {
     50%, 100% { opacity: 0; }
   }
 
-  .install-cmd {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklch, var(--color-brand-tertiary) 70%, transparent) transparent;
-  }
-
-  .install-cmd::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .install-cmd::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .install-cmd::-webkit-scrollbar-thumb {
-    background: color-mix(in oklch, var(--color-brand-tertiary) 55%, transparent);
-    border-radius: 9999px;
-  }
-
-  .install-cmd::-webkit-scrollbar-thumb:hover {
-    background: var(--color-brand-tertiary);
-  }
 
   .hero-rocket {
     will-change: transform;
@@ -308,22 +281,29 @@ try {
   function initMagnetic() {
     const reduce = isMotionDisabled();
     if (reduce) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const els = document.querySelectorAll<HTMLElement>("[data-magnetic]");
     for (const el of els) {
+      el.style.transition = "transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)";
       const onMove = (event: PointerEvent) => {
+        if (event.pointerType !== "mouse") return;
         const rect = el.getBoundingClientRect();
-        const x = event.clientX - (rect.left + rect.width / 2);
-        const y = event.clientY - (rect.top + rect.height / 2);
-        animate(el, { transform: `translate(${x * 0.18}px, ${y * 0.25}px)` }, { duration: 0.4, ease: "easeOut" });
+        const x = (event.clientX - (rect.left + rect.width / 2)) * 0.18;
+        const y = (event.clientY - (rect.top + rect.height / 2)) * 0.25;
+        el.style.transform = `translate(${x}px, ${y}px)`;
       };
       const onLeave = () => {
-        animate(el, { transform: "translate(0px, 0px)" }, { duration: 0.5, ease: [0.22, 1, 0.36, 1] });
+        el.style.transform = "translate(0px, 0px)";
       };
       el.addEventListener("pointermove", onMove);
       el.addEventListener("pointerleave", onLeave);
+      el.addEventListener("pointercancel", onLeave);
       cleanups.push(() => {
         el.removeEventListener("pointermove", onMove);
         el.removeEventListener("pointerleave", onLeave);
+        el.removeEventListener("pointercancel", onLeave);
+        el.style.transition = "";
+        el.style.transform = "";
       });
     }
   }
@@ -361,7 +341,7 @@ try {
           checkIcon?.classList.add("hidden");
         }, 1500);
       } catch {
-        // fail silently
+        /* fail silently */
       }
     };
     btn.addEventListener("click", onClick);

@@ -62,7 +62,7 @@ const links: AboutLink[] = [
             <span class="flex-1">
               <span class="block font-medium">{link.label}</span>
             </span>
-            <span aria-hidden="true" class="text-brand-secondary dark:text-brand-tertiary opacity-0 transition group-hover:opacity-100 mt-0.5">&rarr;</span>
+            <span aria-hidden="true" class:list={["text-brand-secondary dark:text-brand-tertiary opacity-0 transition mt-0.5", !isCurrent && "group-hover:opacity-100"]}>&rarr;</span>
           </a>
         );
       })

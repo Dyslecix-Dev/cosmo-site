@@ -1,0 +1,69 @@
+---
+title: Rebranding theme
+description: Swap fonts and colors by editing design tokens.
+order: 2
+updatedDate: 2026-05-06
+---
+
+import Callout from "@/components/callouts/Callout.astro";
+
+## Swapping fonts
+
+Cosmo uses Astro's built-in `astro:fonts` API with the Fontsource provider, which serves any Google Font (and many others) self-hosted.
+
+To swap a font, browse <a href="https://fontsource.org/" target="_blank" rel="noopener noreferrer">Fontsource</a> for the exact `name` string and which `weights` and `subsets` are published and edit the `fonts` array in `astro.config.mjs`:
+
+```js
+import { defineConfig, fontProviders } from "astro/config";
+
+export default defineConfig({
+  fonts: [
+    {
+      provider: fontProviders.fontsource(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      subsets: ["latin"],
+      weights: [400, 600, 700],
+      styles: ["normal"],
+    },
+  ],
+});
+```
+
+Then update the matching `<Font>` tag in `src/layouts/BaseLayout.astro` so the new family is preloaded:
+
+```astro
+<Font cssVariable="--font-inter" preload />
+```
+
+Finally, point the `@theme` token at the variable in `src/styles/global.css` so it's exposed as a Tailwind utility (`font-heading`, `font-body`, etc.):
+
+```css
+@theme {
+  --font-heading: var(--font-inter), sans-serif;
+}
+```
+
+<Callout type="warning" title="Don't preload too many fonts">
+  `BaseLayout.astro` preloads two fonts by default via Astro's `<Font>` component. If a single font covers above-the-fold content, drop one preload because preloads block render.
+</Callout>
+
+## Swapping colors
+
+Add or change a color under `@theme` in `src/styles/global.css`:
+
+```css
+@theme {
+  --color-brand-primary: oklch(0.62 0.19 250);
+}
+```
+
+Then use it as a utility anywhere:
+
+```astro
+<h1 class="bg-brand-primary font-display">Hello</h1>
+```
+
+<Callout type="tip" title="Tokens become utilities">
+  Token names map directly to utility names. `--color-brand-primary` becomes `bg-brand-primary`, `text-brand-primary`, `border-brand-primary`, and so on.
+</Callout>

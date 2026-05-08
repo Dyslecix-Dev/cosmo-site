@@ -7,10 +7,10 @@ import satellite from "@/assets/satellite.png";
 const features = [
   { title: "Tailwind v4 tokens", desc: "Re-skin the whole site by editing one @theme block." },
   { title: "MDX + custom callouts", desc: "Type-safe content collections with callout components." },
-  { title: "Biome + Lefthook", desc: "One lint/format tool with pre-commit and pre-push hooks." },
-  { title: "Self-hosted fonts", desc: "Astro Font API + Fontsource. No third-party requests and fast LCP." },
-  { title: "Strict TypeScript", desc: "Strict mode, @/* aliases, and Zod-typed content collections." },
-  { title: "Typed OG + dark mode", desc: "Open Graph types via astro-seo and a persistent theme toggle." },
+  { title: "Biome", desc: "One tool handles both lint and format pre-wired." },
+  { title: "Self-hosted fonts", desc: "Fontsource fonts. No third-party requests and a fast LCP." },
+  { title: "Strict TypeScript", desc: "Strict mode on, @/* path aliases, and Zod schemas." },
+  { title: "SEO, OG, & sitemap", desc: "Typed Open Graph via astro-seo and an auto-generated sitemap." },
 ];
 
 const sparkleSeed = (i: number, salt: number) => {
@@ -57,9 +57,6 @@ const sparkles = Array.from({ length: 54 }).map((_, i) => {
           <span class="block italic font-normal text-brand-secondary dark:text-brand-tertiary whitespace-nowrap">Zero space junk</span>
         </h2>
       </div>
-      <p class="relative max-w-md text-brand-secondary dark:text-brand-tertiary lg:justify-self-end lg:text-right">
-        Cosmo is strapped with some default cargo to get you off the ground
-      </p>
     </div>
 
     <div class="relative mt-20">

@@ -49,7 +49,7 @@ const { docs, pathname, isActive } = Astro.props;
     >
       <span class="font-mono text-[0.7rem] text-brand-secondary dark:text-brand-tertiary">&#9733;</span>
       <span class="flex-1 font-medium">All guides</span>
-      <span aria-hidden="true" class="text-brand-secondary dark:text-brand-tertiary opacity-0 transition group-hover:opacity-100">&rarr;</span>
+      <span aria-hidden="true" class:list={["text-brand-secondary dark:text-brand-tertiary opacity-0 transition", "group-hover:opacity-100"]}>&rarr;</span>
     </a>
     <div class="mx-3 my-2 h-px bg-brand-primary/10 dark:bg-brand-quaternary/10"></div>
     <div class="px-3 pb-2 pt-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">Guides</div>
@@ -70,7 +70,7 @@ const { docs, pathname, isActive } = Astro.props;
           >
             <span class="font-mono text-[0.7rem] text-brand-secondary dark:text-brand-tertiary tabular-nums">0{i + 1}</span>
             <span class="flex-1">{doc.data.title}</span>
-            <span aria-hidden="true" class="text-brand-secondary dark:text-brand-tertiary opacity-0 transition group-hover:opacity-100">&rarr;</span>
+            <span aria-hidden="true" class:list={["text-brand-secondary dark:text-brand-tertiary opacity-0 transition", !isCurrent && "group-hover:opacity-100"]}>&rarr;</span>
           </a>
         );
       })
@@ -105,10 +105,6 @@ const { docs, pathname, isActive } = Astro.props;
     if (w.__dropdownDocBound) return;
     w.__dropdownDocBound = true;
 
-    // Track pointer interactions on a dropdown toggle so the focusin handler
-    // can ignore the focus that the browser fires on mousedown — otherwise
-    // focusin opens the dropdown and the subsequent click immediately closes
-    // it (because click sees aria-expanded="true").
     document.addEventListener("pointerdown", (event) => {
       const target = event.target as Element | null;
       if (target?.closest("[data-dropdown-toggle]")) {
@@ -125,9 +121,7 @@ const { docs, pathname, isActive } = Astro.props;
         const dd = toggle.closest("[data-dropdown]");
         if (!dd) return;
         const isOpen = toggle.getAttribute("aria-expanded") === "true";
-        // Close any *other* open dropdowns first, then toggle this one.
-        // Closing this one and then re-opening it inside the same click would
-        // briefly fire the closed-state event and snap the pill to Home.
+
         for (const other of document.querySelectorAll("[data-dropdown]")) {
           if (other !== dd) setOpen(other, false);
         }
@@ -150,16 +144,11 @@ const { docs, pathname, isActive } = Astro.props;
       }
     });
 
-    // Delegated focusin/focusout so listeners survive Astro view transitions
-    // (NavDropdown markup is replaced on each page swap; document persists).
     document.addEventListener("focusin", (event) => {
       const target = event.target as Element | null;
       const dd = target?.closest("[data-dropdown]");
       if (!dd) return;
-      // Skip if a pointer interaction on the toggle caused this focus — let
-      // the click handler decide; otherwise we'd open here, then the click
-      // would close. Doesn't apply when focus enters via keyboard (shift+tab
-      // into the menu items, or tab onto the toggle).
+
       if (
         target?.closest("[data-dropdown-toggle]") &&
         Date.now() - (w.__dropdownPointerAt ?? 0) < 400

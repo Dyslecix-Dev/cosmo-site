@@ -113,9 +113,14 @@ const isAboutActive = pathname === "/blueprint" || pathname === "/blueprint/" ||
       );
     };
 
-    // Pill is only visible on keyboard focus — never on hover
     for (const item of items) {
       item.addEventListener("focus", () => moveTo(item));
+      item.addEventListener("mouseenter", () => moveTo(item));
+      item.addEventListener("mouseleave", () => {
+        if (document.activeElement !== item) {
+          animate(indicator, { opacity: 0 }, { duration: 0.15 });
+        }
+      });
       item.addEventListener("blur", () => animate(indicator, { opacity: 0 }, { duration: 0.15 }));
     }
   }

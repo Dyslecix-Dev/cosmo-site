@@ -1,23 +1,26 @@
 ---
 layout: "@/layouts/PortholeLayout.astro"
 title: What's next for Cosmo
-description: Use-case guides and optional integration recipes.
+description: The current build and what the future holds.
 eyebrow: Roadmap
-updatedDate: 2026-04-30
-image: /roadmap-og-image.png
+updatedDate: 2026-05-05
+image: /open-graph/roadmap.png
 ---
 
-Hello, my name is Christian Demesa and I'm the creator of Cosmo. Here's what I'm working on next, and how I decide what gets built. The short version: guides come first, recipes follow. I write a recipe when a guide actually needs it, when someone <a href="https://github.com/DyslecixDev/cosmo/issues" target="_blank" rel="noopener noreferrer">opens an issue</a> asking for it, or when I hit the need on a real project.
+Hello, my name is Christian Demesa and I'm the creator of Cosmo. Here's what I'm working on next, and how I decide what gets built.  
+
+I'm currently prioritizing guides first then recipes. I write a recipe when a guide actually needs it, when someone <a href="https://github.com/DyslecixDev/cosmo/issues" target="_blank" rel="noopener noreferrer">opens an issue</a> asking for it, or when I hit the need for it on a real project.
 
 ## What's done: base build
 
-- **0.1.0 — initial release.** Astro 6 static boilerplate, Tailwind v4 with design tokens, MDX, blog and docs collections, `astro-seo` wrapper, dark mode (no flash of unstyled content), sitemap and RSS, Biome, Lefthook, and Astro fonts via Fontsource.
+- **0.1.0 — initial release.** Astro 6 static boilerplate, Tailwind v4 with design tokens, MDX, blog and docs collections, `astro-seo` wrapper, dark mode, sitemap and RSS, Biome, Lefthook, and Astro fonts via Fontsource.
 - **0.2.0 — clean scaffolding.** Moved the template into a `template/` subdirectory so meta-repo files (LICENSE, CHANGELOG, `.github/`) stop leaking into downstream projects. Fixed an Astro install error from Lefthook's postinstall running too early.
-- **0.3.0 — multi-package-manager support.** Split into `template-pnpm`, `template-npm`, and `template-yarn` so you can scaffold with whichever you reach for. Added a sync script (and CI check) to keep the variants from drifting. Dropped the bundled `docs` collection — guides live here on cosmo.dyslecix.dev now.
+- **0.3.0 — multi-package-manager support.** Split into `template-pnpm`, `template-npm`, and `template-yarn` so you can scaffold with whichever you reach for. Added a sync script and CI check to keep the variants from drifting. Dropped the bundled `docs` collection — guides live here on cosmo.dyslecix.dev now.
+- **0.3.1 — trim and tune.** Removed `ClientRouter` / view transitions from `BaseLayout.astro`. Fonts now load only the `latin` subset to shrink payload. Dropped Lefthook and the GitHub Actions workflows to keep the template lean. Blog posts set `ogType="article"` instead of defaulting to `website`, the 404 page is excluded from the sitemap, and the skip-to-content button now sits above the navbar. Bumped package versions.
 
 ## What I'm building: use-case guides
 
-Each guide takes Cosmo and turns it into a different kind of site. For every one, I ship three things: a public repo (`cosmo-<usecase>`), a live demo you can click around, and a writeup that walks through the **diff against Cosmo** — what got added, changed, or removed.
+Each guide takes Cosmo and turns it into a different kind of site. For every one, I ship three things: a public repo (`cosmo-<usecase>`), a live demo you can click around, and a writeup that walks through the **diff against Cosmo** (what got added, changed, or removed).
 
 - **Docs site + landing page** — done. You're looking at it. The ["Blueprint"](/blueprint) page covers the diff.
 - **Blog** — a philosophy blog I've been meaning to start.
@@ -26,11 +29,9 @@ Each guide takes Cosmo and turns it into a different kind of site. For every one
 
 ## What's next: integration recipes
 
-In the meantime, the <a href="/docs/recommended-integrations">Recommended integrations</a> doc is a curated catalog of tools that pair well with Cosmo — one or two picks per category, with a sentence on what each does and why it's on the shortlist. It's not a recipe; it's the answer to "what should I even consider?"
+Currently, the <a href="/docs/recommended-integrations">Recommended integrations</a> doc is a curated catalog of tools I have personally used and recommend.
 
-Recipes are the deeper version: short copy-paste guides for actually plugging something in. I write one when a use-case guide above needs it, or when someone asks. The running shortlist covers framework bits, UI libraries, code blocks, CMSes, search, state, comments, forms, email, payments, images, performance, testing, deployment, analytics, monitoring, and a11y tooling.
+Recipes are more in-depth built-in integrations, such as the package manager choices. Currently, I'm in the planning phase of adding frontend frameworks as an optional inclusion.
 
-If there's a recipe you'd actually use, file an issue — that's the signal that bumps something from "maybe someday" to "next up."
-
-<a href="https://github.com/DyslecixDev/cosmo/issues/new/choose" target="_blank" rel="noopener noreferrer">Request a recipe &rarr;</a>
+If there's an integration you recommend I add or a recipe you'd really want, please <a href="https://github.com/DyslecixDev/cosmo/issues/new/choose" target="_blank" rel="noopener noreferrer">request it</a>.
 

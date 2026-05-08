@@ -1,17 +1,15 @@
 ---
-title: Adding a content collection
-description: Define a new Astro content collection with a zod schema and render it.
+title: Managing content collections
+description: Define, draft, or remove Astro content collections.
 order: 3
-updatedDate: 2026-04-28
+updatedDate: 2026-05-05
 ---
 
 import Callout from "@/components/callouts/Callout.astro";
 
-Work through the minimum viable shape — schema, entries, index page, and detail page — using `<your-collection>` as a placeholder for your own collection name.
+## Creating a collection
 
-For a fuller, opinionated example with images, related entries, and tag pages, see the <a href="https://cosmo-example.dyslecix.dev/blog/" target="_blank" rel="noopener noreferrer">`blog` collection</a>.
-
-## 1. Define the schema
+### 1. Define the schema
 
 In `src/content.config.ts`:
 
@@ -32,34 +30,16 @@ const yourCollection = defineCollection({
 export const collections = { /* ...existing, */ yourCollection };
 ```
 
-Keep the schema small at first — `title` and `description` cover almost every page. Add fields (dates, tags, images, authors) only when an entry actually needs them.
+`title` and `description` in the schema cover most pages. Add fields (dates, tags, images, authors) only when an entry actually needs them.
 
-<Callout type="note">
-  Field names in the exported `collections` map become the strings you pass to <code>getCollection()</code>. Pick a name you won't want to rename later.
+<Callout type="note" title="What's in a name">
+  Field names in the exported `collections` map become the strings you pass to <code>getCollection()</code>.
 </Callout>
 
-### Real-world example
 
-A `projects` collection with an optional cover image and external URL:
+### 2. Add entries
 
-```ts
-const projects = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      summary: z.string(),
-      cover: z.optional(image()),
-      url: z.string().url().optional(),
-    }),
-});
-
-export const collections = { projects };
-```
-
-## 2. Add entries
-
-Create `src/content/<your-collection>/` and drop in `.md` or `.mdx` files. The filename (minus extension) becomes the entry `id` and the URL slug.
+Create `.md` or `.mdx` files in `src/content/<your-collection>/`. The filename (minus its extension) becomes the entry `id` and the URL slug.
 
 ```md
 ---
@@ -70,7 +50,7 @@ description: A one-line summary.
 Body content here.
 ```
 
-## 3. Index page
+### 3. Index page
 
 `src/pages/<your-collection>/index.astro` lists every non-draft entry:
 
@@ -89,7 +69,7 @@ const entries = await getCollection("yourCollection", ({ data }) => !data.draft)
 </ul>
 ```
 
-## 4. Detail page
+### 4. Detail page
 
 `src/pages/<your-collection>/[slug].astro` renders one entry per route:
 
@@ -113,7 +93,39 @@ const { Content } = await render(entry);
 
 From here, swap a real layout in for `<article>`, add SEO via `src/components/SEO.astro`, and grow the schema as your entries actually demand it.
 
-## Deleting example collections
+### Real-world example
+
+For a fuller, opinionated example with images, related entries, and tag pages, see the <a href="https://cosmo-example.dyslecix.dev/blog/" target="_blank" rel="noopener noreferrer">blog collection</a>.
+
+## Drafting entries
+
+The `docs` and `blog` collections (and any collection you define) support a `draft` field. Mark entries with `draft: true` in the frontmatter to write without publishing:
+
+```mdx
+---
+title: "Work in progress"
+draft: true
+---
+```
+
+Drafts are automatically filtered from:
+
+- List pages and pagination
+- RSS feeds
+- Sitemap (via built page filtering)
+- Tag taxonomy
+
+Filter them out explicitly when querying a collection:
+
+```ts
+const entries = await getCollection("yourCollection", ({ data }) => !data.draft);
+```
+
+<Callout type="tip" title="No index needed">
+  Drafts won't be indexed or served to users. You don't need to set `noindex` on them — see <a href="/docs/seo-checklist">SEO checklist</a> for details.
+</Callout>
+
+## Deleting the example collection
 
 <Callout type="danger" title="This is destructive">
   Deleting a collection removes all its entries and routes. Back up or commit your changes to git before proceeding.
@@ -125,3 +137,4 @@ If you don't need `blog`, delete:
 - The `src/content/<name>/` directory
 - The `src/pages/<name>/` route(s)
 - Any helpers under `src/lib/` and components under `src/components/<name>/` referenced only by that collection
+

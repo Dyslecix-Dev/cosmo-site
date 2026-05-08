@@ -52,7 +52,7 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
 });
 ---
 
-<BaseLayout title="Docs" description="Guides for building with the Cosmo Astro template — tokens, collections, SEO, deployment.">
+<BaseLayout title="Docs" description="Guides for building with the Cosmo Astro template — tokens, collections, SEO, deployment." image="/open-graph/docs.png">
   <main id="main" class="relative isolate overflow-x-clip pt-32 sm:pt-36 pb-24">
     <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
       <div class="docs-aurora docs-aurora-1"></div>
@@ -103,7 +103,7 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
               data-doc-card
               class:list={[
                 "group relative block h-full overflow-hidden rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15",
-                "bg-brand-quaternary/40 dark:bg-brand-primary/40 backdrop-blur-md",
+                "doc-card-surface bg-brand-quaternary/40 dark:bg-brand-primary/40",
                 "transition duration-300 hover:-translate-y-1 hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35",
                 "hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)]",
               ]}
@@ -205,6 +205,12 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
       linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-quaternary) 5%, transparent) 1px, transparent 1px);
   }
 
+  .doc-card-surface {
+    isolation: isolate;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
   .doc-preview {
     position: relative;
     aspect-ratio: 16 / 9;
@@ -262,19 +268,19 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
     transform: scale(1.08);
   }
 
-  .doc-preview-protoplanetary .doc-preview-base {
+  .doc-preview-protoplanetary-disk .doc-preview-base {
     background:
       radial-gradient(circle at 50% 60%, var(--c1) 0%, transparent 6%),
       radial-gradient(ellipse 60% 18% at 50% 60%, color-mix(in oklch, var(--c1) 50%, transparent) 0%, transparent 70%),
       radial-gradient(ellipse 80% 22% at 50% 60%, color-mix(in oklch, var(--c2) 40%, transparent) 0%, transparent 70%),
       linear-gradient(160deg, color-mix(in oklch, var(--c3) 70%, var(--c2) 30%), var(--c3));
   }
-  .doc-preview-protoplanetary .doc-preview-accent {
+  .doc-preview-protoplanetary-disk .doc-preview-accent {
     background:
       radial-gradient(ellipse 95% 26% at 50% 60%, transparent 60%, color-mix(in oklch, var(--c1) 25%, transparent) 70%, transparent 85%);
     mix-blend-mode: screen;
   }
-  .group:hover .doc-preview-protoplanetary .doc-preview-accent {
+  .group:hover .doc-preview-protoplanetary-disk .doc-preview-accent {
     transform: rotate(-3deg) scale(1.04);
   }
 
@@ -299,7 +305,7 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
     transform: translateX(-4%);
   }
 
-  .doc-preview-nebula .doc-preview-base {
+  .doc-preview-carina-nebula .doc-preview-base {
     background:
       radial-gradient(ellipse 60% 70% at 30% 40%, color-mix(in oklch, var(--c1) 70%, transparent) 0%, transparent 65%),
       radial-gradient(ellipse 70% 60% at 75% 65%, color-mix(in oklch, var(--c2) 65%, transparent) 0%, transparent 70%),
@@ -307,17 +313,17 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
       linear-gradient(160deg, var(--c3), color-mix(in oklch, var(--c3) 60%, var(--c2) 40%));
     filter: saturate(115%);
   }
-  .doc-preview-nebula .doc-preview-accent {
+  .doc-preview-carina-nebula .doc-preview-accent {
     background:
       radial-gradient(ellipse 35% 45% at 45% 55%, color-mix(in oklch, var(--c1) 55%, transparent) 0%, transparent 70%),
       radial-gradient(ellipse 30% 35% at 70% 35%, color-mix(in oklch, var(--c2) 50%, transparent) 0%, transparent 70%);
     mix-blend-mode: screen;
   }
-  .group:hover .doc-preview-nebula .doc-preview-accent {
+  .group:hover .doc-preview-carina-nebula .doc-preview-accent {
     transform: scale(1.1) translateX(2%);
   }
 
-  .doc-preview-green-starfield .doc-preview-base {
+  .doc-preview-clover-starfield .doc-preview-base {
     background:
       radial-gradient(circle at 50% 52%, color-mix(in oklch, var(--c1) 95%, white) 0%, transparent 3%),
       radial-gradient(circle at 50% 52%, color-mix(in oklch, var(--c2) 85%, transparent) 0%, color-mix(in oklch, var(--c2) 45%, transparent) 14%, transparent 32%),
@@ -325,35 +331,35 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
       var(--c3);
     filter: saturate(140%);
   }
-  .doc-preview-green-starfield .doc-preview-accent {
+  .doc-preview-clover-starfield .doc-preview-accent {
     background:
       conic-gradient(from 0deg at 50% 52%, transparent 0deg, rgba(0,0,0,0.55) 25deg, transparent 55deg, transparent 115deg, rgba(0,0,0,0.5) 145deg, transparent 175deg, transparent 235deg, rgba(0,0,0,0.55) 265deg, transparent 295deg);
     mix-blend-mode: multiply;
     mask-image: radial-gradient(circle at 50% 52%, black 10%, black 40%, transparent 58%);
     -webkit-mask-image: radial-gradient(circle at 50% 52%, black 10%, black 40%, transparent 58%);
   }
-  .group:hover .doc-preview-green-starfield .doc-preview-accent {
+  .group:hover .doc-preview-clover-starfield .doc-preview-accent {
     transform: rotate(20deg);
   }
-  .doc-preview-green-starfield .doc-preview-stars {
+  .doc-preview-clover-starfield .doc-preview-stars {
     opacity: 0.95;
     z-index: 2;
   }
-  .doc-preview-green-starfield::before,
-  .doc-preview-green-starfield::after {
+  .doc-preview-clover-starfield::before,
+  .doc-preview-clover-starfield::after {
     content: "";
     position: absolute;
     inset: 0;
     pointer-events: none;
   }
-  .doc-preview-green-starfield::before {
+  .doc-preview-clover-starfield::before {
     background: radial-gradient(ellipse 75% 110% at 50% 52%, color-mix(in oklch, var(--c1) 70%, transparent) 0%, color-mix(in oklch, var(--c2) 55%, transparent) 18%, color-mix(in oklch, var(--c2) 28%, transparent) 40%, color-mix(in oklch, var(--c2) 12%, transparent) 65%, transparent 90%);
     filter: blur(18px);
     mix-blend-mode: screen;
     opacity: 0.85;
     transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 700ms ease;
   }
-  .doc-preview-green-starfield::after {
+  .doc-preview-clover-starfield::after {
     --ring-angle: 90deg;
     background: conic-gradient(from var(--ring-angle) at 50% 52%, transparent 0deg, color-mix(in oklch, var(--c1) 40%, transparent) 40deg, transparent 90deg, color-mix(in oklch, var(--c2) 35%, transparent) 150deg, transparent 200deg, color-mix(in oklch, var(--c1) 35%, transparent) 250deg, transparent 310deg, color-mix(in oklch, var(--c2) 40%, transparent) 350deg);
     mask-image: radial-gradient(ellipse 42% 78% at 50% 52%, transparent 60%, black 75%, black 88%, transparent 100%);
@@ -363,28 +369,28 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
     opacity: 0.85;
     transition: --ring-angle 700ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .group:hover .doc-preview-green-starfield::before {
+  .group:hover .doc-preview-clover-starfield::before {
     transform: scale(1.06);
     opacity: 1;
   }
-  .group:hover .doc-preview-green-starfield::after {
+  .group:hover .doc-preview-clover-starfield::after {
     --ring-angle: 78deg;
   }
-  .doc-preview-green-starfield .doc-preview-vignette {
+  .doc-preview-clover-starfield .doc-preview-vignette {
     z-index: 3;
   }
 
-  .doc-preview-pulsar .doc-preview-base {
+  .doc-preview-pulsar-beacon .doc-preview-base {
     background:
       radial-gradient(circle at 50% 50%, var(--c1) 0%, color-mix(in oklch, var(--c1) 60%, var(--c2)) 4%, transparent 14%),
       conic-gradient(from 60deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 35%, transparent) 20deg, transparent 40deg, transparent 200deg, color-mix(in oklch, var(--c1) 35%, transparent) 220deg, transparent 240deg, transparent 360deg),
       linear-gradient(180deg, var(--c3), color-mix(in oklch, var(--c3) 70%, var(--c2) 30%));
   }
-  .doc-preview-pulsar .doc-preview-accent {
+  .doc-preview-pulsar-beacon .doc-preview-accent {
     background: radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 80%, transparent) 0%, transparent 8%);
     mix-blend-mode: screen;
   }
-  .group:hover .doc-preview-pulsar .doc-preview-accent {
+  .group:hover .doc-preview-pulsar-beacon .doc-preview-accent {
     transform: scale(1.6);
     opacity: 0.6;
   }
@@ -463,8 +469,8 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
     pointer-events: none;
     transform-origin: 50% 50%;
     animation:
-      docs-drift 80s ease-in-out infinite,
-      docs-tumble 55s linear infinite;
+      docs-drift 110s ease-in-out infinite,
+      docs-tumble 80s ease-in-out infinite;
   }
 
   :where(.dark) .docs-constellation {
@@ -473,21 +479,20 @@ const sparkles = Array.from({ length: SPARKLE_COUNT }, (_, i) => {
 
   @keyframes docs-drift {
     0% { translate: 0 0; }
-    15% { translate: -9vw -22px; }
-    32% { translate: -24vw 14px; }
-    50% { translate: -38vw -8px; }
-    63% { translate: -43vw 28px; }
-    78% { translate: -28vw -16px; }
-    92% { translate: -10vw 20px; }
+    20% { translate: -4vw -18px; }
+    40% { translate: -10vw 12px; }
+    55% { translate: -14vw -6px; }
+    72% { translate: -9vw 18px; }
+    88% { translate: -3vw -10px; }
     100% { translate: 0 0; }
   }
 
   @keyframes docs-tumble {
-    0% { rotate: -6deg; }
-    25% { rotate: 4deg; }
-    50% { rotate: -3deg; }
-    75% { rotate: 7deg; }
-    100% { rotate: -6deg; }
+    0% { rotate: -3deg; }
+    25% { rotate: 2deg; }
+    50% { rotate: -1.5deg; }
+    75% { rotate: 3deg; }
+    100% { rotate: -3deg; }
   }
 
   @keyframes docs-aurora-drift {

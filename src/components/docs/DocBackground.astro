@@ -103,13 +103,13 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     animation: doc-bg-sun-breathe 7s ease-in-out infinite;
   }
 
-  .doc-bg[data-variant="protoplanetary"] .doc-bg-base {
+  .doc-bg[data-variant="protoplanetary-disk"] .doc-bg-base {
     background:
       radial-gradient(ellipse 80% 22% at 50% 60%, color-mix(in oklch, var(--c1) 35%, transparent) 0%, transparent 70%),
       radial-gradient(ellipse 95% 28% at 50% 60%, color-mix(in oklch, var(--c2) 28%, transparent) 0%, transparent 75%),
       linear-gradient(165deg, color-mix(in oklch, var(--c3) 70%, var(--c2) 30%), var(--c3));
   }
-  .doc-bg[data-variant="protoplanetary"] .doc-bg-accent {
+  .doc-bg[data-variant="protoplanetary-disk"] .doc-bg-accent {
     background:
       radial-gradient(circle at 50% 60%, var(--c1) 0%, transparent 5%),
       radial-gradient(ellipse 95% 26% at 50% 60%, transparent 60%, color-mix(in oklch, var(--c1) 22%, transparent) 70%, transparent 85%);
@@ -138,7 +138,7 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     animation: doc-bg-belt-drift 28s linear infinite;
   }
 
-  .doc-bg[data-variant="nebula"] .doc-bg-base {
+  .doc-bg[data-variant="carina-nebula"] .doc-bg-base {
     background:
       radial-gradient(ellipse 60% 70% at 25% 35%, color-mix(in oklch, var(--c1) 55%, transparent) 0%, transparent 65%),
       radial-gradient(ellipse 70% 60% at 78% 70%, color-mix(in oklch, var(--c2) 55%, transparent) 0%, transparent 70%),
@@ -146,7 +146,7 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
       linear-gradient(160deg, var(--c3), color-mix(in oklch, var(--c3) 60%, var(--c2) 40%));
     filter: saturate(115%);
   }
-  .doc-bg[data-variant="nebula"] .doc-bg-accent {
+  .doc-bg[data-variant="carina-nebula"] .doc-bg-accent {
     background:
       radial-gradient(ellipse 35% 45% at 45% 55%, color-mix(in oklch, var(--c1) 35%, transparent) 0%, transparent 70%),
       radial-gradient(ellipse 30% 35% at 70% 35%, color-mix(in oklch, var(--c2) 35%, transparent) 0%, transparent 70%);
@@ -154,7 +154,7 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     animation: doc-bg-nebula-drift 11s ease-in-out infinite;
   }
 
-  .doc-bg[data-variant="green-starfield"] .doc-bg-base {
+  .doc-bg[data-variant="clover-starfield"] .doc-bg-base {
     background:
       radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 90%, white) 0%, transparent 2%),
       radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c2) 80%, transparent) 0%, color-mix(in oklch, var(--c2) 40%, transparent) 12%, transparent 28%),
@@ -162,7 +162,7 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
       radial-gradient(ellipse at 50% 50%, var(--c3) 60%, color-mix(in oklch, var(--c3) 90%, black) 100%);
     filter: saturate(140%);
   }
-  .doc-bg[data-variant="green-starfield"] .doc-bg-accent {
+  .doc-bg[data-variant="clover-starfield"] .doc-bg-accent {
     background:
       conic-gradient(from 0deg at 50% 50%, transparent 0deg, color-mix(in oklch, black 70%, transparent) 25deg, transparent 50deg, transparent 110deg, color-mix(in oklch, black 60%, transparent) 140deg, transparent 170deg, transparent 230deg, color-mix(in oklch, black 65%, transparent) 260deg, transparent 290deg, transparent 350deg, color-mix(in oklch, black 55%, transparent) 360deg),
       radial-gradient(circle at 50% 50%, transparent 30%, color-mix(in oklch, var(--c2) 25%, transparent) 38%, transparent 50%);
@@ -171,7 +171,7 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     -webkit-mask-image: radial-gradient(circle at 50% 50%, black 8%, black 38%, transparent 55%);
     animation: doc-bg-galaxy-spin 60s linear infinite;
   }
-  .doc-bg[data-variant="green-starfield"]::before {
+  .doc-bg[data-variant="clover-starfield"]::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -183,7 +183,7 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     pointer-events: none;
     animation: doc-bg-haze-pulse 8s ease-in-out infinite;
   }
-  .doc-bg[data-variant="green-starfield"]::after {
+  .doc-bg[data-variant="clover-starfield"]::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -197,24 +197,24 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
     pointer-events: none;
     animation: doc-bg-galaxy-spin 90s linear infinite reverse;
   }
-  .doc-bg[data-variant="green-starfield"] .doc-bg-vignette {
+  .doc-bg[data-variant="clover-starfield"] .doc-bg-vignette {
     z-index: 2;
   }
-  .doc-bg[data-variant="green-starfield"] .doc-bg-stars {
+  .doc-bg[data-variant="clover-starfield"] .doc-bg-stars {
     z-index: 3;
   }
-  .doc-bg[data-paused="true"][data-variant="green-starfield"]::before,
-  .doc-bg[data-paused="true"][data-variant="green-starfield"]::after {
+  .doc-bg[data-paused="true"][data-variant="clover-starfield"]::before,
+  .doc-bg[data-paused="true"][data-variant="clover-starfield"]::after {
     animation-play-state: paused;
   }
 
-  .doc-bg[data-variant="pulsar"] .doc-bg-base {
+  .doc-bg[data-variant="pulsar-beacon"] .doc-bg-base {
     background:
       radial-gradient(circle at 50% 50%, var(--c1) 0%, transparent 6%),
       conic-gradient(from 60deg at 50% 50%, transparent 0deg, color-mix(in oklch, var(--c1) 25%, transparent) 20deg, transparent 40deg, transparent 200deg, color-mix(in oklch, var(--c1) 25%, transparent) 220deg, transparent 240deg, transparent 360deg),
       linear-gradient(180deg, var(--c3), color-mix(in oklch, var(--c3) 70%, var(--c2) 30%));
   }
-  .doc-bg[data-variant="pulsar"] .doc-bg-accent {
+  .doc-bg[data-variant="pulsar-beacon"] .doc-bg-accent {
     background: radial-gradient(circle at 50% 50%, color-mix(in oklch, var(--c1) 70%, transparent) 0%, transparent 8%);
     mix-blend-mode: screen;
     animation: doc-bg-pulse 3.5s ease-in-out infinite;
@@ -243,8 +243,9 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
       linear-gradient(155deg, color-mix(in oklch, var(--c3) 80%, var(--c2) 20%), var(--c3));
   }
   .doc-bg[data-variant="red-dwarf"] .doc-bg-accent {
+    inset: -100%;
     background:
-      conic-gradient(from 0deg at 70% 35%,
+      conic-gradient(from 0deg at 56.67% 45%,
         transparent 0deg,
         color-mix(in oklch, var(--c1) 70%, transparent) 2deg,
         transparent 6deg,
@@ -258,9 +259,9 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => {
         color-mix(in oklch, var(--c1) 70%, transparent) 270deg,
         transparent 274deg,
         transparent 360deg),
-      radial-gradient(circle at 70% 35%, color-mix(in oklch, var(--c1) 90%, transparent) 0%, transparent 4%);
+      radial-gradient(circle at 56.67% 45%, color-mix(in oklch, var(--c1) 90%, transparent) 0%, transparent 4%);
     mix-blend-mode: screen;
-    transform-origin: 70% 35%;
+    transform-origin: 56.67% 45%;
     filter: blur(0.5px);
     animation: doc-bg-flare-burst 5s ease-in-out infinite;
   }

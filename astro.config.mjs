@@ -20,12 +20,14 @@ export default defineConfig({
       name: "Space Mono",
       cssVariable: "--font-space-mono",
       subsets: ["latin"],
+      fallbacks: ["ui-monospace", "monospace"],
     },
     {
       provider: fontProviders.fontsource(),
       name: "Roboto Mono",
       cssVariable: "--font-roboto-mono",
       subsets: ["latin"],
+      fallbacks: ["ui-monospace", "monospace"],
     },
   ],
 

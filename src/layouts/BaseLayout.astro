@@ -1,9 +1,12 @@
 ---
-import { Font } from "astro:assets";
+import { Font, Image } from "astro:assets";
 
+import iconDark from "@/assets/icon-dark.png";
+import iconLight from "@/assets/icon-light.png";
 import Footer from "@/components/Footer.astro";
 import KoFiPopover from "@/components/KoFiPopover.astro";
 import Navbar from "@/components/Navbar.astro";
+import NoCookieBanner from "@/components/NoCookieBanner.astro";
 import SEO from "@/components/SEO.astro";
 import "@/styles/global.css";
 
@@ -42,6 +45,13 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     })} />
     <slot name="head" />
     <script is:inline src="/theme.js"></script>
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem("page-curtain:incoming") === "1") {
+          document.documentElement.classList.add("curtain-active");
+        }
+      } catch (_) {}
+    </script>
     <script>
       import { animate } from "motion";
       import { isMotionDisabled } from "@/lib/motion";
@@ -65,11 +75,95 @@ const { title, description, image, canonicalURL, ogType, noindex } = Astro.props
     >
       Skip to main content
     </a>
+    <div id="page-curtain" class="page-curtain" aria-hidden="true">
+      <div class="page-curtain-layer page-curtain-layer-1"></div>
+      <div class="page-curtain-layer page-curtain-layer-2"></div>
+      <div class="page-curtain-layer page-curtain-layer-3"></div>
+      <div class="page-curtain-content">
+        <Image src={iconDark} alt="" loading="eager" class="page-curtain-icon page-curtain-icon-light-mode" />
+        <Image src={iconLight} alt="" loading="eager" class="page-curtain-icon page-curtain-icon-dark-mode" />
+      </div>
+    </div>
     <Navbar />
     <slot />
     <Footer />
     <KoFiPopover />
-    <div id="vt-burst" aria-hidden="true" class="pointer-events-none fixed inset-0 z-[9999] opacity-0" style="background: radial-gradient(circle at 50% 45%, oklch(76% 0.09 188 / 0.55) 0%, transparent 65%);"></div>
+    <NoCookieBanner />
+    <script is:inline>
+      (() => {
+        const curtain = document.getElementById("page-curtain");
+        if (!curtain) return;
+
+        const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+        const incoming = sessionStorage.getItem("page-curtain:incoming") === "1";
+        sessionStorage.removeItem("page-curtain:incoming");
+
+        const SWEEP_MS = 1400 + 360;
+        const ICON_FADE_MS = 280 + 380;
+
+        if (incoming && !reduce) {
+          curtain.dataset.state = "closed";
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              curtain.dataset.state = "opening";
+              document.documentElement.classList.remove("curtain-active");
+              setTimeout(() => {
+                curtain.dataset.state = "idle";
+              }, SWEEP_MS + 60);
+            });
+          });
+        } else {
+          curtain.dataset.state = "idle";
+          document.documentElement.classList.remove("curtain-active");
+        }
+
+        if (reduce) return;
+
+        const isInternalLink = (a) => {
+          if (!a || a.target === "_blank" || a.hasAttribute("download")) return false;
+          const href = a.getAttribute("href");
+          if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return false;
+          try {
+            const url = new URL(a.href, window.location.href);
+            if (url.origin !== window.location.origin) return false;
+
+            if (url.pathname === window.location.pathname && url.search === window.location.search) {
+              return false;
+            }
+            return true;
+          } catch {
+            return false;
+          }
+        };
+
+        document.addEventListener("click", (e) => {
+          if (e.defaultPrevented || e.button !== 0) return;
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          const a = e.target.closest?.("a[href]");
+          if (!a || !isInternalLink(a)) return;
+
+          e.preventDefault();
+          const href = a.href;
+          sessionStorage.setItem("page-curtain:incoming", "1");
+
+          document.documentElement.classList.add("curtain-active");
+          curtain.dataset.state = "closing";
+
+          const minCover = SWEEP_MS + ICON_FADE_MS;
+          setTimeout(() => {
+            window.location.assign(href);
+          }, minCover);
+        });
+
+        window.addEventListener("pageshow", (e) => {
+          if (e.persisted) {
+            curtain.dataset.state = "idle";
+            document.documentElement.classList.remove("curtain-active");
+            sessionStorage.removeItem("page-curtain:incoming");
+          }
+        });
+      })();
+    </script>
     <script is:inline defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2ac3323fca1d4fa3afcd3f6a28f5510e"}'></script>
   </body>
 </html>

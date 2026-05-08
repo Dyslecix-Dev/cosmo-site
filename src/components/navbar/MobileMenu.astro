@@ -139,7 +139,6 @@ const aboutLinks = [
 
       <div class="mx-3 my-2 h-px bg-brand-primary/10 dark:bg-brand-quaternary/10"></div>
 
-      <!-- Mobile search -->
       <div class="px-1">
         <div class="flex items-center gap-3 rounded-full border border-brand-primary/20 dark:border-brand-quaternary/20 px-4 py-3">
           <svg aria-hidden="true" viewBox="0 0 15 15" fill="currentColor" class="h-4 w-4 shrink-0 text-brand-primary/50 dark:text-brand-quaternary/50">
@@ -233,9 +232,6 @@ const aboutLinks = [
       { signal },
     );
 
-    // Open on keyboard focus so tabbing into the navbar reveals the menu
-    // contents (which would otherwise stay invisible but remain in the tab
-    // order). Skip pointer-induced focus — the click handler toggles.
     root.addEventListener(
       "focusin",
       () => {
@@ -254,9 +250,33 @@ const aboutLinks = [
       { signal },
     );
 
-    for (const link of root.querySelectorAll<HTMLAnchorElement>("[data-mobile-link]")) {
-      link.addEventListener("click", () => setOpen(root, false), { signal });
-    }
+    const panel = root.querySelector<HTMLElement>("[data-mobile-panel]");
+    root.addEventListener(
+      "click",
+      (event) => {
+        const target = event.target as Element | null;
+        const link = target?.closest<HTMLAnchorElement>("[data-mobile-link]");
+        if (!link || !root.contains(link)) return;
+        if (event.defaultPrevented) return;
+        const me = event as MouseEvent;
+        if (me.metaKey || me.ctrlKey || me.shiftKey || me.altKey || me.button !== 0) {
+          setOpen(root, false);
+          return;
+        }
+        const href = link.getAttribute("href");
+        if (!href || link.target === "_blank") {
+          setOpen(root, false);
+          return;
+        }
+        event.preventDefault();
+        if (panel) panel.style.transition = "none";
+        setOpen(root, false);
+        
+        if (panel) void panel.offsetHeight;
+        window.location.href = href;
+      },
+      { signal },
+    );
 
     document.addEventListener(
       "click",

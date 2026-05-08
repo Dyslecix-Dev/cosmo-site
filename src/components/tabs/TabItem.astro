@@ -1,0 +1,26 @@
+---
+type Props = {
+  label: string;
+};
+
+const { label } = Astro.props;
+const panelId = Math.random().toString(36).slice(2);
+---
+
+<button
+  data-tab-button
+  role="tab"
+  aria-selected="false"
+  aria-controls={panelId}
+>
+  {label}
+</button>
+
+<div
+  id={panelId}
+  data-tab-panel
+  role="tabpanel"
+  aria-hidden="true"
+>
+  <slot />
+</div>

@@ -1,4 +1,4 @@
-type DocThemeKey = "solar-system" | "protoplanetary" | "asteroid-belt" | "nebula" | "green-starfield" | "pulsar" | "binary-star" | "wormhole" | "red-dwarf";
+type DocThemeKey = "solar-system" | "protoplanetary-disk" | "asteroid-belt" | "carina-nebula" | "clover-starfield" | "pulsar-beacon" | "binary-star" | "wormhole" | "red-dwarf";
 
 export interface DocTheme {
   key: DocThemeKey;
@@ -16,22 +16,22 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c2: "#ff7a18",
     c3: "#5a1a00",
   },
-  "adding-a-content-collection": {
-    key: "protoplanetary",
+  "managing-content-collections": {
+    key: "protoplanetary-disk",
     label: "Protoplanetary Disk",
     c1: "#f4c47a",
     c2: "#a86a2e",
     c3: "#2a1608",
   },
-  "rebranding-via-tokens": {
-    key: "nebula",
+  "rebranding-theme": {
+    key: "carina-nebula",
     label: "Carina Nebula",
     c1: "#f472b6",
     c2: "#14b8a6",
     c3: "#1e1b4b",
   },
   "wiring-rss": {
-    key: "pulsar",
+    key: "pulsar-beacon",
     label: "Pulsar Beacon",
     c1: "#a78bfa",
     c2: "#6366f1",
@@ -45,8 +45,8 @@ export const DOC_THEMES: Record<string, DocTheme> = {
     c3: "#1c1917",
   },
   "design-decisions": {
-    key: "green-starfield",
-    label: "Green Starfield",
+    key: "clover-starfield",
+    label: "Clover Starfield",
     c1: "#d1fae5",
     c2: "#22c55e",
     c3: "#020a06",
@@ -68,7 +68,7 @@ export const DOC_THEMES: Record<string, DocTheme> = {
 };
 
 export const FALLBACK_DOC_THEME: DocTheme = {
-  key: "nebula",
+  key: "carina-nebula",
   label: "Deep Space",
   c1: "#a78bfa",
   c2: "#22d3ee",
