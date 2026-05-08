@@ -8,8 +8,8 @@ This repo is itself scaffolded from the Cosmo template — dogfooding it in prod
 
 Three things:
 
-1. **Landing page** — markets the template with a hero, feature highlights, marquee, and interactive charts.
-2. **Docs** — hosts the seven canonical guides for the Cosmo template (getting started, rebranding, adding a content collection, minimum-viable collection, RSS, SEO, deployment).
+1. **Landing page** — markets the template with a hero, marquee, feature highlights, interactive charts, and a Mission Control section linking to the about pages.
+2. **Docs** — hosts the eight canonical guides for the Cosmo template (getting started, rebranding, managing content collections, RSS, SEO, deployment, recommended integrations, design decisions). Pagefind powers the in-site search.
 3. **About pages** — `/blueprint` (how this site was built on top of Cosmo) and `/roadmap` (what's planned next for the template).
 
 ## Stack
@@ -18,10 +18,15 @@ Three things:
 - **Tailwind CSS v4** via the Vite plugin; design tokens in [src/styles/global.css](src/styles/global.css) under `@theme`
 - **TypeScript** (strict) with `@/*` path alias for `src/*`
 - **`astro-seo` wrapper** at [src/components/SEO.astro](src/components/SEO.astro)
-- **Astro fonts** via Fontsource — Space Mono + Roboto Mono
+- **Astro fonts** via Fontsource — Space Mono + Roboto Mono (latin subset only)
+- **Pagefind** static search via `astro-pagefind` — drives the navbar search panel
+- **OG images** generated at build time by `astro-og-canvas` ([src/pages/open-graph/[...route].ts](src/pages/open-graph/%5B...route%5D.ts)) — one per doc, plus homepage/blueprint/roadmap/privacy
 - **JSON-LD schema** — WebSite + Organization on the homepage; TechArticle + BreadcrumbList on each doc
 - **Cloudflare Web Analytics** (cookieless, no consent banner)
-- **Biome** for lint + format; **Lefthook** git hooks
+- **Curtain page transition** — full-page nav with a layered curtain animation (replaces `@view-transition`); gated behind `prefers-reduced-motion`
+- **GitHub stars cache** — `src/data/stars.json` is refreshed daily by the `update-stars.yml` GitHub Action and read at build time by the Hero
+- **Biome** for lint + format; **Lefthook** git hooks (Biome on pre-commit, `astro check` on pre-push)
+- **Lychee** link checking in CI (and via `pnpm check:links` locally with Docker)
 
 ## Requirements
 
@@ -38,6 +43,7 @@ Three things:
 | `pnpm typecheck` | Run `astro check`                         |
 | `pnpm check`     | Lint + format with Biome (read-only)      |
 | `pnpm check:fix` | Lint + format with Biome, apply fixes     |
+| `pnpm check:links` | Run Lychee link checker over `dist/` via Docker |
 
 ## Project structure
 
@@ -46,21 +52,26 @@ public/
   _headers              # CSP, HSTS, and other security headers
   robots.txt
   theme.js              # Blocking theme + motion bootstrap (prevents flash of unstyled content)
-  *.png                 # OG images (one per doc + homepage)
+  favicon.{ico,svg}
 src/
   assets/               # Bundled images (icons, constellation, astronaut, etc.)
+  data/
+    stars.json          # Cached GitHub star count, refreshed daily by .github/workflows/update-stars.yml
   components/
     SEO.astro           # astro-seo wrapper with site-wide defaults
-    Navbar.astro        # Sticky nav with animated pill indicator and docs dropdown
+    Navbar.astro        # Sticky nav with animated pill indicator, About dropdown, search toggle
     Footer.astro        # Footer with nav links and social icons
-    sections/           # Landing page sections (Hero, Marquee, Features, Charts)
-    navbar/             # MobileMenu, ThemeToggle, MotionToggle, NavDropdown
+    KoFiPopover.astro   # Dismissible Ko-fi support popover (sessionStorage)
+    NoCookieBanner.astro # Dismissible "cookieless analytics" banner (localStorage)
+    sections/           # Landing page sections (Hero, Marquee, Features, Charts, MissionControl)
+    navbar/             # MobileMenu, ThemeToggle, MotionToggle, NavDropdown, AboutDropdown, SearchPanel, SearchToggle
     docs/               # DocBackground (per-doc themed gradient)
-    callouts/           # MDX callout component (note/danger)
-  content/docs/         # Six guide MDX/MD files
+    callouts/           # MDX callout component (note/tip/warning/danger)
+    tabs/               # Tabs + TabItem (used for pnpm/npm/yarn install command tabs in docs)
+  content/docs/         # Eight guide MDX/MD files
   content.config.ts     # docs collection schema (zod)
   layouts/
-    BaseLayout.astro          # <html> shell — SEO, fonts, Navbar, Footer, ClientRouter
+    BaseLayout.astro          # <html> shell — SEO, fonts, Navbar, Footer, curtain transition, popovers
     EventHorizonLayout.astro  # MDX layout for /blueprint
     PortholeLayout.astro      # MDX layout for /roadmap
   lib/
@@ -75,7 +86,13 @@ src/
     docs/
       index.astro       # Docs index (card grid)
       [slug].astro      # Doc detail (TOC, prev/next, edit-on-GitHub, schema)
-  styles/global.css     # Tailwind base + @theme design tokens
+    open-graph/
+      [...route].ts     # astro-og-canvas route — generates OG PNGs for each page/doc at build
+  styles/global.css     # Tailwind base + @theme design tokens + curtain transition CSS
+.github/workflows/
+  ci.yml                # Typecheck, build, and Lychee link check
+  code-quality.yml      # Biome CI
+  update-stars.yml      # Daily cron — fetches GitHub star count and commits stars.json
 astro.config.mjs
 biome.json
 lefthook.yml

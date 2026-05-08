@@ -1,0 +1,140 @@
+---
+title: Managing content collections
+description: Define, draft, or remove Astro content collections.
+order: 3
+updatedDate: 2026-05-05
+---
+
+import Callout from "@/components/callouts/Callout.astro";
+
+## Creating a collection
+
+### 1. Define the schema
+
+In `src/content.config.ts`:
+
+```ts
+import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
+import { z } from "astro/zod";
+
+const yourCollection = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/<your-collection>" }),
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { /* ...existing, */ yourCollection };
+```
+
+`title` and `description` in the schema cover most pages. Add fields (dates, tags, images, authors) only when an entry actually needs them.
+
+<Callout type="note" title="What's in a name">
+  Field names in the exported `collections` map become the strings you pass to <code>getCollection()</code>.
+</Callout>
+
+
+### 2. Add entries
+
+Create `.md` or `.mdx` files in `src/content/<your-collection>/`. The filename (minus its extension) becomes the entry `id` and the URL slug.
+
+```md
+---
+title: My first entry
+description: A one-line summary.
+---
+
+Body content here.
+```
+
+### 3. Index page
+
+`src/pages/<your-collection>/index.astro` lists every non-draft entry:
+
+```astro
+---
+import { getCollection } from "astro:content";
+
+const entries = await getCollection("yourCollection", ({ data }) => !data.draft);
+---
+<ul>
+  {entries.map((entry) => (
+    <li>
+      <a href={`/<your-collection>/${entry.id}`}>{entry.data.title}</a>
+    </li>
+  ))}
+</ul>
+```
+
+### 4. Detail page
+
+`src/pages/<your-collection>/[slug].astro` renders one entry per route:
+
+```astro
+---
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("yourCollection");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<article>
+  <h1>{entry.data.title}</h1>
+  <Content />
+</article>
+```
+
+From here, swap a real layout in for `<article>`, add SEO via `src/components/SEO.astro`, and grow the schema as your entries actually demand it.
+
+### Real-world example
+
+For a fuller, opinionated example with images, related entries, and tag pages, see the <a href="https://cosmo-example.dyslecix.dev/blog/" target="_blank" rel="noopener noreferrer">blog collection</a>.
+
+## Drafting entries
+
+The `docs` and `blog` collections (and any collection you define) support a `draft` field. Mark entries with `draft: true` in the frontmatter to write without publishing:
+
+```mdx
+---
+title: "Work in progress"
+draft: true
+---
+```
+
+Drafts are automatically filtered from:
+
+- List pages and pagination
+- RSS feeds
+- Sitemap (via built page filtering)
+- Tag taxonomy
+
+Filter them out explicitly when querying a collection:
+
+```ts
+const entries = await getCollection("yourCollection", ({ data }) => !data.draft);
+```
+
+<Callout type="tip" title="No index needed">
+  Drafts won't be indexed or served to users. You don't need to set `noindex` on them — see <a href="/docs/seo-checklist">SEO checklist</a> for details.
+</Callout>
+
+## Deleting the example collection
+
+<Callout type="danger" title="This is destructive">
+  Deleting a collection removes all its entries and routes. Back up or commit your changes to git before proceeding.
+</Callout>
+
+If you don't need `blog`, delete:
+
+- The collection block in `src/content.config.ts`
+- The `src/content/<name>/` directory
+- The `src/pages/<name>/` route(s)
+- Any helpers under `src/lib/` and components under `src/components/<name>/` referenced only by that collection
+

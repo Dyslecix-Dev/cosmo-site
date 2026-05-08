@@ -1,0 +1,261 @@
+---
+type Props = {
+  defaultTab?: number;
+};
+
+const { defaultTab = 0 } = Astro.props;
+const id = Math.random().toString(36).slice(2);
+---
+
+<div class="tabs-wrapper" data-tabs-id={id} data-default-tab={defaultTab}>
+  <div class="tabs-buttons" role="tablist">
+    <span class="tabs-pill-indicator" data-tabs-pill-indicator aria-hidden="true"></span>
+  </div>
+  <div class="tabs-content">
+    <slot />
+  </div>
+</div>
+
+<style is:global>
+  .tabs-wrapper {
+    margin: 1.5rem 0;
+  }
+
+  .tabs-buttons {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem;
+  }
+
+  .tabs-pill-indicator {
+    position: absolute;
+    top: 0.25rem;
+    bottom: 0.25rem;
+    left: 0;
+    width: 0;
+    border-radius: 9999px;
+    background: color-mix(in oklch, var(--color-brand-primary) 8%, transparent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  :where(.dark) .tabs-pill-indicator {
+    background: color-mix(in oklch, var(--color-brand-quaternary) 8%, transparent);
+  }
+
+  [data-tab-button] {
+    background: transparent;
+    border: none;
+    color: color-mix(in oklch, var(--color-brand-primary) 70%, transparent);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    border-radius: 9999px;
+    transition: color 0.2s ease;
+  }
+
+  :where(.dark) [data-tab-button] {
+    color: color-mix(in oklch, var(--color-brand-quaternary) 70%, transparent);
+  }
+
+  [data-tab-button]:hover,
+  [data-tab-button][aria-selected="true"] {
+    color: var(--color-brand-primary);
+  }
+
+  :where(.dark) [data-tab-button]:hover,
+  :where(.dark) [data-tab-button][aria-selected="true"] {
+    color: var(--color-brand-quaternary);
+  }
+
+  .tabs-content [data-tab-button] {
+    display: none;
+  }
+
+  .tabs-content {
+    position: relative;
+    display: grid;
+    grid-template-areas: "stack";
+    margin-top: 0.5rem;
+  }
+
+  [data-tab-panel] {
+    grid-area: stack;
+    width: 100%;
+    opacity: 0;
+    transform: translate3d(40px, 0, 0);
+    pointer-events: none;
+    will-change: transform, opacity;
+    transition:
+      opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  [data-tab-panel][data-tab-leaving="true"],
+  [data-tab-panel][data-tab-entering="true"] {
+    opacity: 0;
+    transform: translate3d(var(--tab-offset-x, 40px), 0, 0);
+    pointer-events: none;
+  }
+
+  [data-tab-panel][data-tab-active="true"] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-tab-panel] {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  [data-tab-panel] > :first-child {
+    margin-top: 0;
+  }
+
+  [data-tab-panel] > :last-child {
+    margin-bottom: 0;
+  }
+</style>
+
+<script>
+  import { animate } from "motion";
+
+  function initTabs(wrapper: HTMLElement) {
+    if (wrapper.dataset.initialized === "true") return;
+    wrapper.dataset.initialized = "true";
+
+    const defaultIndex = parseInt(wrapper.dataset.defaultTab || "0");
+    const container = wrapper.querySelector(".tabs-buttons") as HTMLElement;
+    const contentWrapper = wrapper.querySelector(".tabs-content") as HTMLElement;
+    const indicator = wrapper.querySelector("[data-tabs-pill-indicator]") as HTMLElement;
+
+    const buttonElements = Array.from(contentWrapper.querySelectorAll<HTMLElement>("[data-tab-button]"));
+    const buttons: HTMLElement[] = [];
+    for (const btn of buttonElements) {
+      container.appendChild(btn);
+      buttons.push(btn);
+    }
+
+    const panels = Array.from(wrapper.querySelectorAll<HTMLElement>("[data-tab-panel]"));
+
+    panels.forEach((panel, i) => {
+      if (i === defaultIndex) {
+        panel.setAttribute("data-tab-active", "true");
+        panel.setAttribute("aria-hidden", "false");
+      } else {
+        panel.setAttribute("data-tab-active", "false");
+        panel.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    let currentIndex = defaultIndex;
+    let pillVisible = false;
+
+    const movePill = (target: HTMLElement | null) => {
+      if (!target) {
+        animate(indicator, { opacity: 0 }, { duration: 0.15 });
+        pillVisible = false;
+        return;
+      }
+      const containerRect = container.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      const x = rect.left - containerRect.left;
+      const width = rect.width;
+      animate(
+        indicator,
+        {
+          transform: `translateX(${x}px)`,
+          width: `${width}px`,
+          opacity: 1,
+        },
+        {
+          duration: pillVisible ? 0.35 : 0.15,
+          ease: [0.22, 1, 0.36, 1],
+        },
+      );
+      pillVisible = true;
+    };
+
+    const selectTab = (index: number) => {
+      if (index === currentIndex) return;
+      const previousIndex = currentIndex;
+      currentIndex = index;
+
+      buttons.forEach((btn, i) => {
+        btn.setAttribute("aria-selected", i === index ? "true" : "false");
+      });
+
+      const direction = index > previousIndex ? 1 : -1;
+
+      panels.forEach((panel, i) => {
+        if (i === index) {
+          panel.style.setProperty("--tab-offset-x", `${direction * 40}px`);
+          panel.removeAttribute("data-tab-leaving");
+          panel.setAttribute("data-tab-entering", "true");
+          panel.setAttribute("data-tab-active", "false");
+          void panel.offsetWidth;
+          requestAnimationFrame(() => {
+            panel.removeAttribute("data-tab-entering");
+            panel.setAttribute("data-tab-active", "true");
+            panel.setAttribute("aria-hidden", "false");
+          });
+        } else if (i === previousIndex) {
+          panel.style.setProperty("--tab-offset-x", `${-direction * 40}px`);
+          panel.setAttribute("data-tab-active", "false");
+          panel.setAttribute("data-tab-leaving", "true");
+          panel.setAttribute("aria-hidden", "true");
+        } else {
+          panel.removeAttribute("data-tab-leaving");
+          panel.removeAttribute("data-tab-entering");
+        }
+      });
+    };
+
+    buttons.forEach((btn, index) => {
+      btn.addEventListener("mouseenter", () => movePill(btn));
+      btn.addEventListener("mouseleave", () => {
+        if (document.activeElement !== btn) {
+          movePill(buttons[currentIndex]);
+        }
+      });
+      btn.addEventListener("focus", () => movePill(btn));
+      btn.addEventListener("blur", () => movePill(buttons[currentIndex]));
+
+      btn.addEventListener("click", () => selectTab(index));
+      btn.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+          e.preventDefault();
+          const newIndex =
+            e.key === "ArrowLeft"
+              ? (index - 1 + buttons.length) % buttons.length
+              : (index + 1) % buttons.length;
+          buttons[newIndex].focus();
+          selectTab(newIndex);
+        }
+      });
+    });
+
+    buttons.forEach((btn, i) => {
+      btn.setAttribute("aria-selected", i === defaultIndex ? "true" : "false");
+    });
+
+    movePill(buttons[defaultIndex]);
+  }
+
+  function initAll() {
+    document.querySelectorAll<HTMLElement>("[data-tabs-id]").forEach(initTabs);
+  }
+
+  initAll();
+  document.addEventListener("astro:page-load", initAll);
+</script>

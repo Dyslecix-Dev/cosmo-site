@@ -31,7 +31,20 @@ export async function getStaticPaths() {
 const { entry, prev, next, position, total } = Astro.props;
 const { Content, headings } = await render(entry);
 
-const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const tocFlat = headings.filter((h) => h.depth === 2 || h.depth === 3);
+type TocSection = { slug: string; text: string; children: { slug: string; text: string }[] };
+const tocSections: TocSection[] = [];
+for (const h of tocFlat) {
+  if (h.depth === 2) {
+    tocSections.push({ slug: h.slug, text: h.text, children: [] });
+  } else if (h.depth === 3) {
+    if (tocSections.length === 0) {
+      tocSections.push({ slug: "", text: "", children: [] });
+    }
+    tocSections[tocSections.length - 1].children.push({ slug: h.slug, text: h.text });
+  }
+}
+const tocHasGrouping = tocSections.some((s) => s.children.length > 0);
 const theme = themeForDoc(entry.id);
 const editUrl = `https://github.com/DyslecixDev/cosmo-site/edit/main/${entry.filePath}`;
 
@@ -72,20 +85,20 @@ const breadcrumbSchema = {
 };
 ---
 
-<BaseLayout title={entry.data.title} description={entry.data.description} ogType="article" image={`/${entry.id}-og-image.png`}>
+<BaseLayout title={entry.data.title} description={entry.data.description} ogType="article" image={`/open-graph/${entry.id}.png`}>
   <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <script slot="head" is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   <DocBackground theme={theme} />
   <main id="main" class="relative isolate overflow-x-clip pt-32 sm:pt-36 pb-24">
 
     <div class="mx-auto w-full max-w-6xl px-6 sm:px-10">
-      <header class="doc-reveal rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
-        <a href="/docs" data-all-guides-link class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition group">
+      <header class="doc-reveal rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
+        <a href="/docs" data-all-guides-link class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition group">
           <span aria-hidden="true" class="all-guides-arrow">&larr;</span>
           <span>All guides</span>
         </a>
 
-        <div class="mt-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+        <div class="mt-6 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.2em] text-brand-tertiary">
           <span aria-hidden="true" class="inline-block h-1.5 w-1.5 rounded-full bg-brand-tertiary shadow-[0_0_10px_currentColor]"></span>
           <span>Briefing {String(position).padStart(2, "0")} of {String(total).padStart(2, "0")}</span>
         </div>
@@ -94,18 +107,18 @@ const breadcrumbSchema = {
           {entry.data.title}
         </h1>
         {entry.data.description && (
-          <p class="mt-5 max-w-2xl text-lg sm:text-xl text-brand-secondary dark:text-brand-tertiary">
+          <p class="mt-5 max-w-2xl text-lg sm:text-xl text-brand-tertiary">
             {entry.data.description}
           </p>
         )}
 
-        <p class="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary/80 dark:text-brand-tertiary/80">
+        <p class="mt-6 font-mono text-xs uppercase tracking-[0.2em]/80 text-brand-tertiary/80">
           Last updated <time datetime={updatedISO}>{updatedLabel}</time>
         </p>
       </header>
 
       <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_240px]">
-        <article class="doc-reveal min-w-0 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
+        <article class="doc-reveal min-w-0 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-6 sm:p-10">
           <div class="doc-prose">
             <Content />
           </div>
@@ -115,7 +128,7 @@ const breadcrumbSchema = {
               href={editUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition"
+              class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary transition"
             >
               <span>Edit this page on GitHub</span>
               <span aria-hidden="true">&rarr;</span>
@@ -123,14 +136,14 @@ const breadcrumbSchema = {
           </div>
 
           {(prev || next) && (
-            <nav class="mt-12 grid gap-4 border-t border-brand-primary/15 dark:border-brand-quaternary/15 pt-8 sm:grid-cols-2 lg:hidden">
+            <nav class="mt-6 grid gap-4 border-t border-brand-primary/15 dark:border-brand-quaternary/15 pt-6 sm:mt-12 sm:pt-8 sm:grid-cols-2 lg:hidden">
               <div>
                 {prev && (
                   <a
                     href={`/docs/${prev.id}`}
-                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
+                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
                   >
-                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                       &larr; Previous
                     </span>
                     <span class="mt-1 block font-medium text-brand-primary dark:text-brand-quaternary">
@@ -143,9 +156,9 @@ const breadcrumbSchema = {
                 {next && (
                   <a
                     href={`/docs/${next.id}`}
-                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
+                    class="group block rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 relative panel-blur px-4 py-4 transition hover:border-brand-primary/35 dark:hover:border-brand-quaternary/35"
                   >
-                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                    <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                       Next &rarr;
                     </span>
                     <span class="mt-1 block font-medium text-brand-primary dark:text-brand-quaternary">
@@ -158,27 +171,67 @@ const breadcrumbSchema = {
           )}
         </article>
 
-        {toc.length > 0 && (
+        {tocFlat.length > 0 && (
           <aside class="doc-reveal hidden lg:block">
-            <div class="sticky top-32 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/30 dark:bg-brand-primary/30 backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-5">
-              <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+            <div class="sticky top-32 rounded-2xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/25 dark:bg-brand-primary/10 panel-blur shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-5">
+              <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                 On this page
               </div>
               <ul class="mt-3 space-y-1.5 border-l border-brand-primary/15 dark:border-brand-quaternary/15">
-                {toc.map((h) => (
+                {tocSections.map((section) => (
                   <li>
-                    <a
-                      href={`#${h.slug}`}
-                      data-toc-link
-                      data-toc-target={h.slug}
-                      class:list={[
-                        "block border-l-2 -ml-px py-1 text-sm transition",
-                        h.depth === 3 ? "pl-6" : "pl-3",
-                        "border-transparent text-brand-secondary dark:text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary",
-                      ]}
-                    >
-                      {h.text}
-                    </a>
+                    {section.children.length > 0 && tocHasGrouping ? (
+                      <div class="toc-section" data-toc-section>
+                        <div class="toc-summary flex items-center gap-2 border-l-2 -ml-px pl-3 pr-2 py-1 text-sm border-transparent text-brand-tertiary">
+                          {section.slug ? (
+                            <a
+                              href={`#${section.slug}`}
+                              data-toc-link
+                              data-toc-target={section.slug}
+                              class="flex-1 min-w-0 hover:text-brand-primary dark:hover:text-brand-quaternary transition"
+                            >
+                              {section.text}
+                            </a>
+                          ) : (
+                            <span class="flex-1 min-w-0 font-mono text-[10px] uppercase tracking-[0.2em]">Sections</span>
+                          )}
+                          <button
+                            type="button"
+                            data-toc-toggle
+                            aria-expanded="false"
+                            aria-label="Toggle section"
+                            class="toc-toggle shrink-0 inline-flex items-center justify-center w-5 h-5 cursor-pointer hover:text-brand-primary dark:hover:text-brand-quaternary transition"
+                          >
+                            <span aria-hidden="true" class="toc-caret text-xs leading-none transition-transform">&#9656;</span>
+                          </button>
+                        </div>
+                        <div class="toc-body">
+                          <ul class="space-y-1.5 overflow-hidden">
+                            {section.children.map((child) => (
+                              <li>
+                                <a
+                                  href={`#${child.slug}`}
+                                  data-toc-link
+                                  data-toc-target={child.slug}
+                                  class="block border-l-2 -ml-px pl-6 py-1 text-sm transition border-transparent text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
+                                >
+                                  {child.text}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ) : (
+                      <a
+                        href={`#${section.slug}`}
+                        data-toc-link
+                        data-toc-target={section.slug}
+                        class="block border-l-2 -ml-px pl-3 py-1 text-sm transition border-transparent text-brand-tertiary hover:text-brand-primary dark:hover:text-brand-quaternary"
+                      >
+                        {section.text}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -187,7 +240,7 @@ const breadcrumbSchema = {
                 <div class="mt-8 space-y-6 border-t border-brand-primary/15 dark:border-brand-quaternary/15 pt-6 text-sm">
                   {prev && (
                     <a href={`/docs/${prev.id}`} class="block group">
-                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                         &larr; Previous
                       </span>
                       <span class="mt-0.5 block text-brand-primary/80 dark:text-brand-quaternary/80 group-hover:text-brand-primary dark:group-hover:text-brand-quaternary transition">
@@ -197,7 +250,7 @@ const breadcrumbSchema = {
                   )}
                   {next && (
                     <a href={`/docs/${next.id}`} class="block group">
-                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">
+                      <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-brand-tertiary">
                         Next &rarr;
                       </span>
                       <span class="mt-0.5 block text-brand-primary/80 dark:text-brand-quaternary/80 group-hover:text-brand-primary dark:group-hover:text-brand-quaternary transition">
@@ -216,13 +269,28 @@ const breadcrumbSchema = {
 </BaseLayout>
 
 <style>
-  .doc-reveal {
+  .toc-toggle { background: none; border: 0; padding: 0; color: inherit; }
+  .toc-section .toc-caret { transition: transform 220ms ease; display: inline-block; }
+  .toc-section[data-open="true"] .toc-caret { transform: rotate(90deg); }
+
+  .toc-body {
+    display: grid;
+    grid-template-rows: 0fr;
     opacity: 0;
+    transition: grid-template-rows 240ms ease, opacity 180ms ease;
+  }
+  .toc-body > ul {
+    min-height: 0;
+  }
+  .toc-section[data-open="true"] > .toc-body {
+    grid-template-rows: 1fr;
+    opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .doc-reveal {
-      opacity: 1;
+    .toc-section .toc-caret,
+    .toc-body {
+      transition: none;
     }
   }
 </style>
@@ -260,6 +328,22 @@ const breadcrumbSchema = {
     initScrollSpy();
     initTocSmoothScroll();
     initAllGuidesLink();
+    initTocToggles();
+  }
+
+  function initTocToggles() {
+    const toggles = document.querySelectorAll<HTMLButtonElement>("[data-toc-toggle]");
+    for (const btn of toggles) {
+      const section = btn.closest<HTMLElement>("[data-toc-section]");
+      if (!section) continue;
+      const onClick = () => {
+        const open = section.dataset.open === "true";
+        section.dataset.open = open ? "false" : "true";
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
+      };
+      btn.addEventListener("click", onClick);
+      cleanups.push(() => btn.removeEventListener("click", onClick));
+    }
   }
 
   function initAllGuidesLink() {
@@ -358,45 +442,6 @@ const breadcrumbSchema = {
 
   let scrollLock: { slug: string } | null = null;
 
-  function smoothScrollTo(targetY: number, duration = 800, onDone?: () => void) {
-    const startY = window.scrollY;
-    const distance = targetY - startY;
-    if (Math.abs(distance) < 2) {
-      onDone?.();
-      return;
-    }
-    const start = performance.now();
-    const html = document.documentElement;
-    const prevBehavior = html.style.scrollBehavior;
-    html.style.scrollBehavior = "auto";
-
-    let cancelled = false;
-    const onUserScroll = () => { cancelled = true; };
-    window.addEventListener("wheel", onUserScroll, { passive: true, once: true });
-    window.addEventListener("touchmove", onUserScroll, { passive: true, once: true });
-
-    const finish = () => {
-      html.style.scrollBehavior = prevBehavior;
-      onDone?.();
-    };
-
-    const easeInOutCubic = (t: number) =>
-      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-
-    const step = (now: number) => {
-      if (cancelled) {
-        finish();
-        return;
-      }
-      const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
-      window.scrollTo(0, startY + distance * easeInOutCubic(t));
-      if (t < 1) window.requestAnimationFrame(step);
-      else finish();
-    };
-    window.requestAnimationFrame(step);
-  }
-
   function initTocSmoothScroll() {
     const reduce = isMotionDisabled();
     const links = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
@@ -411,11 +456,7 @@ const breadcrumbSchema = {
         const targetY = target.getBoundingClientRect().top + window.scrollY - offset;
         scrollLock = { slug };
         setActiveExternal?.(slug);
-        if (reduce) {
-          window.scrollTo(0, targetY);
-        } else {
-          smoothScrollTo(targetY, 500);
-        }
+        window.scrollTo({ top: targetY, behavior: reduce ? "auto" : "smooth" });
         history.replaceState(null, "", `#${slug}`);
       };
       link.addEventListener("click", onClick);

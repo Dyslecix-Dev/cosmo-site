@@ -24,44 +24,34 @@ const cards = [
 ---
 
 <section data-mission-section class="relative overflow-hidden">
-  <div aria-hidden="true" class="mission-matrix pointer-events-none absolute inset-0 -z-0"></div>
-  <div aria-hidden="true" class="mission-aurora-1 pointer-events-none absolute -z-0"></div>
-  <div aria-hidden="true" class="mission-aurora-2 pointer-events-none absolute -z-0"></div>
+  <div aria-hidden="true" class="mission-matrix pointer-events-none absolute inset-0 z-0"></div>
+  <div aria-hidden="true" class="mission-aurora-1 pointer-events-none absolute z-0"></div>
+  <div aria-hidden="true" class="mission-aurora-2 pointer-events-none absolute z-0"></div>
 
   <div class="mx-auto max-w-6xl px-6 sm:px-10 py-16 sm:py-24 lg:py-32 relative z-10">
-    <div class="reveal-on-scroll grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-end">
-      <div>
+    <div class="reveal-on-scroll">
         <p class="font-mono text-xs uppercase tracking-[0.2em] text-brand-secondary dark:text-brand-tertiary">[ 03 / Mission control ]</p>
         <h2 class="mt-4 font-heading text-4xl sm:text-6xl font-bold tracking-tight leading-[0.95]">
           Where to next, captain?
-          <span class="block italic font-normal text-brand-secondary dark:text-brand-tertiary mt-5">Choose your transmission</span>
+          <span class="block italic font-normal text-brand-secondary dark:text-brand-tertiary mt-2">Choose your transmission</span>
         </h2>
-      </div>
-      <p class="relative max-w-md text-brand-secondary dark:text-brand-tertiary lg:justify-self-end lg:text-right">
-        Two status reports: Engineering this site and plotting future waypoints
-      </p>
     </div>
 
     <div
       class="reveal-on-scroll mt-16 grid gap-8 md:grid-cols-[1.05fr_0.95fr] md:items-stretch"
       data-mission-stage
     >
-      <!-- ===== Tablet (left) — styled like an iPad (outer frame + inset screen) ===== -->
       <div class="mission-tablet relative">
-        <!-- Outer device chrome: camera + home indicator -->
         <span aria-hidden="true" class="mission-tablet-camera"></span>
         <span aria-hidden="true" class="mission-tablet-home"></span>
 
-        <!-- Inset screen -->
         <div class="mission-tablet-screen relative overflow-hidden">
-          <!-- HUD chrome on the screen -->
           <span aria-hidden="true" class="mission-bracket mission-bracket-tl"></span>
           <span aria-hidden="true" class="mission-bracket mission-bracket-tr"></span>
           <span aria-hidden="true" class="mission-bracket mission-bracket-bl"></span>
           <span aria-hidden="true" class="mission-bracket mission-bracket-br"></span>
           <span aria-hidden="true" class="mission-tablet-grid pointer-events-none"></span>
 
-          <!-- Top status bar -->
           <div class="relative z-10 flex items-center justify-between px-6 sm:px-8 pt-6">
             <div class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-brand-secondary dark:text-brand-tertiary">
               <span aria-hidden="true" class="mission-pulse inline-block h-1.5 w-1.5 rounded-full bg-brand-secondary dark:bg-brand-tertiary"></span>
@@ -72,7 +62,6 @@ const cards = [
             <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-brand-secondary/70 dark:text-brand-tertiary/70" data-tablet-eyebrow>{cards[0].eyebrow}</span>
           </div>
 
-          <!-- Cycling slides -->
           <div class="relative z-10 mt-6 mx-3 sm:mx-5" data-tablet-slides>
             {cards.map((card, i) => (
               <a
@@ -105,7 +94,6 @@ const cards = [
             ))}
           </div>
 
-          <!-- Pagination + progress -->
           <div class="relative z-10 mt-8 px-6 sm:px-8 pb-6 flex items-center justify-between gap-4">
             <div class="flex items-center gap-2" role="tablist" aria-label="Transmissions">
               {cards.map((card, i) => (
@@ -117,7 +105,7 @@ const cards = [
                   data-tablet-dot
                   data-index={i}
                   class:list={[
-                    "mission-dot inline-flex h-2 w-8 rounded-full transition-all duration-300",
+                    "mission-dot inline-flex h-3 w-10 rounded-full transition-all duration-300",
                     i === 0
                       ? "bg-brand-secondary dark:bg-brand-tertiary"
                       : "bg-brand-primary/15 dark:bg-brand-quaternary/15 hover:bg-brand-primary/30 dark:hover:bg-brand-quaternary/30",
@@ -130,19 +118,15 @@ const cards = [
             </span>
           </div>
 
-          <!-- Auto-advance progress bar -->
           <div class="mission-progress-track absolute bottom-0 left-0 right-0 h-1.5 bg-brand-primary/10 dark:bg-brand-quaternary/10 z-10">
             <div class="mission-progress h-full bg-brand-secondary dark:bg-brand-tertiary" data-tablet-progress></div>
           </div>
         </div>
       </div>
 
-      <!-- ===== Holographic projector (right) ===== -->
       <div class="mission-holo relative">
-        <!-- Soft beam glow rising from the base -->
         <span aria-hidden="true" class="mission-holo-beam pointer-events-none"></span>
 
-        <!-- Rotating projection stage -->
         <div class="mission-holo-stage relative" data-holo-stage>
           {cards.map((card, i) => (
             <div
@@ -155,14 +139,13 @@ const cards = [
                 {card.illustration === "blueprint" && (
                   <svg viewBox="0 0 320 320" aria-hidden="true" class="mission-holo-svg">
                     <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" transform="translate(160 160) scale(0.82) translate(-160 -160)">
-                      <!-- blueprint sheet outline -->
                       <rect x="40" y="40" width="240" height="240" stroke-width="1.6" />
                       <rect x="50" y="50" width="220" height="220" stroke-width="0.8" stroke-opacity="0.5" stroke-dasharray="3 4" />
-                      <!-- title block bottom-right -->
+
                       <rect x="200" y="240" width="70" height="30" stroke-width="1" stroke-opacity="0.7" />
                       <line x1="200" y1="252" x2="270" y2="252" stroke-width="0.8" stroke-opacity="0.5" />
                       <line x1="232" y1="240" x2="232" y2="270" stroke-width="0.8" stroke-opacity="0.5" />
-                      <!-- edge tick marks (top + left rulers) -->
+
                       <g stroke-width="0.8" stroke-opacity="0.45">
                         <line x1="60" y1="40" x2="60" y2="48" />
                         <line x1="80" y1="40" x2="80" y2="48" />
@@ -186,20 +169,20 @@ const cards = [
                         <line x1="40" y1="220" x2="48" y2="220" />
                         <line x1="40" y1="240" x2="48" y2="240" />
                       </g>
-                      <!-- dimension line across top -->
+
                       <g stroke-width="0.8" stroke-opacity="0.5">
                         <line x1="60" y1="60" x2="260" y2="60" stroke-dasharray="2 3" />
                         <line x1="60" y1="56" x2="60" y2="64" />
                         <line x1="260" y1="56" x2="260" y2="64" />
                       </g>
 
-                      <!-- large gear (center) -->
+
                       <g transform="translate(150 155)" stroke-width="1.6">
                         <g class="mission-gear-large">
                           <circle r="50" />
                           <circle r="38" stroke-opacity="0.6" />
                           <circle r="14" />
-                          <!-- 12 teeth as radial spokes -->
+
                           <g stroke-width="6" stroke-linecap="butt">
                             <line x1="0" y1="-50" x2="0" y2="-58" />
                             <line x1="25" y1="-43.3" x2="29" y2="-50.2" />
@@ -214,7 +197,7 @@ const cards = [
                             <line x1="-43.3" y1="-25" x2="-50.2" y2="-29" />
                             <line x1="-25" y1="-43.3" x2="-29" y2="-50.2" />
                           </g>
-                          <!-- spokes -->
+
                           <g stroke-opacity="0.55" stroke-width="1.2">
                             <line x1="0" y1="-38" x2="0" y2="-14" />
                             <line x1="0" y1="14" x2="0" y2="38" />
@@ -224,7 +207,6 @@ const cards = [
                         </g>
                       </g>
 
-                      <!-- small gear (top-right) -->
                       <g transform="translate(238 92)" stroke-width="1.4">
                         <g class="mission-gear-small">
                           <circle r="26" />
@@ -243,7 +225,6 @@ const cards = [
                         </g>
                       </g>
 
-                      <!-- mid gear (bottom-left) -->
                       <g transform="translate(82 218)" stroke-width="1.4">
                         <g class="mission-gear-mid">
                           <circle r="32" />
@@ -271,14 +252,13 @@ const cards = [
                 {card.illustration === "trajectory" && (
                   <svg viewBox="0 0 320 320" aria-hidden="true" class="mission-holo-svg">
                     <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <!-- planet -->
                       <circle cx="160" cy="170" r="60" stroke-width="2" />
                       <ellipse cx="160" cy="170" rx="60" ry="18" stroke-width="1.5" stroke-opacity="0.55" />
                       <ellipse cx="160" cy="170" rx="80" ry="22" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="3 6" />
-                      <!-- orbital trajectory loops -->
+
                       <ellipse cx="160" cy="170" rx="105" ry="38" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="2 5" />
                       <ellipse cx="160" cy="170" rx="125" ry="60" stroke-width="1" stroke-opacity="0.35" stroke-dasharray="2 5" transform="rotate(20 160 170)" />
-                      <!-- waypoints -->
+
                       <g fill="currentColor">
                         <circle cx="60" cy="170" r="4" />
                         <circle cx="265" cy="160" r="5" />
@@ -291,11 +271,9 @@ const cards = [
             </div>
           ))}
 
-          <!-- Hologram artifacts overlay (scanline + chromatic flicker) -->
           <span aria-hidden="true" class="mission-holo-glitch pointer-events-none"></span>
         </div>
 
-        <!-- Projector base -->
         <div aria-hidden="true" class="mission-holo-base">
           <div class="mission-holo-base-disc"></div>
           <div class="mission-holo-base-rim"></div>
@@ -307,17 +285,7 @@ const cards = [
 </section>
 
 <style>
-  /* Matrix-style background — static katakana/digit columns with ~40% of
-     cells left blank so the rhythm reads as natural Japanese writing rather
-     than a strict grid. Light/dark use different fill colors because cyan
-     is invisible on the pale primary bg in light mode. */
   .mission-matrix {
-    /* Light mode: dark navy fill so the chars actually read against the
-       pale primary background. */
-    /* Light mode: dark navy chars on pale primary bg.
-       Columns are flush at the top with varying lengths and grouped with
-       empty x-positions between groups, so the eye reads it as vertical
-       Japanese writing rather than a uniform grid. */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='560' viewBox='0 0 320 560'><g font-family='monospace' font-size='14' fill='%23072042'><text x='8' y='18'>%E3%82%A2</text><text x='8' y='38'>7</text><text x='8' y='58'>%E3%83%9F</text><text x='8' y='78'>3</text><text x='8' y='98'>%E3%83%8D</text><text x='8' y='118'>%E3%83%A9</text><text x='8' y='138'>0</text><text x='8' y='158'>%E3%83%A0</text><text x='8' y='178'>9</text><text x='8' y='198'>%E3%82%B5</text><text x='32' y='18'>%E3%83%84</text><text x='32' y='38'>2</text><text x='32' y='58'>%E3%82%AD</text><text x='32' y='78'>4</text><text x='32' y='98'>%E3%83%92</text><text x='32' y='118'>%E3%82%B7</text><text x='56' y='18'>5</text><text x='56' y='38'>%E3%83%A0</text><text x='56' y='58'>%E3%83%A9</text><text x='56' y='78'>%E3%83%9F</text><text x='56' y='98'>0</text><text x='56' y='118'>%E3%83%8D</text><text x='56' y='138'>%E3%82%A2</text><text x='56' y='158'>3</text><text x='56' y='178'>%E3%82%AD</text><text x='56' y='198'>%E3%83%92</text><text x='56' y='218'>7</text><text x='56' y='238'>%E3%83%84</text><text x='56' y='258'>1</text><text x='56' y='278'>%E3%82%B5</text><text x='128' y='18'>%E3%83%92</text><text x='128' y='38'>4</text><text x='128' y='58'>%E3%83%9F</text><text x='128' y='78'>%E3%83%A9</text><text x='128' y='98'>2</text><text x='128' y='118'>%E3%83%84</text><text x='128' y='138'>9</text><text x='128' y='158'>%E3%83%A0</text><text x='152' y='18'>%E3%82%A2</text><text x='152' y='38'>0</text><text x='152' y='58'>%E3%82%B5</text><text x='152' y='78'>%E3%82%AD</text><text x='176' y='18'>6</text><text x='176' y='38'>%E3%83%8D</text><text x='176' y='58'>%E3%83%9F</text><text x='176' y='78'>%E3%82%B7</text><text x='176' y='98'>1</text><text x='176' y='118'>%E3%83%84</text><text x='176' y='138'>%E3%83%A9</text><text x='176' y='158'>5</text><text x='176' y='178'>%E3%82%A2</text><text x='176' y='198'>%E3%83%A0</text><text x='176' y='218'>0</text><text x='176' y='238'>%E3%83%92</text><text x='248' y='18'>%E3%82%AD</text><text x='248' y='38'>3</text><text x='248' y='58'>%E3%83%A9</text><text x='248' y='78'>%E3%82%B5</text><text x='248' y='98'>%E3%83%9F</text><text x='248' y='118'>2</text><text x='248' y='138'>%E3%83%A0</text><text x='248' y='158'>%E3%83%84</text><text x='248' y='178'>0</text><text x='248' y='198'>%E3%82%A2</text><text x='248' y='218'>5</text><text x='272' y='18'>%E3%83%8D</text><text x='272' y='38'>%E3%82%B7</text><text x='272' y='58'>7</text><text x='272' y='78'>%E3%83%92</text><text x='296' y='18'>4</text><text x='296' y='38'>%E3%83%A0</text><text x='296' y='58'>%E3%83%A9</text><text x='296' y='78'>1</text><text x='296' y='98'>%E3%83%9F</text><text x='296' y='118'>%E3%82%AD</text><text x='8' y='328'>%E3%83%A0</text><text x='8' y='348'>%E3%83%9F</text><text x='8' y='368'>%E3%82%A2</text><text x='8' y='388'>3</text><text x='32' y='328'>%E3%83%8D</text><text x='32' y='348'>%E3%82%B7</text><text x='32' y='368'>5</text><text x='32' y='388'>%E3%83%84</text><text x='32' y='408'>%E3%82%B5</text><text x='32' y='428'>%E3%83%A9</text><text x='32' y='448'>0</text><text x='32' y='468'>%E3%83%92</text><text x='32' y='488'>%E3%83%A0</text><text x='32' y='508'>4</text><text x='104' y='328'>2</text><text x='104' y='348'>%E3%83%A9</text><text x='104' y='368'>%E3%82%AD</text><text x='104' y='388'>%E3%83%9F</text><text x='104' y='408'>%E3%82%A2</text><text x='104' y='428'>9</text><text x='104' y='448'>%E3%83%84</text><text x='128' y='328'>%E3%83%A0</text><text x='128' y='348'>3</text><text x='128' y='368'>%E3%83%92</text><text x='128' y='388'>%E3%82%B7</text><text x='152' y='328'>%E3%83%8D</text><text x='152' y='348'>%E3%83%9F</text><text x='152' y='368'>0</text><text x='152' y='388'>%E3%82%B5</text><text x='152' y='408'>%E3%83%A9</text><text x='152' y='428'>%E3%82%AD</text><text x='152' y='448'>7</text><text x='152' y='468'>%E3%83%84</text><text x='152' y='488'>%E3%82%A2</text><text x='224' y='328'>%E3%82%A2</text><text x='224' y='348'>%E3%83%92</text><text x='248' y='328'>4</text><text x='248' y='348'>%E3%83%A0</text><text x='248' y='368'>%E3%83%9F</text><text x='248' y='388'>%E3%82%B7</text><text x='248' y='408'>5</text><text x='248' y='428'>%E3%83%A9</text><text x='248' y='448'>%E3%83%84</text><text x='248' y='468'>0</text><text x='248' y='488'>%E3%82%AD</text><text x='248' y='508'>3</text><text x='248' y='528'>%E3%83%8D</text><text x='248' y='548'>2</text><text x='272' y='328'>%E3%82%B5</text><text x='272' y='348'>%E3%83%92</text><text x='272' y='368'>1</text></g></svg>");
     background-repeat: repeat;
     background-size: 320px 560px;
@@ -326,7 +294,6 @@ const cards = [
     mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 95%);
   }
   :global(.dark) .mission-matrix {
-    /* Dark mode: cyan against the deep navy bg. */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='560' viewBox='0 0 320 560'><g font-family='monospace' font-size='14' fill='%2322d3ee'><text x='8' y='18'>%E3%82%A2</text><text x='8' y='38'>7</text><text x='8' y='58'>%E3%83%9F</text><text x='8' y='78'>3</text><text x='8' y='98'>%E3%83%8D</text><text x='8' y='118'>%E3%83%A9</text><text x='8' y='138'>0</text><text x='8' y='158'>%E3%83%A0</text><text x='8' y='178'>9</text><text x='8' y='198'>%E3%82%B5</text><text x='32' y='18'>%E3%83%84</text><text x='32' y='38'>2</text><text x='32' y='58'>%E3%82%AD</text><text x='32' y='78'>4</text><text x='32' y='98'>%E3%83%92</text><text x='32' y='118'>%E3%82%B7</text><text x='56' y='18'>5</text><text x='56' y='38'>%E3%83%A0</text><text x='56' y='58'>%E3%83%A9</text><text x='56' y='78'>%E3%83%9F</text><text x='56' y='98'>0</text><text x='56' y='118'>%E3%83%8D</text><text x='56' y='138'>%E3%82%A2</text><text x='56' y='158'>3</text><text x='56' y='178'>%E3%82%AD</text><text x='56' y='198'>%E3%83%92</text><text x='56' y='218'>7</text><text x='56' y='238'>%E3%83%84</text><text x='56' y='258'>1</text><text x='56' y='278'>%E3%82%B5</text><text x='128' y='18'>%E3%83%92</text><text x='128' y='38'>4</text><text x='128' y='58'>%E3%83%9F</text><text x='128' y='78'>%E3%83%A9</text><text x='128' y='98'>2</text><text x='128' y='118'>%E3%83%84</text><text x='128' y='138'>9</text><text x='128' y='158'>%E3%83%A0</text><text x='152' y='18'>%E3%82%A2</text><text x='152' y='38'>0</text><text x='152' y='58'>%E3%82%B5</text><text x='152' y='78'>%E3%82%AD</text><text x='176' y='18'>6</text><text x='176' y='38'>%E3%83%8D</text><text x='176' y='58'>%E3%83%9F</text><text x='176' y='78'>%E3%82%B7</text><text x='176' y='98'>1</text><text x='176' y='118'>%E3%83%84</text><text x='176' y='138'>%E3%83%A9</text><text x='176' y='158'>5</text><text x='176' y='178'>%E3%82%A2</text><text x='176' y='198'>%E3%83%A0</text><text x='176' y='218'>0</text><text x='176' y='238'>%E3%83%92</text><text x='248' y='18'>%E3%82%AD</text><text x='248' y='38'>3</text><text x='248' y='58'>%E3%83%A9</text><text x='248' y='78'>%E3%82%B5</text><text x='248' y='98'>%E3%83%9F</text><text x='248' y='118'>2</text><text x='248' y='138'>%E3%83%A0</text><text x='248' y='158'>%E3%83%84</text><text x='248' y='178'>0</text><text x='248' y='198'>%E3%82%A2</text><text x='248' y='218'>5</text><text x='272' y='18'>%E3%83%8D</text><text x='272' y='38'>%E3%82%B7</text><text x='272' y='58'>7</text><text x='272' y='78'>%E3%83%92</text><text x='296' y='18'>4</text><text x='296' y='38'>%E3%83%A0</text><text x='296' y='58'>%E3%83%A9</text><text x='296' y='78'>1</text><text x='296' y='98'>%E3%83%9F</text><text x='296' y='118'>%E3%82%AD</text><text x='8' y='328'>%E3%83%A0</text><text x='8' y='348'>%E3%83%9F</text><text x='8' y='368'>%E3%82%A2</text><text x='8' y='388'>3</text><text x='32' y='328'>%E3%83%8D</text><text x='32' y='348'>%E3%82%B7</text><text x='32' y='368'>5</text><text x='32' y='388'>%E3%83%84</text><text x='32' y='408'>%E3%82%B5</text><text x='32' y='428'>%E3%83%A9</text><text x='32' y='448'>0</text><text x='32' y='468'>%E3%83%92</text><text x='32' y='488'>%E3%83%A0</text><text x='32' y='508'>4</text><text x='104' y='328'>2</text><text x='104' y='348'>%E3%83%A9</text><text x='104' y='368'>%E3%82%AD</text><text x='104' y='388'>%E3%83%9F</text><text x='104' y='408'>%E3%82%A2</text><text x='104' y='428'>9</text><text x='104' y='448'>%E3%83%84</text><text x='128' y='328'>%E3%83%A0</text><text x='128' y='348'>3</text><text x='128' y='368'>%E3%83%92</text><text x='128' y='388'>%E3%82%B7</text><text x='152' y='328'>%E3%83%8D</text><text x='152' y='348'>%E3%83%9F</text><text x='152' y='368'>0</text><text x='152' y='388'>%E3%82%B5</text><text x='152' y='408'>%E3%83%A9</text><text x='152' y='428'>%E3%82%AD</text><text x='152' y='448'>7</text><text x='152' y='468'>%E3%83%84</text><text x='152' y='488'>%E3%82%A2</text><text x='224' y='328'>%E3%82%A2</text><text x='224' y='348'>%E3%83%92</text><text x='248' y='328'>4</text><text x='248' y='348'>%E3%83%A0</text><text x='248' y='368'>%E3%83%9F</text><text x='248' y='388'>%E3%82%B7</text><text x='248' y='408'>5</text><text x='248' y='428'>%E3%83%A9</text><text x='248' y='448'>%E3%83%84</text><text x='248' y='468'>0</text><text x='248' y='488'>%E3%82%AD</text><text x='248' y='508'>3</text><text x='248' y='528'>%E3%83%8D</text><text x='248' y='548'>2</text><text x='272' y='328'>%E3%82%B5</text><text x='272' y='348'>%E3%83%92</text><text x='272' y='368'>1</text></g></svg>");
     opacity: 0.14;
   }
@@ -353,13 +320,7 @@ const cards = [
     background: radial-gradient(circle, var(--color-brand-secondary) 0%, transparent 70%);
   }
 
-  /* ============ Tablet (iPad-style device frame) ============
-     Bezel and screen *invert between modes*:
-       light mode  → dark bezel  + light screen
-       dark mode   → light bezel + dark screen
-  */
   .mission-tablet {
-    /* Light mode default: dark metallic bezel. */
     background:
       linear-gradient(150deg,
         color-mix(in oklch, var(--color-brand-primary) 60%, black) 0%,
@@ -375,7 +336,6 @@ const cards = [
     min-height: 360px;
   }
   :global(.dark) .mission-tablet {
-    /* Dark mode: pale quaternary bezel with subtle gradient depth. */
     background:
       linear-gradient(150deg,
         color-mix(in oklch, var(--color-brand-quaternary) 95%, var(--color-brand-tertiary)) 0%,
@@ -388,7 +348,6 @@ const cards = [
       inset 0 -1px 0 color-mix(in oklch, var(--color-brand-secondary) 25%, transparent);
   }
 
-  /* Camera dot at top center of the bezel. Always reads as a dark lens. */
   .mission-tablet-camera {
     position: absolute;
     top: 6px;
@@ -403,7 +362,6 @@ const cards = [
     z-index: 6;
   }
 
-  /* Home indicator pill at bottom center. Color flips with bezel. */
   .mission-tablet-home {
     position: absolute;
     bottom: 5px;
@@ -416,13 +374,9 @@ const cards = [
     z-index: 6;
   }
   :global(.dark) .mission-tablet-home {
-    /* Light bezel needs a darker indicator for contrast. */
     background: color-mix(in oklch, var(--color-brand-secondary) 50%, transparent);
   }
 
-  /* The "screen" — inset surface inside the device frame.
-     Light mode default → light surface (quaternary).
-     Dark mode → dark surface. */
   .mission-tablet-screen {
     background:
       linear-gradient(135deg, color-mix(in oklch, var(--color-brand-quaternary) 96%, var(--color-brand-tertiary)) 0%, var(--color-brand-quaternary) 100%);
@@ -458,7 +412,6 @@ const cards = [
       linear-gradient(to bottom, color-mix(in oklch, var(--color-brand-tertiary) 6%, transparent) 1px, transparent 1px);
   }
 
-  /* HUD corner brackets — color flips with screen surface. */
   .mission-bracket {
     position: absolute;
     width: 14px;
@@ -477,7 +430,6 @@ const cards = [
   .mission-bracket-bl { bottom: 10px; left: 10px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
   .mission-bracket-br { bottom: 10px; right: 10px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
 
-  /* ========== Slides ========== */
   [data-tablet-slides] {
     position: relative;
     min-height: 240px;
@@ -495,24 +447,16 @@ const cards = [
     border-radius: 14px;
     opacity: 0;
     pointer-events: none;
-    /* Default exit transition — opacity fade. The active slide overrides
-       this with a stepped glitch-in keyframe (see .is-active below). */
     transition: opacity 350ms ease, background 250ms ease, box-shadow 250ms ease, transform 250ms ease;
   }
   .mission-slide.is-active {
     opacity: 1;
     pointer-events: auto;
-    /* Stepped glitch-in animation runs each time the slide becomes active.
-       JS toggles a class to restart the animation. */
     animation: mission-glitch-in 520ms steps(8, end);
   }
 
-  /* ===== Hover state — make it obvious the slide is clickable ===== */
   .mission-slide-hover-ring {
     position: absolute;
-    /* Tuck the bottom edge up so the ring stops above the CTA row text.
-       Mobile stacks CTA above coords (flex-col), so it needs more clearance
-       than desktop where they sit on a single row. */
     inset: 0 0 84px 0;
     border-radius: inherit;
     pointer-events: none;
@@ -548,9 +492,7 @@ const cards = [
   .mission-slide:focus-visible {
     transform: translateY(-2px);
   }
-  /* Keyboard focus gets an extra punch beyond the hover ring: a thicker
-     outer outline that pulses, so it's unmistakable when a slide is the
-     tab target. Mouse hover stays subtle. */
+
   .mission-slide:focus-visible .mission-slide-hover-ring {
     border-width: 2px;
     animation: mission-focus-pulse 1.4s ease-in-out infinite;
@@ -602,8 +544,7 @@ const cards = [
       animation: none;
     }
   }
-  /* The hover-ring doubles as the focus indicator — suppress the default
-     browser outline so we don't render two stacked borders on tab focus. */
+
   .mission-slide:focus {
     outline: none;
   }
@@ -615,7 +556,6 @@ const cards = [
     transform: translateX(6px);
   }
 
-  /* ===== Glitch transition (steps + clip-path slices + RGB shift) ===== */
   @keyframes mission-glitch-in {
     0% {
       opacity: 0.2;
@@ -666,39 +606,40 @@ const cards = [
     }
   }
 
-  /* Pagination dots */
   .mission-dot {
     cursor: pointer;
     border: 0;
     padding: 0;
+    position: relative;
+  }
+  .mission-dot::after {
+    content: "";
+    position: absolute;
+    inset: -12px -4px;
   }
   .mission-dot:focus-visible {
     outline: 2px solid var(--color-brand-tertiary);
     outline-offset: 3px;
   }
 
-  /* Segmented progress track — Win95/3.1 loader feel. Mask lives on the
-     static parent so both the empty track and the filling bar share the
-     same 20 chunks (each 5% wide with a 1.5px gap). */
   .mission-progress-track {
     overflow: hidden;
     -webkit-mask-image: repeating-linear-gradient(
       to right,
       black 0,
-      black calc(5% - 1.5px),
-      transparent calc(5% - 1.5px),
+      black calc(5% - 2px),
+      transparent calc(5% - 2px),
       transparent 5%
     );
     mask-image: repeating-linear-gradient(
       to right,
       black 0,
-      black calc(5% - 1.5px),
-      transparent calc(5% - 1.5px),
+      black calc(5% - 2px),
+      transparent calc(5% - 2px),
       transparent 5%
     );
   }
-  /* Win95-style fill: 20 discrete steps so one block lights up at a time,
-     matching the 20 segments cut by the parent track's mask. */
+
   .mission-progress {
     width: 0%;
   }
@@ -710,7 +651,6 @@ const cards = [
     to { width: 100%; }
   }
 
-  /* Live signal pulse */
   .mission-pulse {
     position: relative;
     box-shadow: 0 0 8px currentColor;
@@ -729,7 +669,6 @@ const cards = [
     100% { transform: scale(2.2); opacity: 0; }
   }
 
-  /* ============ Holographic projector ============ */
   .mission-holo {
     perspective: 1000px;
     perspective-origin: 50% 60%;
@@ -739,8 +678,7 @@ const cards = [
     align-items: center;
     justify-content: flex-end;
   }
-  /* On mobile the holo stacks under the tablet — give it breathing room so
-     the beam doesn't kiss the tablet's bottom edge. */
+
   @media (max-width: 767px) {
     .mission-holo {
       padding-top: 32px;
@@ -751,9 +689,6 @@ const cards = [
     }
   }
 
-  /* Soft cone of light rising from the projector base.
-     Sits clearly *above* the base — bottom must clear the base height (56px)
-     plus the blur radius so the bloom doesn't bleed below the rim. */
   .mission-holo-beam {
     position: absolute;
     bottom: 64px;
@@ -779,7 +714,6 @@ const cards = [
     50% { opacity: 0.78; }
   }
 
-  /* Stage holds frames; rotates on Y axis. */
   .mission-holo-stage {
     position: relative;
     width: min(78%, 320px);
@@ -802,8 +736,6 @@ const cards = [
     opacity: 1;
   }
 
-  /* Inner spinner does the actual Y-axis rotation. Backface visible so the
-     hologram appears double-sided (mirrored on the back, like a real holo). */
   .mission-holo-spinner {
     width: 100%;
     height: 100%;
@@ -819,8 +751,6 @@ const cards = [
   .mission-holo-svg {
     width: 100%;
     height: 100%;
-    /* Light mode: secondary (darker) for legibility on the pale background.
-       Dark mode override below switches to tertiary for the glow. */
     color: var(--color-brand-secondary);
     filter:
       drop-shadow(0 0 6px color-mix(in oklch, var(--color-brand-secondary) 55%, transparent))
@@ -828,7 +758,6 @@ const cards = [
       drop-shadow(2px 0 0 color-mix(in oklch, var(--color-brand-secondary) 35%, transparent))
       drop-shadow(-2px 0 0 color-mix(in oklch, var(--color-brand-tertiary) 45%, transparent));
     backface-visibility: visible;
-    /* Buggy hologram flicker — irregular pattern for "broken" feel. */
     animation: mission-holo-flicker 6.3s steps(1, end) infinite;
   }
   :global(.dark) .mission-holo-svg {
@@ -862,7 +791,6 @@ const cards = [
     100% { opacity: 0.95; }
   }
 
-  /* Slow vertical scanline that sweeps top-to-bottom. */
   .mission-holo-glitch {
     position: absolute;
     inset: 0;
@@ -880,14 +808,10 @@ const cards = [
     opacity: 0.55;
   }
   @keyframes mission-holo-sweep {
-    /* Element height is 30% of stage; translate is in element-height units.
-       -25% splits the difference between the original -100% (entered too
-       early, above the SVG) and 50% (entered too low, missed the head). */
     0% { transform: translateY(-25%); }
     100% { transform: translateY(233%); }
   }
 
-  /* Projector base — small disc + glowing rim. */
   .mission-holo-base {
     position: relative;
     width: 60%;
@@ -938,9 +862,6 @@ const cards = [
     filter: blur(8px);
   }
 
-  /* When motion is paused (toggle or OS pref), the glitch-in keyframe would
-     otherwise freeze the active slide at 0% — opacity 0.2 + clip-path hiding
-     the text. Skip the animation so the static is-active styles apply. */
   :global(html[data-motion="paused"]) .mission-slide.is-active {
     animation: none;
   }
@@ -964,7 +885,7 @@ const cards = [
 <script>
   import { isMotionDisabled, MOTION_EVENT } from "@/lib/motion";
 
-  const CYCLE_MS = 6000;
+  const CYCLE_MS = 9000;
 
   const cleanups: Array<() => void> = [];
 
@@ -988,17 +909,8 @@ const cards = [
     const progress = stage.querySelector<HTMLElement>("[data-tablet-progress]");
     if (!slides.length || !frames.length) return;
 
-    // Read tablet content from data already in DOM. Code/eyebrow text is
-    // pulled from the slide href markup we wrote — but simpler: look it up
-    // by indexed dataset on the slides parent. We just store metadata as
-    // plain fields here, mirroring the source frontmatter.
     const meta = slides.map((slide) => {
-      // Use the eyebrow text rendered inside each illustration's adjacent
-      // siblings is awkward; instead derive from the data we control:
-      // each slide has an href and we can pick code/eyebrow from index.
       const idx = Number.parseInt(slide.dataset.index || "0", 10);
-      // The two transmissions have stable codes/eyebrows; mirror them here
-      // so we don't have to scrape the DOM.
       const TX = ["TX-001", "TX-002"];
       const EYE = ["Blueprint", "Roadmap"];
       return { idx, code: TX[idx] ?? "TX-???", eyebrow: EYE[idx] ?? "" };
@@ -1012,8 +924,7 @@ const cards = [
       active = ((next % slides.length) + slides.length) % slides.length;
       for (const slide of slides) {
         const isActive = Number(slide.dataset.index) === active;
-        // Retrigger the glitch-in animation: removing then re-adding the
-        // class doesn't restart the keyframe by itself; force a reflow first.
+
         if (isActive) {
           slide.classList.remove("is-active");
           void slide.offsetWidth;
@@ -1028,10 +939,10 @@ const cards = [
       for (const dot of dots) {
         const isActive = Number(dot.dataset.index) === active;
         dot.setAttribute("aria-selected", isActive ? "true" : "false");
-        // Active state — secondary in light mode, tertiary in dark mode.
+
         dot.classList.toggle("bg-brand-secondary", isActive);
         dot.classList.toggle("dark:bg-brand-tertiary", isActive);
-        // Inactive state — primary tint in light mode, quaternary tint in dark.
+
         dot.classList.toggle("bg-brand-primary/15", !isActive);
         dot.classList.toggle("dark:bg-brand-quaternary/15", !isActive);
         dot.classList.toggle("hover:bg-brand-primary/30", !isActive);
@@ -1048,7 +959,7 @@ const cards = [
       if (!progress) return;
       progress.classList.remove("is-running");
       progress.style.setProperty("--cycle-ms", `${CYCLE_MS}ms`);
-      // Force reflow so the transition restarts.
+
       void progress.offsetWidth;
       if (!paused && !isMotionDisabled()) progress.classList.add("is-running");
     };
@@ -1080,9 +991,6 @@ const cards = [
       startTimer();
     };
 
-    // Pause only when the user is engaging with a slide itself (the thing
-    // that shows the hover ring) — not just being on the tablet bezel or
-    // the hologram side.
     for (const slide of slides) {
       slide.addEventListener("pointerenter", onPause);
       slide.addEventListener("pointerleave", onResume);
@@ -1090,9 +998,6 @@ const cards = [
       cleanups.push(() => slide.removeEventListener("pointerleave", onResume));
     }
 
-    // Tabbing into an inactive slide should bring it into view (otherwise
-    // focus lands on hidden content). We swap the active index *and* keep
-    // the timer paused while focus stays inside.
     const onSlideFocus = (e: FocusEvent) => {
       const target = e.currentTarget as HTMLElement;
       const idx = Number.parseInt(target.dataset.index || "0", 10);
@@ -1110,7 +1015,6 @@ const cards = [
       const handler = () => {
         const idx = Number.parseInt(dot.dataset.index || "0", 10);
         setActive(idx);
-        // Restart cycle from the user's pick.
         stopTimer();
         if (!paused) startTimer();
       };

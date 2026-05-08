@@ -32,11 +32,9 @@ function seed(i: number, salt: number) {
   return x - Math.floor(x);
 }
 
-// Stars laid out radially around the disk centre. Each gets a polar angle and
-// radius; on scroll, the radius stretches and the star "streams" outward.
 const stars = Array.from({ length: 110 }, (_, i) => {
   const angle = seed(i, 1) * Math.PI * 2;
-  const radius = 18 + seed(i, 2) * 75; // % from centre
+  const radius = 18 + seed(i, 2) * 75;
   const size = +(0.5 + seed(i, 3) * 1.6).toFixed(2);
   const opacity = +(0.4 + seed(i, 4) * 0.5).toFixed(2);
   const twinkleDur = +(2.5 + seed(i, 5) * 4).toFixed(2);
@@ -58,7 +56,6 @@ const ringCount = 4;
   <div class="horizon-scene" aria-hidden="true">
     <div class="horizon-void"></div>
 
-    <!-- Star field with radial streaks. Anchored to viewport. -->
     <div class="horizon-stars" data-horizon-stars>
       {stars.map((s, _) => {
         const xPct = 50 + Math.cos(s.angle) * s.radius;
@@ -74,7 +71,6 @@ const ringCount = 4;
       })}
     </div>
 
-    <!-- Accretion disk -->
     <div class="horizon-disk-wrap" data-horizon-disk>
       {Array.from({ length: ringCount }, (_, i) => i).map((i) => (
         <div class={`horizon-ring horizon-ring-${i}`}></div>
@@ -110,7 +106,7 @@ const ringCount = 4;
         )}
       </header>
 
-      <article class="horizon-reveal horizon-card relative mt-16 rounded-3xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/40 dark:bg-brand-primary/40 backdrop-blur-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] p-6 sm:p-12">
+      <article class="horizon-reveal horizon-card relative mt-16 rounded-3xl border border-brand-primary/15 dark:border-brand-quaternary/15 bg-brand-quaternary/20 dark:bg-brand-primary/15 panel-blur shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] p-6 sm:p-12">
         <div aria-hidden="true" class="horizon-card-rim"></div>
         <div class="doc-prose relative">
           <slot />
@@ -129,7 +125,6 @@ const ringCount = 4;
     pointer-events: none;
   }
 
-  /* Backdrop stays the same in both modes — like the themed docs backgrounds. */
   .horizon-void {
     position: absolute;
     inset: 0;
@@ -165,7 +160,6 @@ const ringCount = 4;
     50% { opacity: var(--o); }
   }
 
-  /* ---- Accretion disk ---- */
   .horizon-disk-wrap {
     position: absolute;
     top: 50%;
@@ -184,7 +178,6 @@ const ringCount = 4;
     filter: blur(2px);
   }
 
-  /* Multi-ring conic gradients with different speeds give the disk parallax depth. */
   .horizon-ring-0 {
     background: conic-gradient(
       from 0deg,
@@ -291,7 +284,6 @@ const ringCount = 4;
     pointer-events: none;
   }
 
-  /* ---- Foreground content ---- */
   .horizon-reveal { opacity: 0; }
 
   .horizon-card {
@@ -373,25 +365,28 @@ const ringCount = 4;
       : [];
     const card = document.querySelector<HTMLElement>(".horizon-card");
 
-    // Easing — exponential pull as you near the bottom (gravity intensifies).
     const ease = (t: number) => t * t;
+
+    let targetY = window.scrollY;
+    let currentY = targetY;
+    let docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const measure = () => {
+      docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    };
 
     let raf = 0;
     const update = () => {
       raf = 0;
-      const y = window.scrollY;
-      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      const y = currentY;
       const linear = Math.min(1, Math.max(0, y / docHeight));
       const progress = ease(linear);
 
-      // Disk: aggressive rotation + scale as you fall toward the singularity.
       if (disk) {
-        const extraRot = linear * 720; // two full turns over the doc
-        const scale = 1 + progress * 0.6; // up to 1.6x
+        const extraRot = linear * 720;
+        const scale = 1 + progress * 0.6;
         disk.style.transform = `translate(-50%, -50%) rotate(${extraRot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
       }
 
-      // Singularity grows toward you.
       if (singularity) {
         const sScale = 1 + progress * 2.4;
         const glow = 0.5 + progress * 1.2;
@@ -399,9 +394,6 @@ const ringCount = 4;
         singularity.style.filter = `brightness(${glow.toFixed(2)})`;
       }
 
-      // Stars stream radially outward from the centre AND stretch into streaks.
-      // Outward push uses a window-diagonal as the unit so the effect scales
-      // across viewport sizes.
       if (stars.length) {
         const stretch = 1 + progress * 9;
         const push = progress * Math.max(window.innerWidth, window.innerHeight) * 0.55;
@@ -414,8 +406,6 @@ const ringCount = 4;
         }
       }
 
-      // Content card gets pulled slightly toward centre and warped a hair —
-      // feels like the doc itself is succumbing to gravity.
       if (card) {
         const lift = -y * 0.06;
         const cardScale = 1 - progress * 0.04;
@@ -424,15 +414,29 @@ const ringCount = 4;
       }
     };
 
+    const tick = () => {
+      raf = 0;
+      const diff = targetY - currentY;
+      if (Math.abs(diff) < 0.5) {
+        currentY = targetY;
+        update();
+        return;
+      }
+      currentY += diff * 0.2;
+      update();
+      raf = window.requestAnimationFrame(tick);
+    };
     const onScroll = () => {
-      if (raf) return;
-      raf = window.requestAnimationFrame(update);
+      targetY = window.scrollY;
+      if (!raf) raf = window.requestAnimationFrame(tick);
     };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", measure);
 
     cleanup = () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", measure);
       if (raf) window.cancelAnimationFrame(raf);
       if (disk) disk.style.transform = "";
       if (singularity) {

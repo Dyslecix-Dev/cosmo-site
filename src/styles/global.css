@@ -3,6 +3,191 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+main {
+  transition: opacity 320ms ease;
+}
+html.curtain-active main {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  main {
+    transition: none;
+  }
+  html.curtain-active main {
+    opacity: 1;
+  }
+}
+
+.page-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.page-curtain[data-state="closing"],
+.page-curtain[data-state="closed"] {
+  pointer-events: auto;
+}
+
+.page-curtain-layer {
+  position: absolute;
+  inset: -60vh -60vw;
+  clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
+  transform: translate3d(130%, 130%, 0);
+  will-change: transform;
+}
+
+.page-curtain-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+html.curtain-active .page-curtain-layer {
+  transform: translate3d(0, 0, 0);
+}
+html.curtain-active .page-curtain-content {
+  opacity: 1;
+}
+
+.page-curtain-layer-1 {
+  background-color: var(--curtain-1);
+}
+.page-curtain-layer-2 {
+  background-color: var(--curtain-2);
+}
+.page-curtain-layer-3 {
+  background-color: var(--curtain-3);
+}
+
+.page-curtain[data-state="closed"] .page-curtain-layer {
+  transform: translate3d(0, 0, 0);
+}
+
+.page-curtain[data-state="closing"] .page-curtain-layer {
+  animation: page-curtain-in 1400ms cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+.page-curtain[data-state="closing"] .page-curtain-layer-2 {
+  animation-delay: 180ms;
+}
+.page-curtain[data-state="closing"] .page-curtain-layer-3 {
+  animation-delay: 360ms;
+}
+
+.page-curtain[data-state="opening"] .page-curtain-layer {
+  transform: translate3d(0, 0, 0);
+  animation: page-curtain-out 1400ms cubic-bezier(0.76, 0, 0.24, 1) both;
+}
+.page-curtain[data-state="opening"] .page-curtain-layer-2 {
+  animation-delay: 180ms;
+}
+.page-curtain[data-state="opening"] .page-curtain-layer-1 {
+  animation-delay: 360ms;
+}
+
+@keyframes page-curtain-in {
+  from {
+    transform: translate3d(130%, 130%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes page-curtain-out {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-130%, -130%, 0);
+  }
+}
+
+.page-curtain[data-state="closing"] .page-curtain-content {
+  animation: page-curtain-icon-in 280ms ease 1780ms both;
+}
+.page-curtain[data-state="closed"] .page-curtain-content {
+  opacity: 1;
+}
+.page-curtain[data-state="opening"] .page-curtain-content {
+  opacity: 1;
+  animation: page-curtain-icon-out 450ms ease both;
+}
+
+@keyframes page-curtain-icon-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes page-curtain-icon-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.page-curtain-icon {
+  width: clamp(96px, 14vmin, 144px);
+  height: clamp(96px, 14vmin, 144px);
+  animation: page-curtain-pulse 1.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes page-curtain-pulse {
+  0%,
+  100% {
+    transform: scale(0.94);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.page-curtain {
+  --curtain-1: var(--color-brand-tertiary);
+  --curtain-2: var(--color-brand-secondary);
+  --curtain-3: var(--color-brand-primary);
+}
+.page-curtain-icon-light-mode {
+  display: block;
+}
+.page-curtain-icon-dark-mode {
+  display: none;
+}
+
+:where(.dark) .page-curtain {
+  --curtain-1: var(--color-brand-primary);
+  --curtain-2: var(--color-brand-tertiary);
+  --curtain-3: var(--color-brand-quaternary);
+}
+:where(.dark) .page-curtain-icon-light-mode {
+  display: none;
+}
+:where(.dark) .page-curtain-icon-dark-mode {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-curtain-layer {
+    transition: none;
+  }
+  .page-curtain-icon {
+    animation: none;
+  }
+}
+
 @theme {
   --font-sans: var(--font-roboto-mono), ui-monospace, monospace;
   --font-heading: var(--font-space-mono), ui-monospace, monospace;
@@ -58,7 +243,6 @@ html[data-motion="paused"] *::after {
   border-radius: 4px;
 }
 
-/* Long-form prose used by docs detail pages and standalone meta pages (blueprint, roadmap). */
 .doc-prose {
   color: color-mix(in oklch, var(--color-brand-primary) 92%, transparent);
   font-size: 1rem;
@@ -118,7 +302,7 @@ html[data-motion="paused"] *::after {
 }
 
 .doc-prose a {
-  color: var(--color-brand-secondary);
+  color: var(--color-brand-tertiary);
   text-decoration: underline;
   text-decoration-color: color-mix(in oklch, var(--color-brand-tertiary) 60%, transparent);
   text-underline-offset: 3px;
@@ -152,7 +336,7 @@ html[data-motion="paused"] *::after {
   margin: 0.4rem 0;
 }
 .doc-prose li::marker {
-  color: color-mix(in oklch, var(--color-brand-tertiary) 80%, transparent);
+  color: var(--color-brand-tertiary);
 }
 
 .doc-prose blockquote {
@@ -206,9 +390,6 @@ html[data-motion="paused"] *::after {
   font-size: inherit;
 }
 
-/* Callouts: keep dark-on-light contrast in both themes. Colors are set
-   explicitly here (not via Tailwind classes on the aside) so .doc-prose's
-   dark-mode descendant rules can't flip the inner text. */
 .callout {
   border-left-width: 4px;
   border-left-style: solid;
@@ -320,4 +501,63 @@ html[data-motion="paused"] *::after {
 }
 :where(.dark) [data-toc-link][data-active="true"] {
   color: var(--color-brand-quaternary);
+}
+
+.install-cmd,
+.footer-snippet-code {
+  padding-bottom: 2px;
+}
+
+.doc-reveal {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doc-reveal {
+    opacity: 1;
+  }
+}
+
+.panel-blur::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+@supports (scrollbar-color: auto) {
+  .install-cmd,
+  .footer-snippet-code,
+  .doc-prose pre {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(76% 0.09 188 / 0.7) transparent;
+  }
+}
+
+.install-cmd::-webkit-scrollbar,
+.footer-snippet-code::-webkit-scrollbar,
+.doc-prose pre::-webkit-scrollbar {
+  height: 4px;
+}
+
+.install-cmd::-webkit-scrollbar-track,
+.footer-snippet-code::-webkit-scrollbar-track,
+.doc-prose pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.install-cmd::-webkit-scrollbar-thumb,
+.footer-snippet-code::-webkit-scrollbar-thumb,
+.doc-prose pre::-webkit-scrollbar-thumb {
+  background: oklch(76% 0.09 188 / 0.55);
+  border-radius: 9999px;
+}
+
+.install-cmd::-webkit-scrollbar-thumb:hover,
+.footer-snippet-code::-webkit-scrollbar-thumb:hover,
+.doc-prose pre::-webkit-scrollbar-thumb:hover {
+  background: oklch(76% 0.09 188);
 }
